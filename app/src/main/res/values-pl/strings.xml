@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2015. Adam Pioterek
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
+  ~     (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
+  ~     merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+  ~     furnished to do so, subject to the following conditions:
+  ~
+  ~     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  ~
+  ~     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  ~     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+  ~     LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+  ~     IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<resources>
+    <string name="Htp">Jak Grać</string>
+    <string name="Play">Graj</string>
+    <string name="boardDes">Obraz planszy</string>
+    <string name="dieDes">Obraz kości</string>
+    <string name="htpHeader1">1. Początek</string>
+    <string name="htpHeader2">2. Kolejki</string>
+    <string name="htpHeader3">3. Koniec</string>
+    <string name="htpPara1">Gracze rozpoczynają z planszą ustawioną jak pokazano na zdjęciu 1. Żetony ustawione są w kolejności losowej. Rozpoczynają jasne żetony.</string>
+    <string name="htpPara2">Każda kolejka rozpoczyna się od rzutu kostką. Następnie gracz musi ruszyć odpowiadającym żetonem. Jeśli nie jest on dostępny, gracz musi ruszyć żetonem z najbliższym numerem wyższym lub niższym od wylosowanego.\nGracz może ruszyć żetonem tylko jedną komórkę w górę, lewo lub po skosie w górne lewo (zdjęcie 2).\nJeśli żeton leży na docelowej komórce, jest on usuwany z planszy (zdjęcie 3).</string>
+    <string name="htpPara3">Gra kończy się gdy:\n- gracz umieści jeden ze swoich żetonów w rogu przeciwnika, lub\n- wszystkie żetony przeciwnika zostaną zdjęte z planszy.</string>
+    <string name="htpPicDes1">zdj 1.</string>
+    <string name="htpPicDes2">zdj 2.</string>
+    <string name="htpPicDes3">zdj 3.</string>
+    <string name="htpPicSub1">zdj 1.</string>
+    <string name="htpPicSub2">zdj 2.</string>
+    <string name="htpPicSub3">zdj 3.</string>
+    <string name="htpTile">Jak grać w\n“Einstein Plays No Dice”</string>
+    <string name="title_activity_board">Plansza</string>
+    <string name="title_activity_how_to_play">JakGrać</string>
+    <string name="TapToCont">Stuknij by kontynuować</string>
+    <string name="plDarkWon">Ciemne żetony wygrały</string>
+    <string name="plLightWon">Jasne żetony wygrały</string>
+    <string name="plDarkRes">Ciemne:</string>
+    <string name="plLightRes">Jasne:</string>
+    <string name="resetResults">Zresetuj wyniki</string>
+    <string name="cookies_message">Wykorzystujemy identyfikatory urządzeń do personalizacji treści i reklam, aby oferować funkcje mediów społecznościowych i analizować ruch. Takie identyfikatory i inne informacje z Twojego urządzenia udostępniamy partnerom społecznościowym, reklamowym i analitycznym.</string>
+    <string name="close_message">Zamknij wiadomość</string>
+    <string name="see_details">Zobacz szczegóły</string>
+</resources>

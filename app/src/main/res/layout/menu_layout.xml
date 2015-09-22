@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2015. Adam Pioterek
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
+  ~     (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
+  ~     merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+  ~     furnished to do so, subject to the following conditions:
+  ~
+  ~     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  ~
+  ~     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  ~     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+  ~     LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+  ~     IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/playBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="129dp"
+        android:clickable="true"
+        android:gravity="center_horizontal"
+        android:onClick="change"
+        android:text="@string/Play"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/htpBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/playBtn"
+        android:clickable="true"
+        android:gravity="center_horizontal"
+        android:onClick="change"
+        android:text="@string/Htp"
+        android:textIsSelectable="false"
+        android:textSize="40sp" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id_release_menu" />
+
+    <TextView
+        android:id="@+id/resultLight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/htpBtn"
+        android:layout_marginTop="51dp"
+        android:text="@string/plLightRes"
+        android:textColor="@color/text_secondary"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/resultDark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/resultLight"
+        android:layout_alignRight="@+id/resultLight"
+        android:layout_below="@+id/resultLight"
+        android:text="@string/plDarkRes"
+        android:textColor="@color/text_secondary"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/resultLightNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/resultLight"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text=""
+        android:textColor="@color/secondary"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/resultDarkNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/resultDark"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text=""
+        android:textColor="@color/primary"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/resetRes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/resultDark"
+        android:layout_marginTop="31dp"
+        android:elevation="2dp"
+        android:text="@string/resetResults"
+        tools:ignore="UnusedAttribute" />
+
+</RelativeLayout>
