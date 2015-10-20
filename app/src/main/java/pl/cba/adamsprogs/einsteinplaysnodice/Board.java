@@ -1,65 +1,38 @@
-/*
- * Copyright (c) 2015. Adam Pioterek
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
- *     (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
- *     merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- *     furnished to do so, subject to the following conditions:
- *
- *     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- *     LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
- *     IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package pl.cba.adamsprogs.einsteinplaysnodice;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Typeface;
-import android.support.v7.app.ActionBar;
+import android.content.Intent;
+import android.graphics.*;
+import android.support.v7.app.*;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.widget.ImageView;
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Random;
+import java.io.*;
+import java.util.*;
 
+import static pl.cba.adamsprogs.einsteinplaysnodice.Utilities.*;
 
 public class Board extends AppCompatActivity {
+    //TODO yellow stones upside-down
+    private int player;
+    private int[] dice = {7, 7};
+    private int[] board = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private int[] diceOrder = {1, 2, 3, 4, 5, 6};
+    private boolean blockTouch = true;
+    private boolean blockRoll = false;
+    private int[] selected = {0, 0};
+    private float bHeight;
+    private float bWidth;
+    private float sq;
+    private float[][] diceCrcls0, diceCrcls1;
+    private float dieR;
+    private Bitmap d0, d1, b;
+    private Canvas cd0, cd1, cb;
+    private int winner = -1;
 
-    int player = 0;
-    int[] dice = {7, 7};
-    int[] board = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    int[] diceOrder = {1, 2, 3, 4, 5, 6};
-    boolean blockTouch = true;
-    boolean blockRoll = false;
-    int[] selected = {0, 0};
-    float width;
-    float dHeight;
-    float bHeight;
-    float bWidth;
-    float sq;
-    float[][] diceCrcls0, diceCrcls1;
-    float dieR;
-    Bitmap d0, d1, b;
-    Canvas cd0, cd1, cb;
-    int winner = -1;
-
-    int[] DieImg = {R.id.die0, R.id.die1};
+    private int[] DieImg = {R.id.die0, R.id.die1};
+    private int startPlayer = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +44,8 @@ public class Board extends AppCompatActivity {
         }
 
         setContentView(R.layout.board_layout);
+
+        startPlayer = getIntent().getIntExtra("startPlayer", 0);
 
         ImageView boardV = (ImageView) findViewById(R.id.board);
 
@@ -102,6 +77,8 @@ public class Board extends AppCompatActivity {
                 }
         );
 
+        player = startPlayer;
+
         int[] a = {1, 2, 3, 4, 5, 6};
 
         shuffleArray(a);
@@ -122,12 +99,12 @@ public class Board extends AppCompatActivity {
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        width = metrics.widthPixels;
+        float width = metrics.widthPixels;
         bHeight = metrics.heightPixels / 2;
         bWidth = min((int) width, (int) bHeight);
         //noinspection SuspiciousNameCombination
         bHeight = bWidth;
-        dHeight = metrics.heightPixels / 4;
+        float dHeight = metrics.heightPixels / 4;
         sq = bWidth / 5;
 
         dieR = dHeight / 10;
@@ -168,12 +145,12 @@ public class Board extends AppCompatActivity {
     public void DrawBoard() {
         float x, y;
         int tColour;
-        int[] Col = {getResources().getColor(R.color.secondary), getResources().getColor(R.color.primary)};
+        int[] Col = {getColour(this, R.color.secondary), getColour(this, R.color.primary)};
         Paint p;
         p = new Paint();
         p.setAntiAlias(true);
 
-        cb.drawColor(getResources().getColor(R.color.board));
+        cb.drawColor(getColour(this, R.color.board));
 
         DrawGrid();
 
@@ -185,10 +162,10 @@ public class Board extends AppCompatActivity {
 
             if (board[i] > 10) {
                 p.setColor(Col[1]);
-                tColour = getResources().getColor(R.color.text_light);
+                tColour = getColour(this, R.color.text_light);
             } else if (board[i] > 0) {
                 p.setColor(Col[0]);
-                tColour = getResources().getColor(R.color.text);
+                tColour = getColour(this, R.color.text);
             } else
                 continue;
 
@@ -216,7 +193,7 @@ public class Board extends AppCompatActivity {
         p = new Paint();
         p.setAntiAlias(true);
         p.setStyle(Paint.Style.STROKE);
-        p.setColor(getResources().getColor(R.color.grid));
+        p.setColor(getColour(this, R.color.grid));
         p.setStrokeWidth(3);
 
         for (int i = 0; i < 6; ++i) {
@@ -234,9 +211,9 @@ public class Board extends AppCompatActivity {
         p.setAntiAlias(true);
         p.setStyle(Paint.Style.FILL);
 
-        cd0.drawColor(getResources().getColor(R.color.dice_off));
+        cd0.drawColor(getColour(this, R.color.dice_off));
 
-        p.setColor(getResources().getColor(R.color.dice_num));
+        p.setColor(getColour(this, R.color.dice_num));
         for (float[] x : diceCrcls0) {
             cd0.drawCircle(x[0], x[1], dieR, p);
         }
@@ -244,9 +221,9 @@ public class Board extends AppCompatActivity {
         ImageView iv = (ImageView) findViewById(R.id.die0);
         iv.setImageBitmap(d0);
 
-        cd1.drawColor(getResources().getColor(R.color.dice_off));
+        cd1.drawColor(getColour(this, R.color.dice_off));
 
-        p.setColor(getResources().getColor(R.color.dice_num));
+        p.setColor(getColour(this, R.color.dice_num));
         for (float[] x : diceCrcls1) {
             cd1.drawCircle(x[0], x[1], dieR, p);
         }
@@ -255,7 +232,7 @@ public class Board extends AppCompatActivity {
     }
 
     public void ColourDie(int c) {
-        int[] Colour = {getResources().getColor(R.color.dice_on), getResources().getColor(R.color.dice_off)};
+        int[] Colour = {getColour(this, R.color.dice_on), getColour(this, R.color.dice_off)};
         if (player == 0) {
             cd0.drawColor(Colour[c]);
         }
@@ -276,7 +253,7 @@ public class Board extends AppCompatActivity {
         Paint p = new Paint();
         p.setAntiAlias(true);
         p.setStyle(Paint.Style.FILL);
-        p.setColor(getResources().getColor(R.color.dice_num));
+        p.setColor(getColour(this, R.color.dice_num));
         if (player == 0) {
             if (n % 2 == 1) {
                 cd0.drawCircle(diceCrcls0[6][0], diceCrcls0[6][1], dieR, p);
@@ -354,47 +331,19 @@ public class Board extends AppCompatActivity {
         if (board[24] % 100 > 0 && board[24] % 100 < 10) winner = 0;
 
         if (winner != -1) {
-            EndingDialog();
+            endingDialog();
         } else {
             blockTouch = true;
             blockRoll = false;
         }
     }
 
-    public void EndingDialog() {
-        int[] Col = {getResources().getColor(R.color.secondary), getResources().getColor(R.color.primary)};
-        Paint p;
-        p = new Paint();
-        p.setAntiAlias(true);
-        p.setStyle(Paint.Style.FILL);
-        p.setColor(Col[winner]);
-
-        cb.drawColor(Col[winner]);
-
-        p.setTextAlign(Paint.Align.CENTER);
-        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Comfortaa.ttf");
-        p.setTypeface(tf);
-
-        if (winner == 0) {
-            p.setColor(getResources().getColor(R.color.text));
-            p.setTextSize((bWidth * p.getTextSize()) / p.measureText(getString(R.string.plLightWon)));
-            cb.drawText(getString(R.string.plLightWon), bWidth / 2, bHeight / 3 + p.getTextSize() / 2, p);
-        } else {
-            p.setColor(getResources().getColor(R.color.text_light));
-            p.setTextSize((bWidth * p.getTextSize()) / p.measureText(getString(R.string.plDarkWon)));
-            cb.drawText(getString(R.string.plDarkWon), bWidth / 2, bHeight / 3 + p.getTextSize() / 2, p);
-        }
-
-        p.setTypeface(null);
-        p.setTextSize((bWidth * p.getTextSize()) / p.measureText(getString(R.string.TapToCont)));
-        cb.drawText(getString(R.string.TapToCont), bWidth / 2, (2 * bHeight) / 3 + p.getTextSize() / 2, p);
-
-        ImageView iv = (ImageView) findViewById(R.id.board);
-        iv.setImageBitmap(b);
-
-        int[] res = getFile();
-        ++res[winner];
-        saveFile(res);
+    private void endingDialog() {
+        Intent endingIntent = new Intent(this, Ending.class);
+        endingIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        endingIntent.putExtra("winner", winner);
+        endingIntent.putExtra("startPlayer", startPlayer);
+        startActivity(endingIntent);
     }
 
     public void diePressed(View v, MotionEvent m) {
@@ -412,10 +361,10 @@ public class Board extends AppCompatActivity {
         dice[player] = diceOrder[5];
 
         if (player == 0) {
-            cd0.drawColor(getResources().getColor(R.color.dice_on));
+            cd0.drawColor(getColour(this, R.color.dice_on));
         }
         if (player == 1) {
-            cd1.drawColor(getResources().getColor(R.color.dice_on));
+            cd1.drawColor(getColour(this, R.color.dice_on));
         }
 
         DrawDie();
@@ -432,7 +381,6 @@ public class Board extends AppCompatActivity {
 
     public void HintStone() {
         DrawBoard();
-        //String tag = "HintStone";
 
         int[] boardBak = Arrays.copyOf(board, 25);
         Arrays.sort(boardBak);
@@ -472,9 +420,9 @@ public class Board extends AppCompatActivity {
 
     public void DrawHint(int pos, int type) {
         float x, y;
-        int[] typeColour = {getResources().getColor(R.color.hint_stone), getResources().getColor(R.color.hint_stone), getResources().getColor(R.color.hint_move)};
-        int[] tColour = {getResources().getColor(R.color.text), getResources().getColor(R.color.text_light)};
-        int[] Col = {getResources().getColor(R.color.secondary), getResources().getColor(R.color.primary)};
+        int[] typeColour = {getColour(this, R.color.hint_stone), getColour(this, R.color.hint_stone), getColour(this, R.color.hint_move)};
+        int[] tColour = {getColour(this, R.color.text), getColour(this, R.color.text_light)};
+        int[] Col = {getColour(this, R.color.secondary), getColour(this, R.color.primary)};
         Paint p;
         p = new Paint();
         p.setAntiAlias(true);
@@ -541,15 +489,15 @@ public class Board extends AppCompatActivity {
 
     public void DrawDie() {
         if (player == 0) {
-            cd0.drawColor(getResources().getColor(R.color.dice_on));
+            cd0.drawColor(getColour(this, R.color.dice_on));
         }
         if (player == 1) {
-            cd1.drawColor(getResources().getColor(R.color.dice_on));
+            cd1.drawColor(getColour(this, R.color.dice_on));
         }
         DrawDieRaw(dice[player]);
     }
 
-    public void handleTouch(MotionEvent m) { //TODO handle touch on square
+    public void handleTouch(MotionEvent m) {
         ImageView iv = (ImageView) findViewById(R.id.board);
 
         float offset = (iv.getWidth() - iv.getHeight()) / 2;
@@ -564,10 +512,6 @@ public class Board extends AppCompatActivity {
         int posy = (int) (y / Isqh);
 
         if (action == MotionEvent.ACTION_UP && !blockTouch) {
-            if (winner != -1) {
-                finish();
-            }
-
             if (at(posx, posy) - 100 > 0 && at(posx, posy) - 100 < 100) {
                 ColourDie(1);
                 selected[0] = posx;
@@ -597,7 +541,7 @@ public class Board extends AppCompatActivity {
         int[] res = {0, 0};
         try {
             BufferedReader inputReader = new BufferedReader(new InputStreamReader(
-                    openFileInput("ClokResults")));
+                    openFileInput("EinsteinResults")));
             String inputString;
             String[] results;
             if ((inputString = inputReader.readLine()) != null) {
@@ -608,16 +552,5 @@ public class Board extends AppCompatActivity {
         } catch (Exception ignored) {
         }
         return res;
-    }
-
-    public void saveFile(int[] r) {
-        String res = r[0] + " " + r[1];
-        try {
-            FileOutputStream fos = openFileOutput("ClokResults", Context.MODE_PRIVATE);
-            fos.write(res.getBytes());
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

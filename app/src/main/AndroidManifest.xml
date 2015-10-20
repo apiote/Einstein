@@ -1,20 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) 2015. Adam Pioterek
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-  ~     (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
-  ~     merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-  ~     furnished to do so, subject to the following conditions:
-  ~
-  ~     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-  ~
-  ~     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-  ~     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-  ~     LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
-  ~     IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-  -->
-
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="pl.cba.adamsprogs.einsteinplaysnodice">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -22,6 +8,7 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_scheme"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
@@ -45,7 +32,8 @@
         <activity
             android:name=".HowToPlay"
             android:label="@string/title_activity_how_to_play"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="pl.cba.adamsprogs.einsteinplaysnodice.MainActivity" />
@@ -55,11 +43,13 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_board"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="pl.cba.adamsprogs.einsteinplaysnodice.MainActivity" />
         </activity>
+        <activity android:name=".Ending"/>
     </application>
 
 </manifest>

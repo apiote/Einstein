@@ -1,22 +1,6 @@
-<!--
-  ~ Copyright (c) 2015. Adam Pioterek
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-  ~     (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
-  ~     merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-  ~     furnished to do so, subject to the following conditions:
-  ~
-  ~     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-  ~
-  ~     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-  ~     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-  ~     LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
-  ~     IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-  -->
-
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
@@ -27,22 +11,6 @@
 
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/primary</item>
-        <item name="logo">@mipmap/ic_launcher</item>
-        <item name="displayOptions">useLogo|showHome|showTitle</item>
-        <!--|homeAsUp-->
+        <item name="displayOptions">showTitle</item>
     </style>
-    <color name="primary">#3F51B5</color>
-    <color name="primary_dark">#303F9F</color>
-    <color name="secondary">#F1C40F</color>
-    <color name="board">#FFFFFF</color>
-    <color name="grid">#000000</color>
-    <color name="bg">#FFFFFF</color>
-    <color name="text_light">#FFFFFF</color>
-    <color name="text">#212121</color>
-    <color name="text_secondary">#727272</color>
-    <color name="dice_on">#FFFFFF</color>
-    <color name="dice_off">#F44336</color>
-    <color name="dice_num">#212121</color>
-    <color name="hint_stone">#FFF9C4</color>
-    <color name="hint_move">#DCEDC8</color>
 </resources>

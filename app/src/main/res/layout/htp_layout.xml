@@ -1,23 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) 2015. Adam Pioterek
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-  ~     (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
-  ~     merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-  ~     furnished to do so, subject to the following conditions:
-  ~
-  ~     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-  ~
-  ~     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-  ~     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-  ~     LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
-  ~     IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-  -->
-
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
     android:gravity="bottom"
     android:orientation="vertical">
 
@@ -47,11 +35,11 @@
                 android:id="@+id/htpTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
                 android:gravity="center_horizontal"
                 android:text="@string/htpTile"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
                 android:id="@+id/htpHeader1"
@@ -120,8 +108,8 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/htpPara2"
                 android:contentDescription="@string/htpPicDes2"
-                android:src="@drawable/pic2"
-                android:paddingBottom="10dp" />
+                android:paddingBottom="10dp"
+                android:src="@drawable/pic2" />
 
             <TextView
                 android:id="@+id/htpDes2"
@@ -130,9 +118,9 @@
                 android:layout_alignBottom="@+id/htpPic2"
                 android:layout_toEndOf="@+id/htpPic2"
                 android:layout_toRightOf="@+id/htpPic2"
+                android:paddingBottom="10dp"
                 android:text="@string/htpPicSub2"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:paddingBottom="10dp"
                 android:textColor="@color/text_secondary" />
 
             <ImageView

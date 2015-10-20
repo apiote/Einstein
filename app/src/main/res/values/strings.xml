@@ -1,32 +1,17 @@
-<!--
-  ~ Copyright (c) 2015. Adam Pioterek
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-  ~     (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
-  ~     merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-  ~     furnished to do so, subject to the following conditions:
-  ~
-  ~     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-  ~
-  ~     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-  ~     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-  ~     LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
-  ~     IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-  -->
-
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Einstein Plays No Dice</string>
-    <string name="title_activity_main" translatable="false">Einstein Plays No Dice</string>
+    <string name="app_name" translatable="false">Einstein</string>
+    <string name="title_activity_main" translatable="false">Einstein</string>
 
     <string name="banner_ad_unit_id_debug" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_ad_unit_id_release_menu" translatable="false">ca-app-pub-7384046387993631/4042574301</string>
     <string name="banner_ad_unit_id_release_htp" translatable="false">ca-app-pub-7384046387993631/6658705109</string>
 
-    <string name="title_activity_how_to_play">HowToPlay</string>
+    <string name="title_activity_how_to_play">How To Play</string>
     <string name="title_activity_board">Board</string>
     <string name="dieDes">Image of a die</string>
     <string name="boardDes">Board image</string>
-    <string name="Play">Play Game</string>
+    <string name="Play">Play</string>
     <string name="Htp">How To Play</string>
     <string name="htpTile">How To Play\n“Einstein Plays No Dice”</string>
     <string name="htpHeader1">1. Start</string>
@@ -50,4 +35,8 @@
     <string name="cookies_message">We use device identifiers to personalise content and ads, to provide social media features and to analyse our traffic. We also share such identifiers and other information from your device with our social media, advertising and analytics partners.</string>
     <string name="close_message">Close message</string>
     <string name="see_details">See details</string>
+    <string name="endingImageDes">Ending image</string>
+    <string name="playOnceAgain">Play once again</string>
+    <string name="goToMenu">Go back to menu</string>
+    <string name="resultsSeparator" translatable="false">:</string>
 </resources>
