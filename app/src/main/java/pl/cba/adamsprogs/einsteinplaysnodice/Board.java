@@ -5,6 +5,7 @@ import android.graphics.*;
 import android.support.v7.app.*;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
 
@@ -14,7 +15,6 @@ import java.util.*;
 import static pl.cba.adamsprogs.einsteinplaysnodice.Utilities.*;
 
 public class Board extends AppCompatActivity {
-    //TODO yellow stones upside-down
     private int player;
     private int[] dice = {7, 7};
     private int[] board = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -137,12 +137,24 @@ public class Board extends AppCompatActivity {
         blockRoll = false;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == -1) {
+                finish();
+            }
+        }
+    }
+
     public int min(int a, int b) {
         if (a < b) return a;
         return b;
     }
 
     public void DrawBoard() {
+        Bitmap stone;
+        Canvas stoneCanvas;
+        Bitmap resStone;
         float x, y;
         int tColour;
         int[] Col = {getColour(this, R.color.secondary), getColour(this, R.color.primary)};
@@ -175,12 +187,28 @@ public class Board extends AppCompatActivity {
             Rect dst = new Rect((int) (x - (sq / 2)), (int) (y - (sq / 2)), (int) (x + (sq / 2)), (int) (y + (sq / 2)));
 
             cb.drawBitmap(ambientShadow, src, dst, null);
-
             cb.drawCircle(x, y, sq / 3, p);
             p.setColor(tColour);
             p.setTextSize(sq / 2);
             p.setTextAlign(Paint.Align.CENTER);
-            cb.drawText(board[i] % 10 + "", x, y + (p.getTextSize() / 2), p);
+
+            stone = Bitmap.createBitmap((int) sq, (int) sq, Bitmap.Config.ARGB_8888);
+            stoneCanvas = new Canvas(stone);
+            stoneCanvas.drawText(board[i] % 10 + "", sq / 2, sq / 2 + p.getTextSize() / 2, p);
+
+            Matrix mx = new Matrix();
+            mx.postRotate(180);
+
+            if (board[i] > 10)
+                resStone = Bitmap.createBitmap(stone);
+            else
+                resStone = Bitmap.createBitmap(stone, 0, 0, (int) sq, (int) sq, mx, false);
+
+
+            cb.drawBitmap(resStone, x - (sq / 2), y - (sq / 2), p);
+
+
+            //cb.drawText(board[i] % 10 + "", x, y + (p.getTextSize() / 2), p);
         }
 
         ImageView iv = (ImageView) findViewById(R.id.board);
@@ -343,7 +371,7 @@ public class Board extends AppCompatActivity {
         endingIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         endingIntent.putExtra("winner", winner);
         endingIntent.putExtra("startPlayer", startPlayer);
-        startActivity(endingIntent);
+        startActivityForResult(endingIntent, 0);
     }
 
     public void diePressed(View v, MotionEvent m) {
@@ -453,7 +481,26 @@ public class Board extends AppCompatActivity {
             p.setColor(tColour[(board[pos] / 10) % 10]);
             p.setTextSize(sq / 2);
             p.setTextAlign(Paint.Align.CENTER);
-            cb.drawText(board[pos] % 10 + "", x, y + (p.getTextSize() / 2), p);
+
+            Bitmap stone = Bitmap.createBitmap((int) sq, (int) sq, Bitmap.Config.ARGB_8888);
+            Canvas stoneCanvas = new Canvas(stone);
+            Bitmap resStone;
+            stoneCanvas.drawText(board[pos] % 10 + "", sq / 2, sq / 2 + p.getTextSize() / 2, p);
+
+            Matrix mx = new Matrix();
+            mx.postRotate(180);
+
+            if (board[pos] % 100 > 10) {
+                Log.i("Board", pos + " = " + board[pos] + ">10: normal");
+                resStone = Bitmap.createBitmap(stone);
+            } else {
+                Log.i("Board", pos + " = " + board[pos] + "<10: upside");
+                resStone = Bitmap.createBitmap(stone, 0, 0, (int) sq, (int) sq, mx, false);
+            }
+
+
+            cb.drawBitmap(resStone, x - (sq / 2), y - (sq / 2), p);
+            //cb.drawText(board[pos] % 10 + "", x, y + (p.getTextSize() / 2), p);
         }
 
         board[pos] %= 100;

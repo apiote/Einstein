@@ -107,9 +107,9 @@ public class Ending extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 float y = event.getY();
                 if (y >= windowHeight / 2) {
-                    intent = new Intent(context, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    startActivity(intent);
+                    Intent returnIntent = new Intent();
+                    setResult(-1, returnIntent);
+                    finish();
                 } else {
                     ++startPlayer;
                     startPlayer %= 2;
