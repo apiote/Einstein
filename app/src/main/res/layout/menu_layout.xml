@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:layout_marginTop="@dimen/activity_vertical_margin">
 
     <TextView
@@ -48,15 +46,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/htpBtn"
-        android:layout_toLeftOf="@+id/divider"
-        android:layout_toStartOf="@+id/divider"
+        android:layout_toLeftOf="@+id/resultsDivider"
+        android:layout_toStartOf="@+id/resultsDivider"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:textColor="@color/secondary"
         android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/divider"
+        android:id="@+id/resultsDivider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/htpBtn"
@@ -72,15 +70,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/htpBtn"
-        android:layout_toEndOf="@+id/divider"
-        android:layout_toRightOf="@+id/divider"
+        android:layout_toEndOf="@+id/resultsDivider"
+        android:layout_toRightOf="@+id/resultsDivider"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:textColor="@color/primary"
         android:textSize="30sp" />
 
     <Button
-        android:id="@+id/resetRes"
+        android:id="@+id/resetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

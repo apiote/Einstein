@@ -1,20 +1,20 @@
-package pl.cba.adamsprogs.einsteinplaysnodice;
+package pl.cba.adamsprogs.einsteinplaysnodice.activities;
 
 import android.content.Intent;
 import android.graphics.*;
 import android.support.v7.app.*;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
 
-import java.io.*;
 import java.util.*;
 
-import static pl.cba.adamsprogs.einsteinplaysnodice.Utilities.*;
+import pl.cba.adamsprogs.einsteinplaysnodice.R;
 
-public class Board extends AppCompatActivity {
+import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
+
+public class BoardActivity extends AppCompatActivity {
     private int player;
     private int[] dice = {7, 7};
     private int[] board = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -367,7 +367,7 @@ public class Board extends AppCompatActivity {
     }
 
     private void endingDialog() {
-        Intent endingIntent = new Intent(this, Ending.class);
+        Intent endingIntent = new Intent(this, EndingDialogueActivity.class);
         endingIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         endingIntent.putExtra("winner", winner);
         endingIntent.putExtra("startPlayer", startPlayer);
@@ -491,10 +491,8 @@ public class Board extends AppCompatActivity {
             mx.postRotate(180);
 
             if (board[pos] % 100 > 10) {
-                Log.i("Board", pos + " = " + board[pos] + ">10: normal");
                 resStone = Bitmap.createBitmap(stone);
             } else {
-                Log.i("Board", pos + " = " + board[pos] + "<10: upside");
                 resStone = Bitmap.createBitmap(stone, 0, 0, (int) sq, (int) sq, mx, false);
             }
 
@@ -582,22 +580,5 @@ public class Board extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
-    }
-
-    public int[] getFile() {
-        int[] res = {0, 0};
-        try {
-            BufferedReader inputReader = new BufferedReader(new InputStreamReader(
-                    openFileInput("EinsteinResults")));
-            String inputString;
-            String[] results;
-            if ((inputString = inputReader.readLine()) != null) {
-                results = inputString.split(" ");
-                for (int i = 0; i < 2; ++i)
-                    res[i] = Integer.parseInt(results[i]);
-            }
-        } catch (Exception ignored) {
-        }
-        return res;
     }
 }

@@ -1,35 +1,40 @@
-package pl.cba.adamsprogs.einsteinplaysnodice;
+package pl.cba.adamsprogs.einsteinplaysnodice.activities;
 
-import android.annotation.SuppressLint;
 import android.content.*;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.support.v7.app.*;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.TypedValue;
+import android.util.*;
 import android.view.*;
 import android.widget.*;
 
 import com.google.android.gms.ads.*;
 
-import java.io.*;
+import pl.cba.adamsprogs.einsteinplaysnodice.R;
+import pl.cba.adamsprogs.einsteinplaysnodice.utilities.ResultsFile;
 
-public class MainActivity extends AppCompatActivity {
+import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
+
+public class MainMenuActivity extends AppCompatActivity {
     private SharedPreferences settings;
-    private final static String PREFS_NAME = "EPND_SETTINGS";
+    private final static String PREFS_NAME = "EINSTEIN_SETTINGS";
+    Context context = this;
+    Button resetButton;
+    ResultsFile resultsFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(pl.cba.adamsprogs.einsteinplaysnodice.R.layout.menu_layout);
 
+        resultsFile = new ResultsFile(context);
+        resetButton = (Button) findViewById(R.id.resetButton);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.show();
         }
-
-        setContentView(R.layout.menu_layout);
 
         AdView mAdView = (AdView) findViewById(R.id.adView_menu);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -47,32 +52,29 @@ public class MainActivity extends AppCompatActivity {
 
         displayResults();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            final Button reset = (Button) findViewById(R.id.resetRes);
-            reset.setOnTouchListener(new View.OnTouchListener() {
-                @SuppressLint("NewApi")
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    switch (motionEvent.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            reset.setElevation(8);
-                            return false;
-                        case MotionEvent.ACTION_UP:
-                            reset.setElevation(2);
-                            String res = "";
-                            try {
-                                FileOutputStream fos = openFileOutput("EinsteinResults", Context.MODE_PRIVATE);
-                                fos.write(res.getBytes());
-                                fos.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            displayResults();
-                            return false;
-                    }
-                    return false;
+        resetButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        setResetElevation(8);
+                        return false;
+                    case MotionEvent.ACTION_UP:
+                        setResetElevation(2);
+                        resultsFile.clear();
+                        resultsFile.apply();
+                        displayResults();
+                        return false;
                 }
-            });
+                return false;
+            }
+        });
+    }
+
+    private void setResetElevation(int elevation) {
+        if (isRunningLollipopOrNewer()) {
+            Log.i("MainMenu", "setting elevation");
+            resetButton.setElevation(elevation);
         }
     }
 
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                             settings.edit().putBoolean("isFirstRun", false).apply();
                         }
                     }).show();
+            resultsFile.delete();
         }
     }
 
@@ -106,23 +109,24 @@ public class MainActivity extends AppCompatActivity {
         AdView mAdView = (AdView) findViewById(R.id.adView_menu);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        resultsFile.refresh();
         displayResults();
     }
 
     public void change(View v) {
         if (v.getId() == R.id.playBtn) {
-            Intent intent = new Intent(this, Board.class);
+            Intent intent = new Intent(this, BoardActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
         if (v.getId() == R.id.htpBtn) {
-            Intent intent = new Intent(this, HowToPlay.class);
+            Intent intent = new Intent(this, HowToPlayActivity.class);
             startActivity(intent);
         }
     }
 
     public void displayResults() {
-        int[] r = getFile();
+        int[] r = resultsFile.getResults();
         TextView rL = (TextView) findViewById(R.id.resultLight);
         TextView rD = (TextView) findViewById(R.id.resultDark);
         rL.setText("");
@@ -132,22 +136,5 @@ public class MainActivity extends AppCompatActivity {
         Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         rL.setTypeface(tf);
         rD.setTypeface(tf);
-    }
-
-    public int[] getFile() {
-        int[] res = {0, 0};
-        try {
-            BufferedReader inputReader = new BufferedReader(new InputStreamReader(
-                    openFileInput("EinsteinResults")));
-            String inputString;
-            String[] results;
-            if ((inputString = inputReader.readLine()) != null) {
-                results = inputString.split(" ");
-                for (int i = 0; i < 2; ++i)
-                    res[i] = Integer.parseInt(results[i]);
-            }
-        } catch (Exception ignored) {
-        }
-        return res;
     }
 }

@@ -1,4 +1,4 @@
-package pl.cba.adamsprogs.einsteinplaysnodice;
+package pl.cba.adamsprogs.einsteinplaysnodice.activities;
 
 import android.graphics.Typeface;
 import android.support.v7.app.*;
@@ -8,8 +8,11 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.*;
 
+import pl.cba.adamsprogs.einsteinplaysnodice.*;
+import pl.cba.adamsprogs.einsteinplaysnodice.R;
 
-public class HowToPlay extends AppCompatActivity {
+
+public class HowToPlayActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +24,7 @@ public class HowToPlay extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        setContentView(R.layout.htp_layout);
+        setContentView(pl.cba.adamsprogs.einsteinplaysnodice.R.layout.htp_layout);
 
         AdView mAdView = (AdView) findViewById(R.id.adView_htp);
         AdRequest adRequest = new AdRequest.Builder().build();
