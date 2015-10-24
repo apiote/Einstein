@@ -77,18 +77,20 @@ public class EndingDialogueActivity extends AppCompatActivity {
         mirrorCanvas.drawText(won, windowWidth / 2, windowHeight / 2 + p.getTextSize() * 2, p);
 
         p.setTextSize(p.getTextSize() * 2);
+        Rect bounds = new Rect();
+        p.getTextBounds(lRes + getString(R.string.resultsSeparator) + dRes, 0, lRes.length() + 1 + dRes.length(), bounds);
 
         p.setColor(Col[0]);
-        canvas.drawText(lRes, 3 * windowWidth / 4 - p.measureText(lRes), windowHeight / 2 + p.getTextSize() / 2, p);
-        mirrorCanvas.drawText(lRes, 3 * windowWidth / 4 - p.measureText(lRes), windowHeight / 2 + p.getTextSize() / 2, p);
+        canvas.drawText(lRes, 3 * windowWidth / 4 - p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p);
+        mirrorCanvas.drawText(lRes, 3 * windowWidth / 4 - p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p);
 
         p.setColor(getColour(context, R.color.text));
-        canvas.drawText(getString(R.string.resultsSeparator), 3 * windowWidth / 4, windowHeight / 2 + p.getTextSize() / 2, p);
-        mirrorCanvas.drawText(getString(R.string.resultsSeparator), 3 * windowWidth / 4, windowHeight / 2 + p.getTextSize() / 2, p);
+        canvas.drawText(getString(R.string.resultsSeparator), 3 * windowWidth / 4, windowHeight / 2 + bounds.height() / 2, p);
+        mirrorCanvas.drawText(getString(R.string.resultsSeparator), 3 * windowWidth / 4, windowHeight / 2 + bounds.height() / 2, p);
 
         p.setColor(Col[1]);
-        canvas.drawText(dRes, 3 * windowWidth / 4 + p.measureText(lRes), windowHeight / 2 + p.getTextSize() / 2, p);
-        mirrorCanvas.drawText(dRes, 3 * windowWidth / 4 + p.measureText(lRes), windowHeight / 2 + p.getTextSize() / 2, p);
+        canvas.drawText(dRes, 3 * windowWidth / 4 + p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p);
+        mirrorCanvas.drawText(dRes, 3 * windowWidth / 4 + p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p);
 
         p.setColor(getColour(context, R.color.text));
 

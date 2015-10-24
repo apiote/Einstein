@@ -52,7 +52,11 @@ public class BoardActivity extends AppCompatActivity {
         boardV.setOnTouchListener(
                 new ImageView.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent m) {
-                        handleTouch(m);
+                        if (m.getAction() == MotionEvent.ACTION_MOVE) {
+                            winner = 1;
+                            endingDialog();
+                        } else
+                            handleTouch(m);
                         return true;
                     }
                 }
@@ -194,7 +198,11 @@ public class BoardActivity extends AppCompatActivity {
 
             stone = Bitmap.createBitmap((int) sq, (int) sq, Bitmap.Config.ARGB_8888);
             stoneCanvas = new Canvas(stone);
-            stoneCanvas.drawText(board[i] % 10 + "", sq / 2, sq / 2 + p.getTextSize() / 2, p);
+            Rect bounds = new Rect();
+            String text = board[i] % 10 + "";
+            p.getTextBounds(text, 0, text.length(), bounds);
+            float height = bounds.height() / 2;
+            stoneCanvas.drawText(text, sq / 2, sq / 2 + height, p);
 
             Matrix mx = new Matrix();
             mx.postRotate(180);
@@ -206,9 +214,6 @@ public class BoardActivity extends AppCompatActivity {
 
 
             cb.drawBitmap(resStone, x - (sq / 2), y - (sq / 2), p);
-
-
-            //cb.drawText(board[i] % 10 + "", x, y + (p.getTextSize() / 2), p);
         }
 
         ImageView iv = (ImageView) findViewById(R.id.board);
@@ -367,6 +372,7 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     private void endingDialog() {
+        blockRoll = blockTouch = true;
         Intent endingIntent = new Intent(this, EndingDialogueActivity.class);
         endingIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         endingIntent.putExtra("winner", winner);
@@ -485,7 +491,11 @@ public class BoardActivity extends AppCompatActivity {
             Bitmap stone = Bitmap.createBitmap((int) sq, (int) sq, Bitmap.Config.ARGB_8888);
             Canvas stoneCanvas = new Canvas(stone);
             Bitmap resStone;
-            stoneCanvas.drawText(board[pos] % 10 + "", sq / 2, sq / 2 + p.getTextSize() / 2, p);
+            Rect bounds = new Rect();
+            String text = board[pos] % 10 + "";
+            p.getTextBounds(text, 0, text.length(), bounds);
+            float height = bounds.height() / 2;
+            stoneCanvas.drawText(text, sq / 2, sq / 2 + height, p);
 
             Matrix mx = new Matrix();
             mx.postRotate(180);
@@ -496,9 +506,7 @@ public class BoardActivity extends AppCompatActivity {
                 resStone = Bitmap.createBitmap(stone, 0, 0, (int) sq, (int) sq, mx, false);
             }
 
-
             cb.drawBitmap(resStone, x - (sq / 2), y - (sq / 2), p);
-            //cb.drawText(board[pos] % 10 + "", x, y + (p.getTextSize() / 2), p);
         }
 
         board[pos] %= 100;
