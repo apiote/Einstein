@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.*;
 
-import pl.cba.adamsprogs.einsteinplaysnodice.*;
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
 
 

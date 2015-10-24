@@ -21,7 +21,6 @@
             android:label="@string/title_activity_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -49,7 +48,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainMenuActivity" />
         </activity>
-        <activity android:name=".activities.EndingDialogueActivity"/>
+        <activity
+            android:name=".activities.EndingDialogueActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:parentActivityName=".activities.MainMenuActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="UnusedAttribute">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainMenuActivity" />
+        </activity>
     </application>
 
 </manifest>

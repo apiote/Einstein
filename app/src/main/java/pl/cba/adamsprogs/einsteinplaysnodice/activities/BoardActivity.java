@@ -25,7 +25,7 @@ public class BoardActivity extends AppCompatActivity {
     private float bHeight;
     private float bWidth;
     private float sq;
-    private float[][] diceCrcls0, diceCrcls1;
+    private float[][] diceCircles0, diceCircles1;
     private float dieR;
     private Bitmap d0, d1, b;
     private Canvas cd0, cd1, cb;
@@ -52,11 +52,7 @@ public class BoardActivity extends AppCompatActivity {
         boardV.setOnTouchListener(
                 new ImageView.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent m) {
-                        if (m.getAction() == MotionEvent.ACTION_MOVE) {
-                            winner = 1;
-                            endingDialog();
-                        } else
-                            handleTouch(m);
+                        handleTouch(m);
                         return true;
                     }
                 }
@@ -114,12 +110,12 @@ public class BoardActivity extends AppCompatActivity {
         dieR = dHeight / 10;
         float dieD = dHeight / 5;
         float off = (width - dHeight) / 2;
-        diceCrcls1 = new float[][]{{off + (4 * dieD), dieD}, {off + dieD, 4 * dieD},
+        diceCircles1 = new float[][]{{off + (4 * dieD), dieD}, {off + dieD, 4 * dieD},
                 {off + dieD, dieD}, {off + (4 * dieD), 4 * dieD},
                 {off + (2 * dieD) + dieR, dieD}, {off + (2 * dieD) + dieR, 4 * dieD},
                 {off + (2 * dieD) + dieR, (2 * dieD) + dieR}
         };
-        diceCrcls0 = new float[][]{{off + dieD, dieD}, {off + (4 * dieD), 4 * dieD},
+        diceCircles0 = new float[][]{{off + dieD, dieD}, {off + (4 * dieD), 4 * dieD},
                 {off + (4 * dieD), dieD}, {off + dieD, 4 * dieD},
                 {off + (2 * dieD) + dieR, dieD}, {off + (2 * dieD) + dieR, 4 * dieD},
                 {off + (2 * dieD) + dieR, (2 * dieD) + dieR}
@@ -247,7 +243,7 @@ public class BoardActivity extends AppCompatActivity {
         cd0.drawColor(getColour(this, R.color.dice_off));
 
         p.setColor(getColour(this, R.color.dice_num));
-        for (float[] x : diceCrcls0) {
+        for (float[] x : diceCircles0) {
             cd0.drawCircle(x[0], x[1], dieR, p);
         }
 
@@ -257,7 +253,7 @@ public class BoardActivity extends AppCompatActivity {
         cd1.drawColor(getColour(this, R.color.dice_off));
 
         p.setColor(getColour(this, R.color.dice_num));
-        for (float[] x : diceCrcls1) {
+        for (float[] x : diceCircles1) {
             cd1.drawCircle(x[0], x[1], dieR, p);
         }
         iv = (ImageView) findViewById(R.id.die1);
@@ -289,23 +285,23 @@ public class BoardActivity extends AppCompatActivity {
         p.setColor(getColour(this, R.color.dice_num));
         if (player == 0) {
             if (n % 2 == 1) {
-                cd0.drawCircle(diceCrcls0[6][0], diceCrcls0[6][1], dieR, p);
+                cd0.drawCircle(diceCircles0[6][0], diceCircles0[6][1], dieR, p);
                 --n;
             }
             while (n > 0) {
-                cd0.drawCircle(diceCrcls0[n - 2][0], diceCrcls0[n - 2][1], dieR, p);
-                cd0.drawCircle(diceCrcls0[n - 1][0], diceCrcls0[n - 1][1], dieR, p);
+                cd0.drawCircle(diceCircles0[n - 2][0], diceCircles0[n - 2][1], dieR, p);
+                cd0.drawCircle(diceCircles0[n - 1][0], diceCircles0[n - 1][1], dieR, p);
                 n -= 2;
             }
         }
         if (player == 1) {
             if (n % 2 == 1) {
-                cd1.drawCircle(diceCrcls1[6][0], diceCrcls1[6][1], dieR, p);
+                cd1.drawCircle(diceCircles1[6][0], diceCircles1[6][1], dieR, p);
                 --n;
             }
             while (n > 0) {
-                cd1.drawCircle(diceCrcls1[n - 2][0], diceCrcls1[n - 2][1], dieR, p);
-                cd1.drawCircle(diceCrcls1[n - 1][0], diceCrcls1[n - 1][1], dieR, p);
+                cd1.drawCircle(diceCircles1[n - 2][0], diceCircles1[n - 2][1], dieR, p);
+                cd1.drawCircle(diceCircles1[n - 1][0], diceCircles1[n - 1][1], dieR, p);
                 n -= 2;
             }
         }
@@ -555,24 +551,24 @@ public class BoardActivity extends AppCompatActivity {
 
         float offset = (iv.getWidth() - iv.getHeight()) / 2;
 
-        float Isqh = iv.getHeight() / 5;
-        float Isqw = iv.getWidth() / 5;
+        float iSqH = iv.getHeight() / 5;
+        float iSqW = iv.getWidth() / 5;
 
         int x = (int) (m.getX(0) + offset);
         int y = (int) m.getY(0);
         int action = m.getActionMasked();
-        int posx = (int) (x / Isqw);
-        int posy = (int) (y / Isqh);
+        int posX = (int) (x / iSqW);
+        int posY = (int) (y / iSqH);
 
         if (action == MotionEvent.ACTION_UP && !blockTouch) {
-            if (at(posx, posy) - 100 > 0 && at(posx, posy) - 100 < 100) {
+            if (at(posX, posY) - 100 > 0 && at(posX, posY) - 100 < 100) {
                 ColourDie(1);
-                selected[0] = posx;
-                selected[1] = posy;
+                selected[0] = posX;
+                selected[1] = posY;
                 MoveHint();
             }
-            if (at(posx, posy) - 200 >= 0) {
-                MoveTo(posx, posy);
+            if (at(posX, posY) - 200 >= 0) {
+                MoveTo(posX, posY);
                 for (int i = 0; i < 25; ++i) {
                     board[i] = board[i] % 100;
                 }
