@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 
+import java.util.Random;
+
 public class Utilities {
     public static boolean isRunningMarshmallowOrNewer() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
@@ -20,5 +22,15 @@ public class Utilities {
         else
             //noinspection deprecation
             return context.getResources().getColor(id);
+    }
+
+    public static void shuffleArray(int[] ar) {
+        Random rnd = new Random();
+        for (int i = ar.length - 1; i > 0; i--) {
+            int index = rnd.nextInt(i + 1);
+            int a = ar[index];
+            ar[index] = ar[i];
+            ar[i] = a;
+        }
     }
 }

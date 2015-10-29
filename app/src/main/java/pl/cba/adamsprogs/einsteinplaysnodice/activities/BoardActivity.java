@@ -7,31 +7,28 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.*;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.*;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
+import pl.cba.adamsprogs.einsteinplaysnodice.game.Die;
 
 import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
 
 public class BoardActivity extends AppCompatActivity {
     private int player;
-    private int[] dice = {7, 7};
     private int[] board = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    private int[] diceOrder = {1, 2, 3, 4, 5, 6};
-    private boolean blockTouch = true;
-    private boolean blockRoll = false;
+    public boolean blockTouch = true;
     private int[] selected = {0, 0};
     private float bHeight;
     private float bWidth;
     private float sq;
-    private float[][] diceCircles0, diceCircles1;
-    private float dieR;
-    private Bitmap d0, d1, b;
-    private Canvas cd0, cd1, cb;
+    private Bitmap b;
+    private Canvas cb;
     private int winner = -1;
+    private Die[] dice;
 
-    private int[] DieImg = {R.id.die0, R.id.die1};
     private int startPlayer = 0;
 
     @Override
@@ -49,29 +46,14 @@ public class BoardActivity extends AppCompatActivity {
 
         ImageView boardV = (ImageView) findViewById(R.id.board);
 
+        dice = new Die[2];
+        dice[0] = new Die((ImageView) findViewById(R.id.die0), Die.ORIENTATION_SOUTH, this);
+        dice[1] = new Die((ImageView) findViewById(R.id.die1), Die.ORIENTATION_NORTH, this);
+
         boardV.setOnTouchListener(
                 new ImageView.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent m) {
                         handleTouch(m);
-                        return true;
-                    }
-                }
-        );
-
-        ImageView dIV = (ImageView) findViewById(R.id.die0);
-        dIV.setOnTouchListener(
-                new ImageView.OnTouchListener() {
-                    public boolean onTouch(View v, MotionEvent m) {
-                        diePressed(v, m);
-                        return true;
-                    }
-                }
-        );
-        dIV = (ImageView) findViewById(R.id.die1);
-        dIV.setOnTouchListener(
-                new ImageView.OnTouchListener() {
-                    public boolean onTouch(View v, MotionEvent m) {
-                        diePressed(v, m);
                         return true;
                     }
                 }
@@ -104,37 +86,24 @@ public class BoardActivity extends AppCompatActivity {
         bWidth = min((int) width, (int) bHeight);
         //noinspection SuspiciousNameCombination
         bHeight = bWidth;
-        float dHeight = metrics.heightPixels / 4;
         sq = bWidth / 5;
 
-        dieR = dHeight / 10;
-        float dieD = dHeight / 5;
-        float off = (width - dHeight) / 2;
-        diceCircles1 = new float[][]{{off + (4 * dieD), dieD}, {off + dieD, 4 * dieD},
-                {off + dieD, dieD}, {off + (4 * dieD), 4 * dieD},
-                {off + (2 * dieD) + dieR, dieD}, {off + (2 * dieD) + dieR, 4 * dieD},
-                {off + (2 * dieD) + dieR, (2 * dieD) + dieR}
-        };
-        diceCircles0 = new float[][]{{off + dieD, dieD}, {off + (4 * dieD), 4 * dieD},
-                {off + (4 * dieD), dieD}, {off + dieD, 4 * dieD},
-                {off + (2 * dieD) + dieR, dieD}, {off + (2 * dieD) + dieR, 4 * dieD},
-                {off + (2 * dieD) + dieR, (2 * dieD) + dieR}
-        };
+        for (Die d : dice) {
+            d.setHeight(metrics.heightPixels >> 2);
+            d.setWidth(width);
+            try {
+                d.draw();
+            } catch (IllegalStateException e) {
+                Toast.makeText(this, "Couldn't draw dice", Toast.LENGTH_SHORT).show();
+            }
+        }
 
-        d0 = Bitmap.createBitmap((int) width, (int) dHeight, Bitmap.Config.ARGB_8888);
-        d1 = Bitmap.createBitmap((int) width, (int) dHeight, Bitmap.Config.ARGB_8888);
         b = Bitmap.createBitmap((int) bWidth, (int) bHeight, Bitmap.Config.ARGB_8888);
-        cd0 = new Canvas(d0);
-        cd1 = new Canvas(d1);
         cb = new Canvas(b);
 
         DrawBoard();
-        DrawDice();
-        ColourDie(0);
 
-        shuffleArray(diceOrder);
-
-        blockRoll = false;
+        dice[0].setRollable(true);
     }
 
     @Override
@@ -234,79 +203,6 @@ public class BoardActivity extends AppCompatActivity {
         iv.setImageBitmap(b);
     }
 
-    public void DrawDice() {
-        Paint p;
-        p = new Paint();
-        p.setAntiAlias(true);
-        p.setStyle(Paint.Style.FILL);
-
-        cd0.drawColor(getColour(this, R.color.dice_off));
-
-        p.setColor(getColour(this, R.color.dice_num));
-        for (float[] x : diceCircles0) {
-            cd0.drawCircle(x[0], x[1], dieR, p);
-        }
-
-        ImageView iv = (ImageView) findViewById(R.id.die0);
-        iv.setImageBitmap(d0);
-
-        cd1.drawColor(getColour(this, R.color.dice_off));
-
-        p.setColor(getColour(this, R.color.dice_num));
-        for (float[] x : diceCircles1) {
-            cd1.drawCircle(x[0], x[1], dieR, p);
-        }
-        iv = (ImageView) findViewById(R.id.die1);
-        iv.setImageBitmap(d1);
-    }
-
-    public void ColourDie(int c) {
-        int[] Colour = {getColour(this, R.color.dice_on), getColour(this, R.color.dice_off)};
-        if (player == 0) {
-            cd0.drawColor(Colour[c]);
-        }
-        if (player == 1) {
-            cd1.drawColor(Colour[c]);
-        }
-        DrawDieRaw(dice[player]);
-        if (player == 0) {
-            ImageView iv = (ImageView) findViewById(R.id.die0);
-            iv.setImageBitmap(d0);
-        } else {
-            ImageView iv = (ImageView) findViewById(R.id.die1);
-            iv.setImageBitmap(d1);
-        }
-    }
-
-    public void DrawDieRaw(int n) {
-        Paint p = new Paint();
-        p.setAntiAlias(true);
-        p.setStyle(Paint.Style.FILL);
-        p.setColor(getColour(this, R.color.dice_num));
-        if (player == 0) {
-            if (n % 2 == 1) {
-                cd0.drawCircle(diceCircles0[6][0], diceCircles0[6][1], dieR, p);
-                --n;
-            }
-            while (n > 0) {
-                cd0.drawCircle(diceCircles0[n - 2][0], diceCircles0[n - 2][1], dieR, p);
-                cd0.drawCircle(diceCircles0[n - 1][0], diceCircles0[n - 1][1], dieR, p);
-                n -= 2;
-            }
-        }
-        if (player == 1) {
-            if (n % 2 == 1) {
-                cd1.drawCircle(diceCircles1[6][0], diceCircles1[6][1], dieR, p);
-                --n;
-            }
-            while (n > 0) {
-                cd1.drawCircle(diceCircles1[n - 2][0], diceCircles1[n - 2][1], dieR, p);
-                cd1.drawCircle(diceCircles1[n - 1][0], diceCircles1[n - 1][1], dieR, p);
-                n -= 2;
-            }
-        }
-    }
-
     public void MoveHint() {
         int wx, wy;
 
@@ -363,50 +259,18 @@ public class BoardActivity extends AppCompatActivity {
             endingDialog();
         } else {
             blockTouch = true;
-            blockRoll = false;
         }
     }
 
     private void endingDialog() {
-        blockRoll = blockTouch = true;
+        blockTouch = true;
+        for (Die d : dice)
+            d.setRollable(false);
         Intent endingIntent = new Intent(this, EndingDialogueActivity.class);
         endingIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         endingIntent.putExtra("winner", winner);
         endingIntent.putExtra("startPlayer", startPlayer);
         startActivityForResult(endingIntent, 0);
-    }
-
-    public void diePressed(View v, MotionEvent m) {
-        int action = m.getActionMasked();
-        if (action == MotionEvent.ACTION_UP && !blockRoll) {
-            if (v.getId() == DieImg[player]) {
-                blockRoll = true;
-                rollDie();
-            }
-        }
-    }
-
-    public void rollDie() {
-        shuffleArray(diceOrder);
-        dice[player] = diceOrder[5];
-
-        if (player == 0) {
-            cd0.drawColor(getColour(this, R.color.dice_on));
-        }
-        if (player == 1) {
-            cd1.drawColor(getColour(this, R.color.dice_on));
-        }
-
-        DrawDie();
-
-        ImageView iv = (ImageView) findViewById(DieImg[player]);
-        if (player == 0)
-            iv.setImageBitmap(d0);
-        if (player == 1)
-            iv.setImageBitmap(d1);
-
-        HintStone();
-        blockTouch = false;
     }
 
     public void HintStone() {
@@ -418,19 +282,19 @@ public class BoardActivity extends AppCompatActivity {
         int i = 0;
         while (boardBak[i] == 0) ++i;
         for (; i < 25; ++i) {
-            if (boardBak[i] >= ((10 * player) + dice[player]))
+            if (boardBak[i] >= ((10 * player) + dice[player].getValue()))
                 break;
         }
         if (i >= 25) i = 24;
         int[] eq = {-1, -1};
-        if (boardBak[i] == dice[player] + (10 * player)) {
+        if (boardBak[i] == dice[player].getValue() + (10 * player)) {
             eq[0] = boardBak[i];
         } else {
             int k = 0;
             int d = 0;
             if (boardBak[i] / 10 == player && (boardBak[i] % 10) != 0) {
                 eq[k] = boardBak[i];
-                if (eq[k] > 10 * player + dice[player]) d += 10;
+                if (eq[k] > 10 * player + dice[player].getValue()) d += 10;
                 else ++d;
                 ++k;
             }
@@ -514,16 +378,6 @@ public class BoardActivity extends AppCompatActivity {
         iv.setImageBitmap(b);
     }
 
-    public void shuffleArray(int[] ar) {
-        Random rnd = new Random();
-        for (int i = ar.length - 1; i > 0; i--) {
-            int index = rnd.nextInt(i + 1);
-            int a = ar[index];
-            ar[index] = ar[i];
-            ar[i] = a;
-        }
-    }
-
     public int at(int x, int y) {
         if ((y * 5) + x < 0 || (y * 5) + x > 24)
             return -1;
@@ -534,16 +388,6 @@ public class BoardActivity extends AppCompatActivity {
         if ((y * 5) + x < 0 || (y * 5) + x > 24)
             return;
         board[y * 5 + x] = v;
-    }
-
-    public void DrawDie() {
-        if (player == 0) {
-            cd0.drawColor(getColour(this, R.color.dice_on));
-        }
-        if (player == 1) {
-            cd1.drawColor(getColour(this, R.color.dice_on));
-        }
-        DrawDieRaw(dice[player]);
     }
 
     public void handleTouch(MotionEvent m) {
@@ -562,7 +406,7 @@ public class BoardActivity extends AppCompatActivity {
 
         if (action == MotionEvent.ACTION_UP && !blockTouch) {
             if (at(posX, posY) - 100 > 0 && at(posX, posY) - 100 < 100) {
-                ColourDie(1);
+                dice[player].setRollable(false);
                 selected[0] = posX;
                 selected[1] = posY;
                 MoveHint();
@@ -576,7 +420,7 @@ public class BoardActivity extends AppCompatActivity {
                 CheckWin();
                 player += 1;
                 player %= 2;
-                ColourDie(0);
+                dice[player].setRollable(true);
             }
         }
     }
