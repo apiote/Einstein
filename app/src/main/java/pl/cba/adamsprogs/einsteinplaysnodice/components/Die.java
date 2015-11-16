@@ -1,4 +1,4 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.game;
+package pl.cba.adamsprogs.einsteinplaysnodice.components;
 
 import android.content.Context;
 import android.graphics.*;
@@ -9,14 +9,10 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
-import pl.cba.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
 
 import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
 
 public class Die {
-    public static final int ORIENTATION_NORTH = 0;
-    public static final int ORIENTATION_SOUTH = 180;
-
     private ImageView view;
 
     private int orientation;
@@ -36,18 +32,17 @@ public class Die {
 
     private final int onColour, offColour, spotColour;
 
-    private BoardActivity context;
+    private OnRollListener onRollListener;
 
-    public Die(ImageView view, int orientation, Context context) {
+    public Die(Context context, int orientation, ImageView view, Player player) {
         this.view = view;
         this.orientation = orientation;
-        this.context = (BoardActivity) context;
 
         value = 7;
         initialised = false;
         setRollable(false);
 
-        view.setOnTouchListener(
+        this.view.setOnTouchListener(
                 new ImageView.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent m) {
                         diePressed(m);
@@ -58,6 +53,11 @@ public class Die {
         offColour = getColour(context, R.color.dice_off);
         onColour = getColour(context, R.color.dice_on);
         spotColour = getColour(context, R.color.dice_num);
+
+        try {
+            onRollListener = player;
+        } catch (Exception ignored) {
+        }
     }
 
     public void diePressed(MotionEvent m) {
@@ -74,8 +74,7 @@ public class Die {
 
         draw();
 
-        context.HintStone(); //FIXME move
-        context.blockTouch = false; //FIXME move
+        onRollListener.onRoll(value);
     }
 
     public void draw() {
@@ -176,7 +175,8 @@ public class Die {
 
     public void setRollable(boolean rollable) {
         this.rollable = rollable;
-        draw();
+        if (isProperSize()) draw();
+        //TODO animate
     }
 
     public int getValue() {
@@ -185,5 +185,9 @@ public class Die {
 
     public void setValue(int value) {
         this.value = value;
+    }
+
+    public interface OnRollListener {
+        void onRoll(int value);
     }
 }

@@ -1,170 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
     android:gravity="bottom"
     android:orientation="vertical">
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView_htp"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id_release_htp" />
+        android:background="@color/primary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        tools:ignore="UnusedAttribute" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/adView_htp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
 
-        <RelativeLayout
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView_htp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id_release_htp" />
 
-            <TextView
-                android:id="@+id/htpTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:gravity="center_horizontal"
-                android:text="@string/htpTile"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/adView_htp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true">
 
-            <TextView
-                android:id="@+id/htpHeader1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/htpTitle"
-                android:text="@string/htpHeader1"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/htpPara1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/htpHeader1"
-                android:text="@string/htpPara1" />
+                <TextView
+                    android:id="@+id/htpTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_horizontal"
+                    android:text="@string/htpTile"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <ImageView
-                android:id="@+id/htpPic1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/htpPara1"
-                android:contentDescription="@string/htpPicDes1"
-                android:src="@drawable/pic1" />
+                <TextView
+                    android:id="@+id/htpHeader1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/htpTitle"
+                    android:text="@string/htpHeader1"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <TextView
-                android:id="@+id/htpDes1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/htpPic1"
-                android:layout_toEndOf="@+id/htpPic1"
-                android:layout_toRightOf="@+id/htpPic1"
-                android:text="@string/htpPicSub1"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/text_secondary" />
+                <TextView
+                    android:id="@+id/htpPara1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/htpHeader1"
+                    android:text="@string/htpPara1" />
 
-            <TextView
-                android:id="@+id/htpHeader2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/htpPic1"
-                android:text="@string/htpHeader2"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                <ImageView
+                    android:id="@+id/htpPic1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/htpPara1"
+                    android:contentDescription="@string/htpPicDes1"
+                    android:src="@drawable/pic1" />
 
-            <TextView
-                android:id="@+id/htpPara2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/htpHeader2"
-                android:text="@string/htpPara2" />
+                <TextView
+                    android:id="@+id/htpDes1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/htpPic1"
+                    android:layout_toEndOf="@+id/htpPic1"
+                    android:layout_toRightOf="@+id/htpPic1"
+                    android:text="@string/htpPicSub1"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/text_secondary" />
 
-            <ImageView
-                android:id="@+id/htpPic2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/htpPara2"
-                android:contentDescription="@string/htpPicDes2"
-                android:paddingBottom="10dp"
-                android:src="@drawable/pic2" />
+                <TextView
+                    android:id="@+id/htpHeader2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/htpPic1"
+                    android:text="@string/htpHeader2"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <TextView
-                android:id="@+id/htpDes2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/htpPic2"
-                android:layout_toEndOf="@+id/htpPic2"
-                android:layout_toRightOf="@+id/htpPic2"
-                android:paddingBottom="10dp"
-                android:text="@string/htpPicSub2"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/text_secondary" />
+                <TextView
+                    android:id="@+id/htpPara2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/htpHeader2"
+                    android:text="@string/htpPara2" />
 
-            <ImageView
-                android:id="@+id/htpPic3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/htpPic2"
-                android:contentDescription="@string/htpPicDes3"
-                android:src="@drawable/pic3" />
+                <ImageView
+                    android:id="@+id/htpPic2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/htpPara2"
+                    android:contentDescription="@string/htpPicDes2"
+                    android:paddingBottom="10dp"
+                    android:src="@drawable/pic2" />
 
-            <TextView
-                android:id="@+id/htpDes3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/htpPic3"
-                android:layout_toEndOf="@+id/htpPic3"
-                android:layout_toRightOf="@+id/htpPic3"
-                android:text="@string/htpPicSub3"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/text_secondary" />
+                <TextView
+                    android:id="@+id/htpDes2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/htpPic2"
+                    android:layout_toEndOf="@+id/htpPic2"
+                    android:layout_toRightOf="@+id/htpPic2"
+                    android:paddingBottom="10dp"
+                    android:text="@string/htpPicSub2"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/text_secondary" />
 
-            <TextView
-                android:id="@+id/htpHeader3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/htpPic3"
-                android:text="@string/htpHeader3"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                <ImageView
+                    android:id="@+id/htpPic3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/htpPic2"
+                    android:contentDescription="@string/htpPicDes3"
+                    android:src="@drawable/pic3" />
 
-            <TextView
-                android:id="@+id/htpPara3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/htpHeader3"
-                android:text="@string/htpPara3" />
+                <TextView
+                    android:id="@+id/htpDes3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/htpPic3"
+                    android:layout_toEndOf="@+id/htpPic3"
+                    android:layout_toRightOf="@+id/htpPic3"
+                    android:text="@string/htpPicSub3"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/text_secondary" />
 
-        </RelativeLayout>
-    </ScrollView>
+                <TextView
+                    android:id="@+id/htpHeader3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/htpPic3"
+                    android:text="@string/htpHeader3"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
+                <TextView
+                    android:id="@+id/htpPara3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/htpHeader3"
+                    android:text="@string/htpPara3" />
 
-</RelativeLayout>
+            </RelativeLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+</LinearLayout>

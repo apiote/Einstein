@@ -3,8 +3,10 @@ package pl.cba.adamsprogs.einsteinplaysnodice.activities;
 import android.graphics.Typeface;
 import android.support.v7.app.*;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
+
 
 import com.google.android.gms.ads.*;
 
@@ -17,11 +19,11 @@ public class HowToPlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.show();
+        if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
-        }
 
         setContentView(pl.cba.adamsprogs.einsteinplaysnodice.R.layout.htp_layout);
 

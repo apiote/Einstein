@@ -2,6 +2,7 @@ package pl.cba.adamsprogs.einsteinplaysnodice.utilities;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 import java.util.Random;
@@ -22,6 +23,15 @@ public class Utilities {
         else
             //noinspection deprecation
             return context.getResources().getColor(id);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static Drawable getDrawable(Context context, int id) {
+        if (isRunningLollipopOrNewer())
+            return context.getResources().getDrawable(id, null);
+        else
+            //noinspection deprecation
+            return context.getResources().getDrawable(id);
     }
 
     public static void shuffleArray(int[] ar) {

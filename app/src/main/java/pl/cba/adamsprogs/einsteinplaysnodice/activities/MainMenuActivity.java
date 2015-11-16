@@ -4,6 +4,7 @@ import android.content.*;
 import android.graphics.Typeface;
 import android.support.v7.app.*;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.*;
@@ -13,6 +14,7 @@ import android.widget.*;
 import com.google.android.gms.ads.*;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
+import pl.cba.adamsprogs.einsteinplaysnodice.components.Player;
 import pl.cba.adamsprogs.einsteinplaysnodice.utilities.ResultsFile;
 
 import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
@@ -23,34 +25,37 @@ public class MainMenuActivity extends AppCompatActivity {
     Context context = this;
     Button resetButton;
     ResultsFile resultsFile;
+    TextView rL;
+    TextView rD;
+    Typeface tf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(pl.cba.adamsprogs.einsteinplaysnodice.R.layout.menu_layout);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         resultsFile = new ResultsFile(context);
         resetButton = (Button) findViewById(R.id.resetButton);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.show();
-        }
 
         AdView mAdView = (AdView) findViewById(R.id.adView_menu);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+        tf = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         TextView playBtn = (TextView) findViewById(R.id.playBtn);
         TextView htpBtn = (TextView) findViewById(R.id.htpBtn);
-        TextView rL = (TextView) findViewById(R.id.resultLight);
-        TextView rD = (TextView) findViewById(R.id.resultDark);
+        rL = (TextView) findViewById(R.id.resultLight);
+        rD = (TextView) findViewById(R.id.resultDark);
+
+        displayResults();
+
         playBtn.setTypeface(tf);
         htpBtn.setTypeface(tf);
         rL.setTypeface(tf);
         rD.setTypeface(tf);
-
-        displayResults();
 
         resetButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -116,7 +121,6 @@ public class MainMenuActivity extends AppCompatActivity {
     public void change(View v) {
         if (v.getId() == R.id.playBtn) {
             Intent intent = new Intent(this, BoardActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }
         if (v.getId() == R.id.htpBtn) {
@@ -127,14 +131,9 @@ public class MainMenuActivity extends AppCompatActivity {
 
     public void displayResults() {
         int[] r = resultsFile.getResults();
-        TextView rL = (TextView) findViewById(R.id.resultLight);
-        TextView rD = (TextView) findViewById(R.id.resultDark);
         rL.setText("");
-        rL.append(r[0] + "");
+        rL.append(r[Player.COLOUR_LIGHT] + "");
         rD.setText("");
-        rD.append(r[1] + "");
-        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
-        rL.setTypeface(tf);
-        rD.setTypeface(tf);
+        rD.append(r[Player.COLOUR_DARK] + "");
     }
 }

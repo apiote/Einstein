@@ -2,13 +2,16 @@ package pl.cba.adamsprogs.einsteinplaysnodice.activities;
 
 import android.content.*;
 import android.graphics.*;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
+import pl.cba.adamsprogs.einsteinplaysnodice.components.Player;
 import pl.cba.adamsprogs.einsteinplaysnodice.utilities.ResultsFile;
 
 import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.getColour;
@@ -16,14 +19,14 @@ import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.getColou
 public class EndingDialogueActivity extends AppCompatActivity {
     private int startPlayer;
 
-    private Context context;
-
-    private Intent intent;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.ending_layout);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         int winner = getIntent().getIntExtra("winner", -1);
         startPlayer = getIntent().getIntExtra("startPlayer", -1);
@@ -31,7 +34,13 @@ public class EndingDialogueActivity extends AppCompatActivity {
         if (winner == -1 || startPlayer == -1)
             finish();
 
-        context = this;
+        Log.i("ActivityResult", "startPlayer=" + startPlayer);
+
+        ++startPlayer;
+        startPlayer %= 2;
+        Log.i("ActivityResult", "Swapping startPlayer; is " + startPlayer);
+
+        Context context = this;
 
         ResultsFile resultsFile = new ResultsFile(context);
 
@@ -44,29 +53,30 @@ public class EndingDialogueActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int windowWidth = metrics.widthPixels;
         final int windowHeight = metrics.heightPixels;
-        Bitmap bitmap = Bitmap.createBitmap(windowWidth, windowHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
+        Bitmap bitmap = Bitmap.createBitmap(windowWidth, windowHeight, Bitmap.Config.ARGB_8888),
+                mirrorPre = Bitmap.createBitmap(windowWidth, windowHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap),
+                mirrorCanvas = new Canvas(mirrorPre);
         Matrix mx = new Matrix();
         mx.postRotate(180);
-        Bitmap mirrorPre = Bitmap.createBitmap(windowWidth, windowHeight, Bitmap.Config.ARGB_8888);
-        Canvas mirrorCanvas = new Canvas(mirrorPre);
 
-        int[] Col = {getColour(this, R.color.secondary), getColour(this, R.color.primary)};
+        int[] Colour = new int[2];
+        Colour[Player.COLOUR_DARK] = getColour(this, R.color.dark);
+        Colour[Player.COLOUR_LIGHT] = getColour(this, R.color.light);
+
         Paint p = new Paint();
         p.setAntiAlias(true);
         p.setStyle(Paint.Style.FILL);
-        p.setColor(Col[winner]);
+        p.setColor(Colour[winner]);
 
-        String onceAgain, goToMenu, won, lRes = res[0] + "", dRes = res[1] + "";
-        onceAgain = getString(R.string.playOnceAgain);
-        goToMenu = getString(R.string.goToMenu);
+        String won, lRes = res[Player.COLOUR_LIGHT] + "", dRes = res[Player.COLOUR_DARK] + "";
 
 
         Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         p.setTypeface(tf);
         p.setTextAlign(Paint.Align.CENTER);
 
-        if (winner == 0) {
+        if (winner == Player.COLOUR_LIGHT) {
             won = getString(R.string.plLightWon);
         } else {
             won = getString(R.string.plDarkWon);
@@ -74,36 +84,36 @@ public class EndingDialogueActivity extends AppCompatActivity {
 
         p.setTextSize((windowWidth * p.getTextSize()) / p.measureText(won));
         canvas.drawText(won, windowWidth / 2, windowHeight / 2 + p.getTextSize() * 2, p);
-        mirrorCanvas.drawText(won, windowWidth / 2, windowHeight / 2 + p.getTextSize() * 2, p);
+        mirrorCanvas.drawText(won, windowWidth / 2, windowHeight / 2 + p.getTextSize() * 2, p); //WON
 
         p.setTextSize(p.getTextSize() * 2);
         Rect bounds = new Rect();
-        p.getTextBounds(lRes + getString(R.string.resultsSeparator) + dRes, 0, lRes.length() + 1 + dRes.length(), bounds);
+        p.getTextBounds(lRes + getString(R.string.resultsSeparator) + dRes, 0, lRes.length() + 1 + dRes.length(), bounds); //RES Bounds
 
-        p.setColor(Col[0]);
+        p.setColor(Colour[Player.COLOUR_LIGHT]);
         canvas.drawText(lRes, 3 * windowWidth / 4 - p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p);
-        mirrorCanvas.drawText(lRes, 3 * windowWidth / 4 - p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p);
+        mirrorCanvas.drawText(lRes, 3 * windowWidth / 4 - p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p); //LRES
 
         p.setColor(getColour(context, R.color.text));
         canvas.drawText(getString(R.string.resultsSeparator), 3 * windowWidth / 4, windowHeight / 2 + bounds.height() / 2, p);
-        mirrorCanvas.drawText(getString(R.string.resultsSeparator), 3 * windowWidth / 4, windowHeight / 2 + bounds.height() / 2, p);
+        mirrorCanvas.drawText(getString(R.string.resultsSeparator), 3 * windowWidth / 4, windowHeight / 2 + bounds.height() / 2, p); //:
 
-        p.setColor(Col[1]);
+        p.setColor(Colour[Player.COLOUR_DARK]);
         canvas.drawText(dRes, 3 * windowWidth / 4 + p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p);
-        mirrorCanvas.drawText(dRes, 3 * windowWidth / 4 + p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p);
-
-        p.setColor(getColour(context, R.color.text));
-
-        p.setTextSize((windowWidth * p.getTextSize()) / p.measureText(onceAgain));
-        canvas.drawText(onceAgain, windowWidth / 2, (windowHeight / 5) + (p.getTextSize()), p);
-        mirrorCanvas.drawText(onceAgain, windowWidth / 2, (4 * windowHeight / 5) + (p.getTextSize()), p);
-
-        p.setTextSize((windowWidth * p.getTextSize()) / p.measureText(goToMenu));
-        canvas.drawText(goToMenu, windowWidth / 2, (4 * windowHeight / 5) + p.getTextSize(), p);
-        mirrorCanvas.drawText(goToMenu, windowWidth / 2, (windowHeight / 5) + (p.getTextSize()), p);
+        mirrorCanvas.drawText(dRes, 3 * windowWidth / 4 + p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p); //RRES
 
         Bitmap mirrorPost = Bitmap.createBitmap(mirrorPre, 0, 0, mirrorPre.getWidth(), mirrorPre.getHeight(), mx, false);
         canvas.drawBitmap(mirrorPost, 0, 0, p);
+
+        Bitmap exitBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_close_black_48dp); //FIXME are not square
+        Bitmap replayBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_replay_black_48dp);
+
+        Rect src = new Rect(0, 0, exitBitmap.getWidth(), exitBitmap.getHeight());
+        Rect dst = new Rect(3 * windowWidth / 8, windowHeight / 8, 5 * windowWidth / 8, 3 * windowHeight / 8);
+        canvas.drawBitmap(replayBitmap, src, dst, null);
+
+        dst = new Rect(3 * windowWidth / 8, 6 * windowHeight / 8, 5 * windowWidth / 8, 7 * windowHeight / 8);
+        canvas.drawBitmap(exitBitmap, src, dst, null);
 
         view.setImageBitmap(bitmap);
 
@@ -114,16 +124,21 @@ public class EndingDialogueActivity extends AppCompatActivity {
                 if (y >= windowHeight / 2) {
                     goBackToMenu();
                 } else {
-                    ++startPlayer;
-                    startPlayer %= 2;
-                    intent = new Intent(context, BoardActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    intent.putExtra("startPlayer", startPlayer);
-                    startActivity(intent);
+                    playAgain();
                 }
                 return true;
             }
         });
+    }
+
+    private void playAgain() {
+        Log.i("ActivityResult", "Play again");
+        Intent returnIntent = new Intent();
+        Log.i("ActivityResult", "Sending startPlayer; is " + startPlayer);
+        returnIntent.putExtra("startPlayer", startPlayer);
+        returnIntent.putExtra("result", "again");
+        setResult(RESULT_OK, returnIntent);
+        finish();
     }
 
     @Override
@@ -132,8 +147,10 @@ public class EndingDialogueActivity extends AppCompatActivity {
     }
 
     private void goBackToMenu() {
+        Log.i("ActivityResult", "Back to menu");
         Intent returnIntent = new Intent();
-        setResult(-1, returnIntent);
+        returnIntent.putExtra("result", "close");
+        setResult(RESULT_OK, returnIntent);
         finish();
     }
 }
