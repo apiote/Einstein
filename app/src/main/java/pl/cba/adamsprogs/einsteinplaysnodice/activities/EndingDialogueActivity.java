@@ -101,14 +101,24 @@ public class EndingDialogueActivity extends AppCompatActivity {
         Bitmap mirrorPost = Bitmap.createBitmap(mirrorPre, 0, 0, mirrorPre.getWidth(), mirrorPre.getHeight(), mx, false);
         canvas.drawBitmap(mirrorPost, 0, 0, p);
 
-        Bitmap exitBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_close_black_48dp); //FIXME are not square
+        Bitmap exitBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_close_black_48dp);
         Bitmap replayBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_replay_black_48dp);
 
+        int squareSide = Math.min(windowHeight / 5, windowWidth / 5);
+        int left = windowWidth / 2 - squareSide;
+        int right = windowWidth / 2 + squareSide;
+
+        int top = windowHeight / 5 - squareSide;
+        int bottom = windowHeight / 5 + squareSide;
+
         Rect src = new Rect(0, 0, exitBitmap.getWidth(), exitBitmap.getHeight());
-        Rect dst = new Rect(3 * windowWidth / 8, windowHeight / 8, 5 * windowWidth / 8, 3 * windowHeight / 8);
+        Rect dst = new Rect(left, top, right, bottom);
         canvas.drawBitmap(replayBitmap, src, dst, null);
 
-        dst = new Rect(3 * windowWidth / 8, 6 * windowHeight / 8, 5 * windowWidth / 8, 7 * windowHeight / 8);
+        top = 4 * windowHeight / 5 - squareSide;
+        bottom = 4 * windowHeight / 5 + squareSide;
+
+        dst = new Rect(left, top, right, bottom);
         canvas.drawBitmap(exitBitmap, src, dst, null);
 
         view.setImageBitmap(bitmap);
