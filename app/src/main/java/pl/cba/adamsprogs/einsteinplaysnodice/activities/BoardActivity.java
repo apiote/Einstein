@@ -3,7 +3,6 @@ package pl.cba.adamsprogs.einsteinplaysnodice.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.*;
-import android.util.Log;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
 import pl.cba.adamsprogs.einsteinplaysnodice.components.Player;
@@ -12,6 +11,7 @@ import pl.cba.adamsprogs.einsteinplaysnodice.games.*;
 public class BoardActivity extends AppCompatActivity implements ServerGame.OnWinListener {
     private ServerGame serverGame;
     private int startPlayer;
+    private static final int REQUEST_ENDING_DIALOGUE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,16 +25,14 @@ public class BoardActivity extends AppCompatActivity implements ServerGame.OnWin
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) { //FIXME startPlayer
-        if (requestCode == 101) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENDING_DIALOGUE) {
             String result = data.getStringExtra("result");
-            startPlayer = data.getIntExtra("startPlayer", Player.COLOUR_LIGHT);
-            Log.i("OnActivityResult", "startPlayer=" + startPlayer);
             if (result.equals("close"))
                 finish();
             else if (result.equals("again")) {
                 serverGame.destroy();
-                serverGame = new LocalGame(this, startPlayer);
+                serverGame = new LocalGame(this, data.getIntExtra("startPlayer", Player.COLOUR_LIGHT));
                 serverGame.start();
             }
         }
@@ -45,6 +43,6 @@ public class BoardActivity extends AppCompatActivity implements ServerGame.OnWin
         Intent endingIntent = new Intent(this, EndingDialogueActivity.class);
         endingIntent.putExtra("winner", winner);
         endingIntent.putExtra("startPlayer", startPlayer);
-        startActivityForResult(endingIntent, 101);
+        startActivityForResult(endingIntent, REQUEST_ENDING_DIALOGUE);
     }
 }

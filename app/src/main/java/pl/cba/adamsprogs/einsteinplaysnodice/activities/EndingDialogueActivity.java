@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
 
@@ -34,11 +33,8 @@ public class EndingDialogueActivity extends AppCompatActivity {
         if (winner == -1 || startPlayer == -1)
             finish();
 
-        Log.i("ActivityResult", "startPlayer=" + startPlayer);
-
         ++startPlayer;
         startPlayer %= 2;
-        Log.i("ActivityResult", "Swapping startPlayer; is " + startPlayer);
 
         Context context = this;
 
@@ -132,9 +128,7 @@ public class EndingDialogueActivity extends AppCompatActivity {
     }
 
     private void playAgain() {
-        Log.i("ActivityResult", "Play again");
         Intent returnIntent = new Intent();
-        Log.i("ActivityResult", "Sending startPlayer; is " + startPlayer);
         returnIntent.putExtra("startPlayer", startPlayer);
         returnIntent.putExtra("result", "again");
         setResult(RESULT_OK, returnIntent);
@@ -147,7 +141,6 @@ public class EndingDialogueActivity extends AppCompatActivity {
     }
 
     private void goBackToMenu() {
-        Log.i("ActivityResult", "Back to menu");
         Intent returnIntent = new Intent();
         returnIntent.putExtra("result", "close");
         setResult(RESULT_OK, returnIntent);

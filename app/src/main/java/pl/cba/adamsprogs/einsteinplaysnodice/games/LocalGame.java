@@ -22,12 +22,12 @@ public class LocalGame extends ServerGame {
         Player tmp = waitingPlayer;
         waitingPlayer = currentPlayer;
         currentPlayer = tmp;
-        if (!isEinStein())
-            currentPlayer.setActive(true);
-        else {
+        if (isEinStein()) {
             currentPlayer.setActive(false); //FIXME not working
             board.hint(currentPlayer);
             board.setMovable(true); //FIXME not working
+        } else {
+            currentPlayer.setActive(true);
         }
     }
 

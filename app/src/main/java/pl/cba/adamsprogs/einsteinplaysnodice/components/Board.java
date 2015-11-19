@@ -322,7 +322,6 @@ public class Board {
             if (stoneEntry.getValue().getPlayerId() == id)
                 ++sum;
         }
-        Log.i("NoOpponents", "sum=" + sum);
         return sum == 0;
     }
 

@@ -18,11 +18,12 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
 
     public ServerGame(BoardActivity context, int startPlayer) {
         this.context = context;
+        int[] dieImages = {R.id.dieLight, R.id.dieDark};
 
         board = new Board(this, (ImageView) context.findViewById(R.id.board));
-        Log.i("ServerGame", "startPlayer=" + startPlayer);
-        currentPlayer = new Player(this, startPlayer, (ImageView) context.findViewById(R.id.die0));
-        waitingPlayer = new Player(this, 1 - startPlayer, (ImageView) context.findViewById(R.id.die1));
+
+        currentPlayer = new Player(this, startPlayer, (ImageView) context.findViewById(dieImages[startPlayer]));
+        waitingPlayer = new Player(this, 1 - startPlayer, (ImageView) context.findViewById(dieImages[1-startPlayer]));
 
         DisplayMetrics metrics = new DisplayMetrics();
         context.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -51,7 +52,6 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
             Toast.makeText(context, "Couldn't draw the board", Toast.LENGTH_SHORT).show();
         }
 
-        Log.i("ServerGame", "start; startPlayer=" + currentPlayer.getId());
         currentPlayer.setActive(true);
     }
 

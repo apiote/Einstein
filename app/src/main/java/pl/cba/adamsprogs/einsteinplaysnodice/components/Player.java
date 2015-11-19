@@ -1,7 +1,6 @@
 package pl.cba.adamsprogs.einsteinplaysnodice.components;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.*;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
@@ -54,7 +53,6 @@ public class Player implements Die.OnRollListener {
 
     public void setActive(boolean active) {
         die.setRollable(active);
-        Log.i("Player", "setActive; orientation=" + orientation);
     }
 
     public int getOrientation() {
