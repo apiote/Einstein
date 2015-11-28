@@ -17,7 +17,6 @@ public class Stone implements Comparable<Stone> {
     private int colour;
     private Bitmap bitmap;
     private boolean selectable;
-    private boolean selected;
     private int orientation;
 
     public Stone(Context context, Player player, int value, Point position) {
@@ -38,10 +37,6 @@ public class Stone implements Comparable<Stone> {
         Paint p = new Paint();
         Rect bounds = new Rect();
 
-        Rect ambientShadowRect = new Rect(0, 0, ambientShadow.getWidth(), ambientShadow.getHeight());
-        Rect bitmapRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        canvas.drawBitmap(ambientShadow, ambientShadowRect, bitmapRect, null);
-
         p.setColor(colour);
         canvas.drawCircle(squareSize / 2, squareSize / 2, squareSize / 3, p);
 
@@ -55,6 +50,15 @@ public class Stone implements Comparable<Stone> {
         mx.postRotate(orientation);
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) squareSize, (int) squareSize, mx, false);
 
+        Bitmap sND = Bitmap.createBitmap((int) squareSize, (int) squareSize, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(sND);
+        Rect ambientShadowRect = new Rect(0, 0, ambientShadow.getWidth(), ambientShadow.getHeight());
+        Rect bitmapRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        canvas.drawBitmap(ambientShadow, ambientShadowRect, bitmapRect, null);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        bitmap = sND;
+
         return bitmap;
     }
 
@@ -67,22 +71,12 @@ public class Stone implements Comparable<Stone> {
         return selectable;
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-        selectable = false;
-    }
-
     public void setSelected() {
-        setSelected(true);
+        selectable = false;
     }
 
     public void setSelectable(boolean selectable) {
         this.selectable = selectable;
-        selected = false;
     }
 
     public int getX() {
@@ -121,13 +115,13 @@ public class Stone implements Comparable<Stone> {
     @Override
     public int compareTo(@NonNull Stone another) {
         int playerDifference = this.getPlayerId() - another.getPlayerId();
-        if(playerDifference!=0)
+        if (playerDifference != 0)
             return playerDifference;
-        return this.getIntValue()-another.getIntValue();
+        return this.getIntValue() - another.getIntValue();
     }
 
     @Override
     public String toString() {
-        return "Stone: "+value+"/player"+getPlayerId();
+        return "Stone: " + value + "/player" + getPlayerId();
     }
 }

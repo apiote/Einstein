@@ -87,6 +87,10 @@ public class Player implements Die.OnRollListener {
         }
     }
 
+    public void rollDieAlmost() {
+        die.rollDieAlmost();
+    }
+
     @Override
     public void onRoll(int value) {
         dieValue = value;

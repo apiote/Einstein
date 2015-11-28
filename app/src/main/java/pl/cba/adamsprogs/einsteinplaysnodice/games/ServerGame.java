@@ -2,7 +2,6 @@ package pl.cba.adamsprogs.einsteinplaysnodice.games;
 
 import android.graphics.Point;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.*;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
@@ -23,7 +22,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
         board = new Board(this, (ImageView) context.findViewById(R.id.board));
 
         currentPlayer = new Player(this, startPlayer, (ImageView) context.findViewById(dieImages[startPlayer]));
-        waitingPlayer = new Player(this, 1 - startPlayer, (ImageView) context.findViewById(dieImages[1-startPlayer]));
+        waitingPlayer = new Player(this, 1 - startPlayer, (ImageView) context.findViewById(dieImages[1 - startPlayer]));
 
         DisplayMetrics metrics = new DisplayMetrics();
         context.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -71,8 +70,8 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
     public void onStoneMoved() {
         CheckWin();
         swapPlayers();
-        currentPlayer.setActive(true);
-        board.setMovable(false);
+        /*currentPlayer.setActive(true);
+        board.setMovable(false);*/
     }
 
     public BoardActivity getContext() {
@@ -93,9 +92,9 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
 
     public void destroy() {
         board = null;
-        currentPlayer=null;
-        waitingPlayer=null;
-        context=null;
+        currentPlayer = null;
+        waitingPlayer = null;
+        context = null;
     }
 
     public interface OnWinListener {

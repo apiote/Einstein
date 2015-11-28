@@ -77,6 +77,10 @@ public class Die {
         onRollListener.onRoll(value);
     }
 
+    public void rollDieAlmost() {
+        onRollListener.onRoll(value);
+    }
+
     public void draw() {
         this.draw(value);
     }
@@ -94,7 +98,9 @@ public class Die {
         p.setAntiAlias(true);
         p.setStyle(Paint.Style.FILL);
 
-        canvas.drawColor(rollable ? onColour : offColour);
+        int color = rollable ? onColour : offColour;
+
+        canvas.drawColor(color);
 
         p.setColor(spotColour);
 

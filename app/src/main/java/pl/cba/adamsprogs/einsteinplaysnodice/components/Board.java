@@ -131,12 +131,10 @@ public class Board {
     }
 
     public void handleTouch(MotionEvent m) {
-        float offset = (view.getWidth() - view.getHeight()) / 2; //FIXME what is real offset
-
         float iSqH = view.getHeight() / 5;
         float iSqW = view.getWidth() / 5;
 
-        int x = (int) (m.getX(0) + offset);
+        int x = (int) m.getX(0);
         int y = (int) m.getY(0);
         int action = m.getActionMasked();
         int posX = (int) (x / iSqW);
@@ -147,15 +145,15 @@ public class Board {
             if (isPointTargetable(touchedPoint) && selectedStone != null) {
                 stones.remove(new Point(selectedStone.getX(), selectedStone.getY()));
                 selectedStone.moveTo(posX, posY);
-                selectedStone.setSelected(false);
+                selectedStone.setSelected();
                 stones.remove(touchedPoint);
                 stones.put(touchedPoint, selectedStone);
                 draw();
-                onStoneMoved.onStoneMoved();
                 setMovable(false);
                 targetablePoints = null;
                 clearHint();
                 tempCurrentPlayer = null;
+                onStoneMoved.onStoneMoved();
             } else {
                 selectedStone = stones.get(touchedPoint);
                 if (selectedStone != null && selectedStone.isSelectable()) {
@@ -201,7 +199,7 @@ public class Board {
         }
 
 
-        if (stone.isEmpty()) { //FIXME 6 doesn't work
+        if (stone.isEmpty()) {
             ArrayList<Stone> stonesList = new ArrayList<>();
             for (Map.Entry<?, Stone> stoneEntry : stones.entrySet())
                 stonesList.add(stoneEntry.getValue());
@@ -214,8 +212,10 @@ public class Board {
                     stone.add(stonesList.get(i));
                     break;
                 }
+                if (s.getPlayerId() > player.getId())
+                    break;
             }
-            if (i > 0 && stonesList.get(i - 1).getPlayerId() == player.getId())
+            if (i >= stonesList.size() || stonesList.get(i).getPlayerId() > player.getId())
                 stone.add(stonesList.get(i - 1));
         }
         if (stone.isEmpty())
