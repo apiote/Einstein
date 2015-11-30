@@ -15,7 +15,7 @@ import pl.cba.adamsprogs.einsteinplaysnodice.utilities.ResultsFile;
 
 import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.getColour;
 
-public class EndingDialogueActivity extends AppCompatActivity { //TODO enter: fade in, exit: fade out
+public class EndingDialogueActivity extends AppCompatActivity {
     private int startPlayer;
 
     @Override
