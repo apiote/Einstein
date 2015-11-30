@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
+import pl.cba.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
 
 import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
 
@@ -33,8 +34,11 @@ public class Die {
     private final int onColour, offColour, spotColour;
 
     private OnRollListener onRollListener;
+    private BoardActivity context;
 
-    public Die(Context context, int orientation, ImageView view, Player player) {
+    private Thread dieAnimationThread;
+
+    public Die(Context contextParam, int orientation, ImageView view, Player player) {
         this.view = view;
         this.orientation = orientation;
 
@@ -50,9 +54,11 @@ public class Die {
                     }
                 }
         );
-        offColour = getColour(context, R.color.dice_off);
-        onColour = getColour(context, R.color.dice_on);
-        spotColour = getColour(context, R.color.dice_num);
+        offColour = getColour(contextParam, R.color.dice_off);
+        onColour = getColour(contextParam, R.color.dice_on);
+        spotColour = getColour(contextParam, R.color.dice_num);
+
+        this.context = (BoardActivity) contextParam;
 
         try {
             onRollListener = player;
@@ -181,8 +187,43 @@ public class Die {
 
     public void setRollable(boolean rollable) {
         this.rollable = rollable;
-        if (isProperSize()) draw();
-        //TODO animate
+        if (rollable) {
+            createDieAnimationThread();
+            dieAnimationThread.start();
+        } else {
+            if (dieAnimationThread != null) dieAnimationThread.interrupt();
+            if (isProperSize()) draw();
+        }
+    }
+
+    private void createDieAnimationThread() {
+        dieAnimationThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int i = 0;
+                while (true) {
+                    try{
+                        drawDieAnimationFrame(i);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                    i=(++i)%6;
+                }
+            }
+        });
+    }
+
+    private void drawDieAnimationFrame(int i) throws InterruptedException {
+        if (Thread.currentThread().isInterrupted())
+            throw new InterruptedException();
+        final int v = dieOrder[i];
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                draw(v);
+            }
+        });
+        Thread.sleep(500, 0);
     }
 
     public int getValue() {
