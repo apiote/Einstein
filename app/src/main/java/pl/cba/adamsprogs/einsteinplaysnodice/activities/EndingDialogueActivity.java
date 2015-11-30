@@ -143,6 +143,7 @@ public class EndingDialogueActivity extends AppCompatActivity { //TODO enter: fa
         returnIntent.putExtra("result", "again");
         setResult(RESULT_OK, returnIntent);
         finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     @Override
@@ -155,5 +156,6 @@ public class EndingDialogueActivity extends AppCompatActivity { //TODO enter: fa
         returnIntent.putExtra("result", "close");
         setResult(RESULT_OK, returnIntent);
         finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.slide_out);
     }
 }

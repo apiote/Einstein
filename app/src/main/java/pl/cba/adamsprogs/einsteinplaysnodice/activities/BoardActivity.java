@@ -44,5 +44,6 @@ public class BoardActivity extends AppCompatActivity implements ServerGame.OnWin
         endingIntent.putExtra("winner", winner);
         endingIntent.putExtra("startPlayer", startPlayer);
         startActivityForResult(endingIntent, REQUEST_ENDING_DIALOGUE);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 }
