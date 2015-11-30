@@ -3,14 +3,13 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
-    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "pl.cba.adamsprogs.einsteinplaysnodice"
         minSdkVersion 9
         targetSdkVersion 23
         versionCode 5
-        versionName "1.0.1"
+        versionName "1.1.0"
     }
     buildTypes {
         release {

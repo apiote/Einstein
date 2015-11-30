@@ -22,12 +22,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/org_apache_http_legacy_android_23.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/play_services_ads_8_3_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/play_services_basement_8_3_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/support_annotations_23_1_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_close_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_close_black_48dp.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_replay_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_replay_black_48dp.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_close_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_close_black_48dp.png" />
@@ -39,9 +33,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_close_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_close_black_48dp.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_replay_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_replay_black_48dp.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/htp_layout.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/htp_layout.xml" />
     </list>
     <ignored path="Einstein.iws" />
@@ -2411,7 +2403,13 @@
       <option name="project" value="LOCAL" />
       <updated>1448900160560</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Dice are subjected to orientation">
+      <created>1448905639767</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1448905639767</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -2484,7 +2482,8 @@
     <MESSAGE value="Fixed Toolbar not found" />
     <MESSAGE value="Activity transitions to and from EndingDialogueActivity made custom" />
     <MESSAGE value="Animating die when press is awaited" />
-    <option name="LAST_COMMIT_MESSAGE" value="Animating die when press is awaited" />
+    <MESSAGE value="Dice are subjected to orientation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Dice are subjected to orientation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
