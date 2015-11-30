@@ -116,10 +116,11 @@ public class Die {
             canvas.drawCircle(x.first, x.second, spotRadius, p);
 
         Matrix mx = new Matrix();
-        mx.postRotate(orientation);
+        mx.preScale(1, orientation == 180 ? -1 : 1);
 
-        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mx, false);
-        view.setImageBitmap(rotatedBitmap);
+        Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) width, (int) height, mx, false);
+
+        view.setImageBitmap(newBitmap);
     }
 
     private void initialise() throws NumberFormatException {
@@ -202,12 +203,12 @@ public class Die {
             public void run() {
                 int i = 0;
                 while (true) {
-                    try{
+                    try {
                         drawDieAnimationFrame(i);
                     } catch (InterruptedException e) {
                         break;
                     }
-                    i=(++i)%6;
+                    i = (++i) % 6;
                 }
             }
         });
