@@ -31,7 +31,7 @@ public class Stone implements Comparable<Stone> {
         y = position.y;
     }
 
-    public Bitmap create(float squareSize) { //FIXME draw shadow not turned
+    public Bitmap create(float squareSize) {
         bitmap = Bitmap.createBitmap((int) squareSize, (int) squareSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         Paint p = new Paint();

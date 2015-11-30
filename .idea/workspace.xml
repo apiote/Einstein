@@ -22,13 +22,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/anim/fade_in.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/anim/fade_out.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/anim/slide_in.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/anim/slide_out.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/EndingDialogueActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/EndingDialogueActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/HowToPlayActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/HowToPlayActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Stone.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Stone.java" />
     </list>
@@ -2489,7 +2483,13 @@
       <option name="project" value="LOCAL" />
       <updated>1448723379729</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Activity transitions to and from EndingDialogueActivity made custom">
+      <created>1448896940696</created>
+      <option name="number" value="00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1448896940696</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -2515,7 +2515,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32996634" sideWeight="0.50292826" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3075734" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3075734" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32921174" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32766616" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -2558,7 +2558,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Stone ambient shadow drops to one side &amp; EinStein feature &amp; hint finding fixed &amp; offset in touching board set to 0" />
-    <option name="LAST_COMMIT_MESSAGE" value="Stone ambient shadow drops to one side &amp; EinStein feature &amp; hint finding fixed &amp; offset in touching board set to 0" />
+    <MESSAGE value="Activity transitions to and from EndingDialogueActivity made custom" />
+    <option name="LAST_COMMIT_MESSAGE" value="Activity transitions to and from EndingDialogueActivity made custom" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
