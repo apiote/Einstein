@@ -18,14 +18,13 @@ public class HowToPlayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(pl.cba.adamsprogs.einsteinplaysnodice.R.layout.htp_layout);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
-
-        setContentView(pl.cba.adamsprogs.einsteinplaysnodice.R.layout.htp_layout);
 
         AdView mAdView = (AdView) findViewById(R.id.adView_htp);
         AdRequest adRequest = new AdRequest.Builder().build();

@@ -24,7 +24,6 @@
     <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/HowToPlayActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/HowToPlayActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Stone.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Stone.java" />
     </list>
     <ignored path="Einstein.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -2489,7 +2488,13 @@
       <option name="project" value="LOCAL" />
       <updated>1448896940696</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Removed TODO according to fixing commit">
+      <created>1448897061410</created>
+      <option name="number" value="00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1448897061410</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -2559,7 +2564,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Stone ambient shadow drops to one side &amp; EinStein feature &amp; hint finding fixed &amp; offset in touching board set to 0" />
     <MESSAGE value="Activity transitions to and from EndingDialogueActivity made custom" />
-    <option name="LAST_COMMIT_MESSAGE" value="Activity transitions to and from EndingDialogueActivity made custom" />
+    <MESSAGE value="Removed TODO according to fixing commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed TODO according to fixing commit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
