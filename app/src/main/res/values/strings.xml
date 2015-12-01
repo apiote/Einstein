@@ -1,42 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Einstein</string>
+
     <string name="title_activity_main" translatable="false">Einstein</string>
+    <string name="title_activity_how_to_play">How To Play</string>
+    <string name="title_activity_board">Board</string>
 
     <string name="banner_ad_unit_id_debug" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_ad_unit_id_release_menu" translatable="false">ca-app-pub-7384046387993631/4042574301</string>
     <string name="banner_ad_unit_id_release_htp" translatable="false">ca-app-pub-7384046387993631/6658705109</string>
 
-    <string name="title_activity_how_to_play">How To Play</string>
-    <string name="title_activity_board">Board</string>
     <string name="dieDes">Image of a die</string>
     <string name="boardDes">Board image</string>
+    <string name="endingDialogueDes">Ending image</string>
+
+    <string name="cookies_message">We use device identifiers to personalise content and ads, to provide social media features and to analyse our traffic. We also share such identifiers and other information from your device with our social media, advertising and analytics partners.</string>
+    <string name="close_message">Close message</string>
+    <string name="see_details">See details</string>
+
     <string name="Play">Play</string>
     <string name="Htp">How To Play</string>
-    <string name="htpTile">How To Play\n“Einstein Plays No Dice”</string>
+    <string name="resetResults">Reset results</string>
+    <string name="resultsSeparator" translatable="false">:</string>
+
+    <string name="htpTile">How To Play\n“Einstein”</string>
     <string name="htpHeader1">1. Start</string>
     <string name="htpPara1">Players start with the board arranged as shown in picture 1. Each player’s cubes are in random order. Person playing with light cubes starts.</string>
     <string name="htpPicDes1">pic 1.</string>
     <string name="htpPicSub1">pic 1.</string>
+
     <string name="htpHeader2">2. Turns</string>
     <string name="htpPara2">Each turn starts with rolling a die. Then player must move their matching cube. If it’s no longer on the board, the player must move remaining cube whose number is next-highest or next-lowest to the one shown by the die.\nPlayer may move their cube only one cell to their up, left or diagonal up-left (picture 2).\nIf a cube lies already on the target cell, it’s removed from the board (picture 3).</string>
     <string name="htpPicDes2">pic 2.</string>
     <string name="htpPicSub2">pic 2.</string>
     <string name="htpPicDes3">pic 3.</string>
     <string name="htpPicSub3">pic 3.</string>
+
     <string name="htpHeader3">3. End</string>
     <string name="htpPara3">Game ends when:\n- a player gets one of their cubes to the far corner where his opponent started, or\n- all opponent’s cubes are removed from the board.</string>
+
     <string name="plLightWon">Light-cubes player won.</string>
     <string name="plDarkWon">Dark-cubes player won.</string>
-    <string name="TapToCont">Tap to continue</string>
-    <string name="plLightRes">Light:</string>
-    <string name="plDarkRes">Dark:</string>
-    <string name="resetResults">Reset results</string>
-    <string name="cookies_message">We use device identifiers to personalise content and ads, to provide social media features and to analyse our traffic. We also share such identifiers and other information from your device with our social media, advertising and analytics partners.</string>
-    <string name="close_message">Close message</string>
-    <string name="see_details">See details</string>
-    <string name="endingImageDes">Ending image</string>
-    <string name="playOnceAgain">Play once again</string>
-    <string name="goToMenu">Go back to menu</string>
-    <string name="resultsSeparator" translatable="false">:</string>
 </resources>
