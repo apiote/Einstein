@@ -104,20 +104,21 @@ public class EndingDialogueActivity extends AppCompatActivity {
         Bitmap exitBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_close_black_48dp);
         Bitmap replayBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_replay_black_48dp);
 
-        int squareSide = Math.min(windowHeight / 5, windowWidth / 5);
-        int left = windowWidth / 2 - squareSide;
-        int right = windowWidth / 2 + squareSide;
+        int left = windowWidth / 2 - replayBitmap.getWidth() / 2;
+        int right = windowWidth / 2 + replayBitmap.getWidth() / 2;
+        int top = windowHeight / 5 - replayBitmap.getHeight() / 2;
+        int bottom = windowHeight / 5 + replayBitmap.getHeight() / 2;
 
-        int top = windowHeight / 5 - squareSide;
-        int bottom = windowHeight / 5 + squareSide;
-
-        Rect src = new Rect(0, 0, exitBitmap.getWidth(), exitBitmap.getHeight());
+        Rect src = new Rect(0, 0, replayBitmap.getWidth(), replayBitmap.getHeight());
         Rect dst = new Rect(left, top, right, bottom);
         canvas.drawBitmap(replayBitmap, src, dst, null);
 
-        top = 4 * windowHeight / 5 - squareSide;
-        bottom = 4 * windowHeight / 5 + squareSide;
+        left = windowWidth / 2 - exitBitmap.getWidth() / 2;
+        right = windowWidth / 2 + exitBitmap.getWidth() / 2;
+        top = 4 * windowHeight / 5 - exitBitmap.getHeight() / 2;
+        bottom = 4 * windowHeight / 5 + exitBitmap.getHeight() / 2;
 
+        src = new Rect(0, 0, exitBitmap.getWidth(), exitBitmap.getHeight());
         dst = new Rect(left, top, right, bottom);
         canvas.drawBitmap(exitBitmap, src, dst, null);
 
