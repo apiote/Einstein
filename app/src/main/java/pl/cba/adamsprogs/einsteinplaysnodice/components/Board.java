@@ -215,7 +215,7 @@ public class Board {
                 if (s.getPlayerId() > player.getId())
                     break;
             }
-            if (i >= stonesList.size() || stonesList.get(i).getPlayerId() > player.getId())
+            if (i >= stonesList.size() || stonesList.get(i).getPlayerId() > player.getId() || (i > 0 && stonesList.get(i).getPlayerId() == stonesList.get(i - 1).getPlayerId()))
                 stone.add(stonesList.get(i - 1));
         }
         if (stone.isEmpty())
