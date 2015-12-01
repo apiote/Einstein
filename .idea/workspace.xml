@@ -40,21 +40,7 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/pic1.png" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/pic2.png" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/pic3.png" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/pic1.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/pic2.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/pic3.png" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_close_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_close_black_48dp.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_replay_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_replay_black_48dp.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_close_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_close_black_48dp.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_replay_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_replay_black_48dp.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_close_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_close_black_48dp.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_replay_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/ic_replay_black_48dp.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_close_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_close_black_48dp.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_replay_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/ic_replay_black_48dp.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_close_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_close_black_48dp.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_replay_black_48dp.png" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/ic_replay_black_48dp.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/EndingDialogueActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/EndingDialogueActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/ending_layout.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/ending_layout.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values-pl/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values-pl/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
@@ -2462,7 +2448,13 @@
       <option name="project" value="LOCAL" />
       <updated>1448906802093</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="EndingDialogue buttons image size changed">
+      <created>1448999684800</created>
+      <option name="number" value="00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1448999684800</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -2539,7 +2531,8 @@
     <MESSAGE value="Dice are subjected to orientation" />
     <MESSAGE value="Dropped support for legacy Apache (had been needed by adMob) &amp; incremented version number to 1.1.0" />
     <MESSAGE value="Changed margins to paddings — EdgeEffect looks better" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed margins to paddings — EdgeEffect looks better" />
+    <MESSAGE value="EndingDialogue buttons image size changed" />
+    <option name="LAST_COMMIT_MESSAGE" value="EndingDialogue buttons image size changed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
