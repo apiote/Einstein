@@ -91,6 +91,10 @@ public class Player implements Die.OnRollListener {
         die.rollDieAlmost();
     }
 
+    public void stopDieAnimationThread() {
+        die.stopDieAnimationThread();
+    }
+
     @Override
     public void onRoll(int value) {
         dieValue = value;

@@ -18,6 +18,8 @@ public class LocalGame extends ServerGame {
 
     @Override
     public void swapPlayers() {
+        if (currentPlayer == null || waitingPlayer == null)
+            return;
         currentPlayer.setActive(false);
         Player tmp = waitingPlayer;
         waitingPlayer = currentPlayer;

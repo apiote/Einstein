@@ -235,6 +235,10 @@ public class Die {
         this.value = value;
     }
 
+    public void stopDieAnimationThread() {
+        dieAnimationThread.interrupt();
+    }
+
     public interface OnRollListener {
         void onRoll(int value);
     }

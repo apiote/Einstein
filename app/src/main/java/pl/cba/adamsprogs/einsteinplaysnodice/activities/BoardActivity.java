@@ -31,7 +31,6 @@ public class BoardActivity extends AppCompatActivity implements ServerGame.OnWin
             if (result.equals("close"))
                 finish();
             else if (result.equals("again")) {
-                serverGame.destroy();
                 serverGame = new LocalGame(this, data.getIntExtra("startPlayer", Player.COLOUR_LIGHT));
                 serverGame.start();
             }
@@ -43,6 +42,7 @@ public class BoardActivity extends AppCompatActivity implements ServerGame.OnWin
         Intent endingIntent = new Intent(this, EndingDialogueActivity.class);
         endingIntent.putExtra("winner", winner);
         endingIntent.putExtra("startPlayer", startPlayer);
+        serverGame.destroy();
         startActivityForResult(endingIntent, REQUEST_ENDING_DIALOGUE);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }

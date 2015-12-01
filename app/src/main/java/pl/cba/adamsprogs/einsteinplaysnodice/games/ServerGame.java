@@ -85,12 +85,16 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
 
     private void endingDialogue(int winner) {
         board.setMovable(false);
+        currentPlayer.setActive(false);
+        waitingPlayer.setActive(false);
         onWinListener.onWin(winner);
     }
 
     public abstract void swapPlayers();
 
     public void destroy() {
+        currentPlayer.stopDieAnimationThread();
+        waitingPlayer.stopDieAnimationThread();
         board = null;
         currentPlayer = null;
         waitingPlayer = null;
