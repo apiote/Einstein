@@ -27,10 +27,6 @@
     <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java" />
     </list>
     <ignored path="Einstein.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -96,21 +92,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ServerGame.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ServerGame.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.20427553">
-              <caret line="71" column="8" selection-start-line="71" selection-start-column="8" selection-end-line="71" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="94" column="20" selection-start-line="94" selection-start-column="20" selection-end-line="94" selection-end-column="20" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BoardActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="BoardActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="44" column="29" selection-start-line="44" selection-start-column="29" selection-end-line="44" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.48931116">
+              <caret line="33" column="83" selection-start-line="33" selection-start-column="83" selection-end-line="33" selection-end-column="83" />
               <folding />
             </state>
           </provider>
@@ -130,7 +126,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
+              <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -1744,7 +1740,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/ending_layout.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/utilities/ResultsFile.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/menu_layout.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Stone.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/anim/slide_out.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/MainMenuActivity.java" />
@@ -1761,8 +1756,9 @@
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" />
       </list>
     </option>
   </component>
@@ -2565,7 +2561,19 @@
       <option name="project" value="LOCAL" />
       <updated>1448999773168</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Fixed hint calculation (hadn't shown lower stone)">
+      <created>1449000755731</created>
+      <option name="number" value="00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1449000755731</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Interrupting thread on ending game">
+      <created>1449001183751</created>
+      <option name="number" value="00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1449001183751</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -2591,7 +2599,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32996634" sideWeight="0.50292826" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3075734" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3075734" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329429" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32921174" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32766616" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -2645,7 +2653,9 @@
     <MESSAGE value="EndingDialogue buttons image size changed" />
     <MESSAGE value="Updated screenshots in HowToPlay" />
     <MESSAGE value="Refactored strings" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactored strings" />
+    <MESSAGE value="Fixed hint calculation (hadn't shown lower stone)" />
+    <MESSAGE value="Interrupting thread on ending game" />
+    <option name="LAST_COMMIT_MESSAGE" value="Interrupting thread on ending game" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2816,6 +2826,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7173397">
           <caret line="648" column="16" selection-start-line="648" selection-start-column="16" selection-end-line="648" selection-end-column="16" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2823,6 +2834,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="48" column="12" selection-start-line="48" selection-start-column="12" selection-end-line="48" selection-end-column="12" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2980,14 +2994,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="44" column="29" selection-start-line="44" selection-start-column="29" selection-end-line="44" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2999,15 +3005,23 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
+          <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20427553">
-          <caret line="71" column="8" selection-start-line="71" selection-start-column="8" selection-end-line="71" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="94" column="20" selection-start-line="94" selection-start-column="20" selection-end-line="94" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.48931116">
+          <caret line="33" column="83" selection-start-line="33" selection-start-column="83" selection-end-line="33" selection-end-column="83" />
           <folding />
         </state>
       </provider>

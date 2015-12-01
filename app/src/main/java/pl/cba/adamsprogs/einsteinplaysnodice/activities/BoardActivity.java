@@ -31,7 +31,8 @@ public class BoardActivity extends AppCompatActivity implements ServerGame.OnWin
             if (result.equals("close"))
                 finish();
             else if (result.equals("again")) {
-                serverGame = new LocalGame(this, data.getIntExtra("startPlayer", Player.COLOUR_LIGHT));
+                startPlayer = data.getIntExtra("startPlayer", Player.COLOUR_LIGHT);
+                serverGame = new LocalGame(this, startPlayer);
                 serverGame.start();
             }
         }
