@@ -224,7 +224,7 @@ public class Die {
                 draw(v);
             }
         });
-        Thread.sleep(500, 0);
+        Thread.sleep(250, 0);
     }
 
     public int getValue() {
