@@ -3,6 +3,7 @@ package pl.cba.adamsprogs.einsteinplaysnodice.activities;
 import android.content.*;
 import android.graphics.*;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -16,117 +17,214 @@ import pl.cba.adamsprogs.einsteinplaysnodice.utilities.ResultsFile;
 import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.getColour;
 
 public class EndingDialogueActivity extends AppCompatActivity {
+    private static final int NOT_FOUND = -1;
+
     private int startPlayer;
+    private int winner;
+
+    private final Context context = this;
+
+    @NonNull
+    private ResultsFile resultsFile = new ResultsFile(context);
+
+    private ImageView view;
+
+    private int windowWidth, windowHeight;
+    private int boundsHeight;
+
+    private String whoWon, lightPlayerResult, darkPlayerResult;
+
+    private Paint p;
+
+    private Bitmap bitmap;
+    private Canvas canvas;
+
+    @NonNull
+    private int[] playerColours = new int[2];
+    private int textColour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.ending_layout);
+        setUpWindow();
+        receiveData();
+        swapStartPlayer();
+        processResults();
+        createWonString();
+        setUpCanvas();
+        drawEndingDialogue();
+        setButtonsOnTouchListener();
+    }
 
+    private void setUpWindow() {
+        setContentView(R.layout.ending_layout);
+        view = (ImageView) findViewById(R.id.endingDialog);
+        setUpToolbar();
+        measureScreen();
+    }
+
+    private void setUpToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+    }
 
-        int winner = getIntent().getIntExtra("winner", -1);
-        startPlayer = getIntent().getIntExtra("startPlayer", -1);
-
-        if (winner == -1 || startPlayer == -1)
-            finish();
-
-        ++startPlayer;
-        startPlayer %= 2;
-
-        Context context = this;
-
-        ResultsFile resultsFile = new ResultsFile(context);
-
-        resultsFile.increment(winner);
-        resultsFile.apply();
-        int res[] = resultsFile.getResults();
-
-        ImageView view = (ImageView) findViewById(R.id.endingDialog);
+    private void measureScreen() {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int windowWidth = metrics.widthPixels;
-        final int windowHeight = metrics.heightPixels;
-        Bitmap bitmap = Bitmap.createBitmap(windowWidth, windowHeight, Bitmap.Config.ARGB_8888),
-                mirrorPre = Bitmap.createBitmap(windowWidth, windowHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap),
-                mirrorCanvas = new Canvas(mirrorPre);
-        Matrix mx = new Matrix();
-        mx.postRotate(180);
+        windowWidth = metrics.widthPixels;
+        windowHeight = metrics.heightPixels;
+    }
 
-        int[] Colour = new int[2];
-        Colour[Player.COLOUR_DARK] = getColour(this, R.color.dark);
-        Colour[Player.COLOUR_LIGHT] = getColour(this, R.color.light);
+    private void receiveData() {
+        getDataFromIntent();
+        assertLastRoundDataOK();
+    }
 
-        Paint p = new Paint();
+    private void getDataFromIntent() {
+        winner = getIntent().getIntExtra("winner", -1);
+        startPlayer = getIntent().getIntExtra("startPlayer", -1);
+    }
+
+    private void assertLastRoundDataOK() {
+        if (winner == NOT_FOUND || startPlayer == NOT_FOUND)
+            finish();
+    }
+
+    private void swapStartPlayer() {
+        ++startPlayer;
+        startPlayer %= 2;
+    }
+
+    private void processResults() {
+        incrementResultsInFile();
+        getResultsFromFile();
+    }
+
+    private void incrementResultsInFile() {
+        resultsFile.increment(winner);
+        resultsFile.apply();
+    }
+
+    private void getResultsFromFile() {
+        int res[] = resultsFile.getResults();
+        lightPlayerResult = res[Player.COLOUR_LIGHT] + "";
+        darkPlayerResult = res[Player.COLOUR_DARK] + "";
+    }
+
+    private void setUpCanvas() {
+        initialiseCanvas();
+        initialiseColours();
+        createPaint();
+        createResultsStringBounds();
+    }
+
+    private void initialiseCanvas() {
+        bitmap = Bitmap.createBitmap(windowWidth, windowHeight, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(bitmap);
+    }
+
+    private void initialiseColours() {
+        playerColours[Player.COLOUR_DARK] = getColour(this, R.color.dark);
+        playerColours[Player.COLOUR_LIGHT] = getColour(this, R.color.light);
+        textColour = getColour(context, R.color.text);
+    }
+
+    private void createPaint() {
+        p = new Paint();
         p.setAntiAlias(true);
         p.setStyle(Paint.Style.FILL);
-        p.setColor(Colour[winner]);
-
-        String won, lRes = res[Player.COLOUR_LIGHT] + "", dRes = res[Player.COLOUR_DARK] + "";
-
+        p.setColor(playerColours[winner]);
 
         Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         p.setTypeface(tf);
         p.setTextAlign(Paint.Align.CENTER);
+    }
 
-        if (winner == Player.COLOUR_LIGHT) {
-            won = getString(R.string.plLightWon);
-        } else {
-            won = getString(R.string.plDarkWon);
-        }
-
-        p.setTextSize((windowWidth * p.getTextSize()) / p.measureText(won));
-        canvas.drawText(won, windowWidth / 2, windowHeight / 2 + p.getTextSize() * 2, p);
-        mirrorCanvas.drawText(won, windowWidth / 2, windowHeight / 2 + p.getTextSize() * 2, p); //WON
-
-        p.setTextSize(p.getTextSize() * 2);
+    private void createResultsStringBounds() {
+        p.setTextSize((2 * windowWidth * p.getTextSize()) / p.measureText(whoWon));
         Rect bounds = new Rect();
-        p.getTextBounds(lRes + getString(R.string.resultsSeparator) + dRes, 0, lRes.length() + 1 + dRes.length(), bounds); //RES Bounds
+        p.getTextBounds(lightPlayerResult + getString(R.string.resultsSeparator) + darkPlayerResult, 0, lightPlayerResult.length() + 1 + darkPlayerResult.length(), bounds);
+        boundsHeight = bounds.height();
+    }
 
-        p.setColor(Colour[Player.COLOUR_LIGHT]);
-        canvas.drawText(lRes, 3 * windowWidth / 4 - p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p);
-        mirrorCanvas.drawText(lRes, 3 * windowWidth / 4 - p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p); //LRES
+    private void createWonString() {
+        if (winner == Player.COLOUR_LIGHT) {
+            whoWon = getString(R.string.plLightWon);
+        } else {
+            whoWon = getString(R.string.plDarkWon);
+        }
+    }
 
-        p.setColor(getColour(context, R.color.text));
-        canvas.drawText(getString(R.string.resultsSeparator), 3 * windowWidth / 4, windowHeight / 2 + bounds.height() / 2, p);
-        mirrorCanvas.drawText(getString(R.string.resultsSeparator), 3 * windowWidth / 4, windowHeight / 2 + bounds.height() / 2, p); //:
+    private void drawEndingDialogue() {
+        printWonMessage();
+        printResults();
+        drawMirroredBitmap();
+        drawButtons();
+        view.setImageBitmap(bitmap);
+    }
 
-        p.setColor(Colour[Player.COLOUR_DARK]);
-        canvas.drawText(dRes, 3 * windowWidth / 4 + p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p);
-        mirrorCanvas.drawText(dRes, 3 * windowWidth / 4 + p.measureText(lRes), windowHeight / 2 + bounds.height() / 2, p); //RRES
+    private void printWonMessage() {
+        p.setTextSize((windowWidth * p.getTextSize()) / p.measureText(whoWon));
+        canvas.drawText(whoWon, windowWidth / 2, windowHeight / 2 + p.getTextSize() * 2, p);
+    }
 
-        Bitmap mirrorPost = Bitmap.createBitmap(mirrorPre, 0, 0, mirrorPre.getWidth(), mirrorPre.getHeight(), mx, false);
+    private void printResults() {
+        p.setTextSize(2 * p.getTextSize());
+        printResult(Player.COLOUR_LIGHT, -1);
+        printResult(Player.COLOUR_DARK, 1);
+
+        printResultSeparator();
+
+    }
+
+    private void printResult(int colourIndex, int width) {
+        p.setColor(playerColours[colourIndex]);
+        canvas.drawText(lightPlayerResult, 3 * windowWidth / 4 + width * p.measureText(lightPlayerResult), windowHeight / 2 + boundsHeight / 2, p);
+    }
+
+    private void printResultSeparator() {
+        p.setColor(textColour);
+        canvas.drawText(getString(R.string.resultsSeparator), 3 * windowWidth / 4, windowHeight / 2 + boundsHeight / 2, p);
+    }
+
+    private void drawMirroredBitmap() {
+        Matrix mx = new Matrix();
+        mx.postRotate(180);
+        Bitmap mirrorPost = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mx, false);
         canvas.drawBitmap(mirrorPost, 0, 0, p);
+    }
 
+    private void drawButtons() {
         Bitmap exitBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_close_black_48dp);
         Bitmap replayBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_replay_black_48dp);
 
-        int left = windowWidth / 2 - replayBitmap.getWidth() / 2;
-        int right = windowWidth / 2 + replayBitmap.getWidth() / 2;
-        int top = windowHeight / 5 - replayBitmap.getHeight() / 2;
-        int bottom = windowHeight / 5 + replayBitmap.getHeight() / 2;
+        drawButtonBitmap(replayBitmap, 1);
+        drawButtonBitmap(exitBitmap, 4);
+    }
 
-        Rect src = new Rect(0, 0, replayBitmap.getWidth(), replayBitmap.getHeight());
+    private void drawButtonBitmap(@NonNull Bitmap bitmap, int height) {
+        int left, right,
+                top, bottom;
+
+        int bitmapWidth = bitmap.getWidth(),
+                bitmapHeight = bitmap.getHeight();
+
+        left = windowWidth / 2 - bitmapWidth / 2;
+        right = windowWidth / 2 + bitmapWidth / 2;
+        top = height * windowHeight / 5 - bitmapHeight / 2;
+        bottom = height * windowHeight / 5 + bitmapHeight / 2;
+
+        Rect src = new Rect(0, 0, bitmapWidth, bitmapHeight);
         Rect dst = new Rect(left, top, right, bottom);
-        canvas.drawBitmap(replayBitmap, src, dst, null);
 
-        left = windowWidth / 2 - exitBitmap.getWidth() / 2;
-        right = windowWidth / 2 + exitBitmap.getWidth() / 2;
-        top = 4 * windowHeight / 5 - exitBitmap.getHeight() / 2;
-        bottom = 4 * windowHeight / 5 + exitBitmap.getHeight() / 2;
+        canvas.drawBitmap(bitmap, src, dst, null);
+    }
 
-        src = new Rect(0, 0, exitBitmap.getWidth(), exitBitmap.getHeight());
-        dst = new Rect(left, top, right, bottom);
-        canvas.drawBitmap(exitBitmap, src, dst, null);
-
-        view.setImageBitmap(bitmap);
-
+    private void setButtonsOnTouchListener() {
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View v, @NonNull MotionEvent event) {
                 float y = event.getY();
                 if (y >= windowHeight / 2) {
                     goBackToMenu();
@@ -136,6 +234,14 @@ public class EndingDialogueActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void goBackToMenu() {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("result", "close");
+        setResult(RESULT_OK, returnIntent);
+        finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.slide_out);
     }
 
     private void playAgain() {
@@ -150,13 +256,5 @@ public class EndingDialogueActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         goBackToMenu();
-    }
-
-    private void goBackToMenu() {
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("result", "close");
-        setResult(RESULT_OK, returnIntent);
-        finish();
-        overridePendingTransition(R.anim.fade_in, R.anim.slide_out);
     }
 }
