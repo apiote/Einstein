@@ -41,4 +41,5 @@
 
     <string name="plLightWon">Light-cubes player won.</string>
     <string name="plDarkWon">Dark-cubes player won.</string>
+    <string name="Cookies">Cookies</string>
 </resources>
