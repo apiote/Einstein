@@ -4,11 +4,14 @@ import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.widget.*;
 
+import java.util.Map;
+
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
 import pl.cba.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
 import pl.cba.adamsprogs.einsteinplaysnodice.components.*;
 
 public abstract class ServerGame implements Player.OnRollListener, Board.OnStoneSelected, Board.OnStoneMoved {
+    protected boolean einStein = false;
     protected Board board;
     protected Player currentPlayer;
     protected Player waitingPlayer;
@@ -58,7 +61,13 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
     public void onRoll() {
         currentPlayer.setActive(false);
         board.setMovable(true);
-        board.hint(currentPlayer);
+        if (einStein) {
+            board.hint(currentPlayer);
+            Point p = getEinSteinPoint();
+            board.processSelection(p);
+            einStein = false;
+        } else
+            board.hint(currentPlayer);
     }
 
     @Override
@@ -103,5 +112,25 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
 
     public interface OnWinListener {
         void onWin(int winner);
+    }
+
+    protected boolean isEinStein() {
+        int id = currentPlayer.getId();
+        int sum = 0;
+        for (Map.Entry<?, Stone> stone : board.getStones().entrySet()) {
+            if (stone.getValue().getPlayerId() == id)
+                ++sum;
+        }
+        return sum == 1;
+    }
+
+    private Point getEinSteinPoint() {
+        int id = currentPlayer.getId();
+        for (Map.Entry<?, Stone> stone : board.getStones().entrySet()) {
+            if (stone.getValue().getPlayerId() == id) {
+                return (Point) stone.getKey();
+            }
+        }
+        return null;
     }
 }

@@ -131,14 +131,14 @@ public class Board {
     }
 
     public void handleTouch(MotionEvent m) {
-        float iSqH = view.getHeight() / 5;
-        float iSqW = view.getWidth() / 5;
+        /*float iSqH = view.getHeight() / 5;
+        float iSqW = view.getWidth() / 5;*/
 
         int x = (int) m.getX(0);
         int y = (int) m.getY(0);
         int action = m.getActionMasked();
-        int posX = (int) (x / iSqW);
-        int posY = (int) (y / iSqH);
+        int posX = (int) (x / squareSize);
+        int posY = (int) (y / squareSize);
 
         if (action == MotionEvent.ACTION_UP && isMovable()) {
             Point touchedPoint = new Point(posX, posY);
@@ -155,19 +155,24 @@ public class Board {
                 tempCurrentPlayer = null;
                 onStoneMoved.onStoneMoved();
             } else {
-                selectedStone = stones.get(touchedPoint);
-                if (selectedStone != null && selectedStone.isSelectable()) {
-                    selectedStone.setSelected();
-                    int targetDirection = selectedStone.getPlayerId() == 0 ? -1 : 1;
-                    targetablePoints = new Point[]{new Point(touchedPoint.x + targetDirection, touchedPoint.y),
-                            new Point(touchedPoint.x, touchedPoint.y + targetDirection),
-                            new Point(touchedPoint.x + targetDirection, touchedPoint.y + targetDirection)};
-                    hintMove(touchedPoint);
+                processSelection(touchedPoint);
+            }
+        }
+    }
+
+    public void processSelection(Point touchedPoint) {
+        Stone tempSelectedStone = stones.get(touchedPoint);
+        if (tempSelectedStone != null && tempSelectedStone.isSelectable()) {
+            selectedStone = tempSelectedStone;
+            selectedStone.setSelected();
+            int targetDirection = selectedStone.getPlayerId() == 0 ? -1 : 1;
+            targetablePoints = new Point[]{new Point(touchedPoint.x + targetDirection, touchedPoint.y),
+                    new Point(touchedPoint.x, touchedPoint.y + targetDirection),
+                    new Point(touchedPoint.x + targetDirection, touchedPoint.y + targetDirection)};
+            hintMove(touchedPoint);
                     /*stones.remove(touchedPoint);
                     stones.put(touchedPoint, selectedStone);*/
-                    onStoneSelected.onStoneSelected(touchedPoint);
-                }
-            }
+            onStoneSelected.onStoneSelected(touchedPoint);
         }
     }
 
