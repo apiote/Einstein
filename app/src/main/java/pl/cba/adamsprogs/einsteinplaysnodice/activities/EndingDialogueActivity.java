@@ -24,15 +24,14 @@ public class EndingDialogueActivity extends AppCompatActivity {
 
     private final Context context = this;
 
-    @NonNull
-    private ResultsFile resultsFile = new ResultsFile(context);
+    private ResultsFile resultsFile;
 
     private ImageView view;
 
     private int windowWidth, windowHeight;
     private int boundsHeight;
 
-    private String whoWon, lightPlayerResult, darkPlayerResult;
+    private String whoWon;
 
     private Paint p;
 
@@ -42,6 +41,7 @@ public class EndingDialogueActivity extends AppCompatActivity {
     @NonNull
     private int[] playerColours = new int[2];
     private int textColour;
+    private String[] results = new String[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +97,7 @@ public class EndingDialogueActivity extends AppCompatActivity {
     }
 
     private void processResults() {
+        resultsFile = new ResultsFile(context);
         incrementResultsInFile();
         getResultsFromFile();
     }
@@ -107,9 +108,7 @@ public class EndingDialogueActivity extends AppCompatActivity {
     }
 
     private void getResultsFromFile() {
-        int res[] = resultsFile.getResults();
-        lightPlayerResult = res[Player.COLOUR_LIGHT] + "";
-        darkPlayerResult = res[Player.COLOUR_DARK] + "";
+        results = resultsFile.getResults();
     }
 
     private void setUpCanvas() {
@@ -144,7 +143,8 @@ public class EndingDialogueActivity extends AppCompatActivity {
     private void createResultsStringBounds() {
         p.setTextSize((2 * windowWidth * p.getTextSize()) / p.measureText(whoWon));
         Rect bounds = new Rect();
-        p.getTextBounds(lightPlayerResult + getString(R.string.resultsSeparator) + darkPlayerResult, 0, lightPlayerResult.length() + 1 + darkPlayerResult.length(), bounds);
+        p.getTextBounds(results[Player.COLOUR_LIGHT] + getString(R.string.resultsSeparator) + results[Player.COLOUR_DARK]
+                , 0, results[Player.COLOUR_LIGHT].length() + 1 + results[Player.COLOUR_DARK].length(), bounds);
         boundsHeight = bounds.height();
     }
 
@@ -180,7 +180,7 @@ public class EndingDialogueActivity extends AppCompatActivity {
 
     private void printResult(int colourIndex, int width) {
         p.setColor(playerColours[colourIndex]);
-        canvas.drawText(lightPlayerResult, 3 * windowWidth / 4 + width * p.measureText(lightPlayerResult), windowHeight / 2 + boundsHeight / 2, p);
+        canvas.drawText(results[colourIndex], 3 * windowWidth / 4 + width * p.measureText(results[colourIndex]), windowHeight / 2 + boundsHeight / 2, p);
     }
 
     private void printResultSeparator() {

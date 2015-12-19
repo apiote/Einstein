@@ -28,8 +28,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
     private final Context context = this;
 
-    @NonNull
-    private ResultsFile resultsFile = new ResultsFile(context);
+    private ResultsFile resultsFile;
 
     private Button resetButton;
     private TextView lightPlayerResult;
@@ -57,9 +56,10 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     private void displayResults() {
-        int[] r = resultsFile.getResults();
-        lightPlayerResult.setText(String.format("%d", r[Player.COLOUR_LIGHT]));
-        darkPlayerResult.setText(String.format("%d", r[Player.COLOUR_DARK]));
+        resultsFile = new ResultsFile(context);
+        String[] r = resultsFile.getResults();
+        lightPlayerResult.setText(r[Player.COLOUR_LIGHT]);
+        darkPlayerResult.setText(r[Player.COLOUR_DARK]);
     }
 
     private void setUpToolbar() {

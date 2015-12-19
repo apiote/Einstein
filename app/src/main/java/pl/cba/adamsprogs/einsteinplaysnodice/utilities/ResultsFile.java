@@ -1,6 +1,7 @@
 package pl.cba.adamsprogs.einsteinplaysnodice.utilities;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.*;
 
@@ -16,18 +17,20 @@ public class ResultsFile {
     }
 
     private void readFile() {
+        String inputString;
+        String[] results;
         try {
             BufferedReader inputReader = new BufferedReader(new InputStreamReader(
                     context.openFileInput(fileName)));
-            String inputString;
-            String[] results;
             if ((inputString = inputReader.readLine()) != null) {
                 results = inputString.split(" ");
                 for (int i = 0; i < 2; ++i) {
                     this.results[i] = Integer.parseInt(results[i]);
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Log.e("ResultFile", "Reading error "+e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -38,6 +41,7 @@ public class ResultsFile {
             fos.write(res.getBytes());
             fos.close();
         } catch (Exception e) {
+            Log.e("ResultFile", "Writing error "+e.getMessage());
             e.printStackTrace();
         }
     }
@@ -46,8 +50,11 @@ public class ResultsFile {
         readFile();
     }
 
-    public int[] getResults() {
-        return results;
+    public String[] getResults() {
+        String[] r = new String[2];
+        r[0] = results[0] + "";
+        r[1] = results[1] + "";
+        return r;
     }
 
     public void setResults(int[] results) {
