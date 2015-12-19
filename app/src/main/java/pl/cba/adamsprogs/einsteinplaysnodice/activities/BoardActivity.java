@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.*;
+import android.util.Log;
+import android.widget.Toast;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
 import pl.cba.adamsprogs.einsteinplaysnodice.components.Player;
@@ -30,7 +32,13 @@ public class BoardActivity extends AppCompatActivity implements ServerGame.OnWin
 
     private void initialiseNewLocalGame(@NonNull Intent intent) {
         startPlayer = intent.getIntExtra("startPlayer", Player.COLOUR_LIGHT);
-        serverGame = new LocalGame(this, startPlayer);
+        try {
+            serverGame = new LocalGame(this, startPlayer);
+        } catch(IllegalStateException e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.wtf("IllegalStateException", e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void startLocalGame() {

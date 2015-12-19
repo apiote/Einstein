@@ -18,6 +18,7 @@ public class Stone implements Comparable<Stone> {
     private Bitmap bitmap;
     private boolean selectable;
     private int orientation;
+    private float squareSize;
 
     public Stone(Context context, Player player, int value, Point position) {
         ambientShadow = ((BitmapDrawable) getDrawable(context, R.drawable.shadow_ambient)).getBitmap();
@@ -31,8 +32,9 @@ public class Stone implements Comparable<Stone> {
         y = position.y;
     }
 
-    public Bitmap create(float squareSize) {
+    public void create(float squareSize) {
         bitmap = Bitmap.createBitmap((int) squareSize, (int) squareSize, Bitmap.Config.ARGB_8888);
+        this.squareSize = squareSize;
         Canvas canvas = new Canvas(bitmap);
         Paint p = new Paint();
         Rect bounds = new Rect();
@@ -58,8 +60,6 @@ public class Stone implements Comparable<Stone> {
         canvas.drawBitmap(bitmap, 0, 0, null);
 
         bitmap = sND;
-
-        return bitmap;
     }
 
     public void moveTo(int x, int y) {
@@ -69,10 +69,6 @@ public class Stone implements Comparable<Stone> {
 
     public boolean isSelectable() {
         return selectable;
-    }
-
-    public void setSelected() {
-        selectable = false;
     }
 
     public void setSelectable(boolean selectable) {
@@ -93,10 +89,6 @@ public class Stone implements Comparable<Stone> {
 
     public int getIntValue() {
         return Integer.parseInt(value);
-    }
-
-    public Bitmap getDirectionalShadow() {
-        return directionalShadow;
     }
 
     public Bitmap getBitmap() throws NullPointerException {
@@ -122,6 +114,47 @@ public class Stone implements Comparable<Stone> {
 
     @Override
     public String toString() {
-        return "Stone: " + value + "/player" + getPlayerId();
+        return "Stone: " + value + "@" + x + ", " + y + "/player" + getPlayerId();
+    }
+
+    public void moveTo(Point target) {
+        moveTo(target.x, target.y);
+    }
+
+    public Point getPosition() {
+        return new Point(x, y);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Stone))
+            return false;
+        Stone another = (Stone) object;
+        return this.orientation == another.orientation && this.x == another.x && this.y == another.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    public boolean hasRolledValue(Player player) {
+        return this.getPlayerId() == player.getId() && this.value.equals("" + player.getDieValue());
+    }
+
+    public boolean isRolledValueNextBigger(Player player) {
+        return getIntValue() > player.getDieValue() && getPlayerId() == player.getId();
+    }
+
+    public boolean isPlayerBigger(Player player) {
+        return getPlayerId() > player.getId();
+    }
+
+    public void drawDirectionalShadow(Canvas canvas, int gridWidth) {
+        Rect shadowRect = new Rect(0, 0, directionalShadow.getWidth(), directionalShadow.getHeight());
+        Rect out = new Rect(x * (int) squareSize + gridWidth, y * (int) squareSize + gridWidth,
+                (x + 1) * (int) squareSize - gridWidth, (y + 1) * (int) squareSize - gridWidth);
+        canvas.drawBitmap(directionalShadow, shadowRect, out, null);
+
     }
 }

@@ -34,6 +34,7 @@ public class Die {
     private final int onColour, offColour, spotColour;
 
     private OnRollListener onRollListener;
+    private OnErrorListener onErrorListener;
     private BoardActivity context;
 
     private Thread dieAnimationThread;
@@ -62,6 +63,7 @@ public class Die {
 
         try {
             onRollListener = player;
+            onErrorListener = player;
         } catch (Exception ignored) {
         }
     }
@@ -70,7 +72,11 @@ public class Die {
         int action = m.getActionMasked();
         if (action == MotionEvent.ACTION_UP && isRollable()) {
             setRollable(false);
-            rollDie();
+            try {
+                rollDie();
+            } catch(IllegalStateException e){
+                onErrorListener.raiseError(e);
+            }
         }
     }
 
@@ -80,10 +86,10 @@ public class Die {
 
         draw();
 
-        onRollListener.onRoll(value);
+        triggerRoll();
     }
 
-    public void rollDieAlmost() {
+    public void triggerRoll() {
         onRollListener.onRoll(value);
     }
 
@@ -166,10 +172,6 @@ public class Die {
         this.spotRadius = height / 10;
     }
 
-    public float getWidth() {
-        return width;
-    }
-
     public void setWidth(float width) {
         this.width = width;
     }
@@ -241,5 +243,9 @@ public class Die {
 
     public interface OnRollListener {
         void onRoll(int value);
+    }
+
+    public interface OnErrorListener {
+        void raiseError(Exception e);
     }
 }

@@ -24,7 +24,11 @@ public class LocalGame extends ServerGame {
         currentPlayer = tmp;
         if (isEinStein()) {
             einStein = true;
-            currentPlayer.rollDieAlmost();
+            try {
+                currentPlayer.triggerRoll();
+            } catch (IllegalStateException e){
+                exceptionExit(e);
+            }
         } else {
             currentPlayer.setActive(true);
             board.setMovable(false);

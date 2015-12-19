@@ -7,7 +7,7 @@ import pl.cba.adamsprogs.einsteinplaysnodice.R;
 import pl.cba.adamsprogs.einsteinplaysnodice.games.ServerGame;
 import pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities;
 
-public class Player implements Die.OnRollListener {
+public class Player implements Die.OnRollListener, Die.OnErrorListener {
     public static final int COLOUR_LIGHT = 1;
     public static final int COLOUR_DARK = 0;
     public static final int ORIENTATION_NORTH = 180;
@@ -20,8 +20,10 @@ public class Player implements Die.OnRollListener {
     private Context context;
     private OnRollListener onRollListener;
     private int id;
+    private ServerGame game;
 
     public Player(ServerGame serverGame, int colour, ImageView dieImage) {
+        game = serverGame;
         this.context = serverGame.getContext();
         if (colour == COLOUR_LIGHT) {
             orientation = ORIENTATION_NORTH;
@@ -87,8 +89,8 @@ public class Player implements Die.OnRollListener {
         }
     }
 
-    public void rollDieAlmost() {
-        die.rollDieAlmost();
+    public void triggerRoll() {
+        die.triggerRoll();
     }
 
     public void stopDieAnimationThread() {
@@ -99,6 +101,11 @@ public class Player implements Die.OnRollListener {
     public void onRoll(int value) {
         dieValue = value;
         onRollListener.onRoll();
+    }
+
+    @Override
+    public void raiseError(Exception e) {
+        game.exceptionExit(e);
     }
 
     public interface OnRollListener {

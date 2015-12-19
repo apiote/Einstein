@@ -1,16 +1,18 @@
 package pl.cba.adamsprogs.einsteinplaysnodice.games;
 
+import android.support.annotation.NonNull;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.widget.*;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
 import pl.cba.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
 import pl.cba.adamsprogs.einsteinplaysnodice.components.*;
 
-public abstract class ServerGame implements Player.OnRollListener, Board.OnStoneSelected, Board.OnStoneMoved {
+public abstract class ServerGame implements Player.OnRollListener, Board.OnStoneMoved {
     protected boolean einStein = false;
     protected Board board;
     protected Player currentPlayer;
@@ -46,9 +48,9 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
 
     public void start() {
         currentPlayer.drawDie();
-        //waitingPlayer.drawDie();
 
         try {
+            board.initialise();
             board.draw();
         } catch (IllegalStateException e) {
             Toast.makeText(context, "Couldn't draw the board", Toast.LENGTH_SHORT).show();
@@ -58,29 +60,25 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
     }
 
     @Override
-    public void onRoll() {
+    public void onRoll() throws IllegalStateException{
         currentPlayer.setActive(false);
         board.setMovable(true);
         if (einStein) {
-            board.hint(currentPlayer);
             Point p = getEinSteinPoint();
-            board.processSelection(p);
+            board.processSelectTouch(p);
             einStein = false;
-        } else
+        }
+        try {
             board.hint(currentPlayer);
-    }
-
-    @Override
-    public void onStoneSelected(Point point) {
-        board.hintMove(point);
+        } catch (NoSuchElementException e) {
+            throw new IllegalStateException(e.getMessage());
+        }
     }
 
     @Override
     public void onStoneMoved() {
         CheckWin();
         swapPlayers();
-        /*currentPlayer.setActive(true);
-        board.setMovable(false);*/
     }
 
     public BoardActivity getContext() {
@@ -124,6 +122,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
         return sum == 1;
     }
 
+    @NonNull
     private Point getEinSteinPoint() {
         int id = currentPlayer.getId();
         for (Map.Entry<?, Stone> stone : board.getStones().entrySet()) {
@@ -131,6 +130,11 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
                 return (Point) stone.getKey();
             }
         }
+        //TODO throw
         return null;
+    }
+
+    public void exceptionExit(Exception e){
+        //TODO
     }
 }
