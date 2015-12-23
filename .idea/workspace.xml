@@ -25,15 +25,8 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="Refactoring Board">
+    <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Stone.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Stone.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java" />
     </list>
     <ignored path="Einstein.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -2588,7 +2581,13 @@
       <option name="project" value="LOCAL" />
       <updated>1450546616372</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Refactoring Board">
+      <created>1450546752635</created>
+      <option name="number" value="00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1450546752635</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
