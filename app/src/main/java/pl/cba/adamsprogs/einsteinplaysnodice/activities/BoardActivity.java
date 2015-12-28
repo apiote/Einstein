@@ -80,4 +80,10 @@ public class BoardActivity extends AppCompatActivity implements ServerGame.OnWin
             createNewGame(data);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        serverGame.destroy();
+        super.onBackPressed();
+    }
 }
