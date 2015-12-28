@@ -14,21 +14,38 @@ import pl.cba.adamsprogs.einsteinplaysnodice.components.*;
 
 public abstract class ServerGame implements Player.OnRollListener, Board.OnStoneMoved {
     protected boolean einStein = false;
+
     protected Board board;
+
     protected Player currentPlayer;
     protected Player waitingPlayer;
+
     private BoardActivity context;
+
     private OnWinListener onWinListener;
 
     public ServerGame(BoardActivity context, int startPlayer) {
         this.context = context;
-        int[] dieImages = {R.id.dieLight, R.id.dieDark};
 
+        createBoard();
+        createPlayers(startPlayer);
+        setSizes();
+
+        attachInterfaces();
+    }
+
+    private void createBoard() {
         board = new Board(this, (ImageView) context.findViewById(R.id.board));
+    }
+
+    protected void createPlayers(int startPlayer){
+        int[] dieImages = {R.id.dieLight, R.id.dieDark};
 
         currentPlayer = new Player(this, startPlayer, (ImageView) context.findViewById(dieImages[startPlayer]));
         waitingPlayer = new Player(this, 1 - startPlayer, (ImageView) context.findViewById(dieImages[1 - startPlayer]));
+    }
 
+    protected void setSizes(){
         DisplayMetrics metrics = new DisplayMetrics();
         context.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
@@ -39,7 +56,9 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
         currentPlayer.setDieWidth(width);
         waitingPlayer.setDieHeight(height >> 2);
         waitingPlayer.setDieWidth(width);
+    }
 
+    private void attachInterfaces() {
         try {
             onWinListener = context;
         } catch (Exception ignored) {
@@ -60,14 +79,26 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
     }
 
     @Override
-    public void onRoll() throws IllegalStateException{
+    public void onRoll() throws IllegalStateException {
+        passControlsToBoard();
+        if (einStein) {
+            hintAsEinStein();
+        }
+        tryToHint();
+    }
+
+    private void passControlsToBoard() {
         currentPlayer.setActive(false);
         board.setMovable(true);
-        if (einStein) {
-            Point p = getEinSteinPoint();
-            board.processSelectTouch(p);
-            einStein = false;
-        }
+    }
+
+    private void hintAsEinStein() {
+        Point p = getEinSteinPoint();
+        board.processSelectTouch(p);
+        einStein = false;
+    }
+
+    private void tryToHint() {
         try {
             board.hint(currentPlayer);
         } catch (NoSuchElementException e) {
@@ -78,7 +109,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
     @Override
     public void onStoneMoved() {
         CheckWin();
-        swapPlayers();
+        swapControls();
     }
 
     public BoardActivity getContext() {
@@ -97,7 +128,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
         onWinListener.onWin(winner);
     }
 
-    public abstract void swapPlayers();
+    public abstract void swapControls();
 
     public void destroy() {
         currentPlayer.stopDieAnimationThread();
@@ -112,14 +143,14 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
         void onWin(int winner);
     }
 
-    protected boolean isEinStein() {
+    protected void calculateEinStein() {
         int id = currentPlayer.getId();
         int sum = 0;
         for (Map.Entry<?, Stone> stone : board.getStones().entrySet()) {
             if (stone.getValue().getPlayerId() == id)
                 ++sum;
         }
-        return sum == 1;
+        einStein = (sum == 1);
     }
 
     @NonNull
@@ -134,7 +165,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
         return null;
     }
 
-    public void exceptionExit(Exception e){
+    public void exceptionExit(Exception e) {
         //TODO
     }
 }
