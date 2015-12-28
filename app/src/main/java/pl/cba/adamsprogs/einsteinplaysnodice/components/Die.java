@@ -2,6 +2,7 @@ package pl.cba.adamsprogs.einsteinplaysnodice.components;
 
 import android.content.Context;
 import android.graphics.*;
+import android.support.annotation.NonNull;
 import android.util.*;
 import android.view.*;
 import android.widget.ImageView;
@@ -16,37 +17,46 @@ import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
 public class Die {
     private ImageView view;
 
-    private int orientation;
+    private Bitmap bitmap;
+    private Canvas canvas;
+
+    private final int orientation;
     private float width, height;
     private int value;
 
+    @NonNull
     private int[] dieOrder = {1, 2, 3, 4, 5, 6};
 
-    private float spotRadius;
-    private float[][] dieSpots;
-
-    private Bitmap bitmap;
-    private Canvas canvas;
+    private float dotRadius;
+    private float[][] dieDots;
 
     private boolean initialised;
     private boolean rollable;
 
-    private final int onColour, offColour, spotColour;
+    private int onColour, offColour, dotColour;
 
     private OnRollListener onRollListener;
     private OnErrorListener onErrorListener;
-    private BoardActivity context;
+    @NonNull
+    private final BoardActivity context;
 
     private Thread dieAnimationThread;
 
-    public Die(Context contextParam, int orientation, ImageView view, Player player) {
+    public Die(Context context, int orientation, ImageView view, Player player) {
         this.view = view;
         this.orientation = orientation;
+        this.context = (BoardActivity) context;
 
-        value = 7;
+        setValue(7);
         initialised = false;
         setRollable(false);
 
+        attachOnClickListener();
+        setUpColours();
+        attachInterfaces(player);
+    }
+
+    private void attachOnClickListener() {
         this.view.setOnTouchListener(
                 new ImageView.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent m) {
@@ -55,42 +65,28 @@ public class Die {
                     }
                 }
         );
-        offColour = getColour(contextParam, R.color.dice_off);
-        onColour = getColour(contextParam, R.color.dice_on);
-        spotColour = getColour(contextParam, R.color.dice_num);
-
-        this.context = (BoardActivity) contextParam;
-
-        try {
-            onRollListener = player;
-            onErrorListener = player;
-        } catch (Exception ignored) {
-        }
     }
 
-    public void diePressed(MotionEvent m) {
-        int action = m.getActionMasked();
-        if (action == MotionEvent.ACTION_UP && isRollable()) {
+    private void diePressed(@NonNull MotionEvent m) {
+        if (m.getActionMasked() == MotionEvent.ACTION_UP && rollable) {
             setRollable(false);
-            try {
-                rollDie();
-            } catch(IllegalStateException e){
-                onErrorListener.raiseError(e);
-            }
+            tryToRoll();
         }
     }
 
-    public void rollDie() {
+    private void tryToRoll() {
+        try {
+            rollDie();
+        } catch (IllegalStateException e) {
+            onErrorListener.raiseError(e);
+        }
+    }
+
+    private void rollDie() {
         shuffleArray(dieOrder);
         setValue(dieOrder[dieOrder.length - 1]);
-
         draw();
-
-        triggerRoll();
-    }
-
-    public void triggerRoll() {
-        onRollListener.onRoll(value);
+        signalRoll();
     }
 
     public void draw() {
@@ -98,35 +94,21 @@ public class Die {
     }
 
     private void draw(int number) throws IllegalStateException {
+        tryToInitialise();
+
+        drawBackground();
+        drawDots(number);
+
+        view.setImageBitmap(flipBitmap());
+    }
+
+    private void tryToInitialise() {
         try {
             initialise();
         } catch (NumberFormatException e) {
             Log.e("Die", e.getMessage());
             throw new IllegalStateException("Couldn't initialise die due to wrong size");
         }
-
-        Paint p;
-        p = new Paint();
-        p.setAntiAlias(true);
-        p.setStyle(Paint.Style.FILL);
-
-        int color = rollable ? onColour : offColour;
-
-        canvas.drawColor(color);
-
-        p.setColor(spotColour);
-
-        ArrayList<Pair<Float, Float>> dieSpotsByNumber = calculateSpotsFor(number);
-
-        for (Pair<Float, Float> x : dieSpotsByNumber)
-            canvas.drawCircle(x.first, x.second, spotRadius, p);
-
-        Matrix mx = new Matrix();
-        mx.preScale(1, orientation == 180 ? -1 : 1);
-
-        Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) width, (int) height, mx, false);
-
-        view.setImageBitmap(newBitmap);
     }
 
     private void initialise() throws NumberFormatException {
@@ -135,13 +117,7 @@ public class Die {
         if (!isProperSize())
             throw new NumberFormatException("Width and height must be greater than zero");
 
-        float off = (width - height) / 2;
-        float dieD = height / 5;
-        dieSpots = new float[][]{{off + dieD, dieD}, {off + (4 * dieD), 4 * dieD},
-                {off + (4 * dieD), dieD}, {off + dieD, 4 * dieD},
-                {off + (2 * dieD) + spotRadius, dieD}, {off + (2 * dieD) + spotRadius, 4 * dieD},
-                {off + (2 * dieD) + spotRadius, (2 * dieD) + spotRadius}
-        };
+        createDots();
 
         bitmap = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bitmap);
@@ -149,27 +125,81 @@ public class Die {
         initialised = true;
     }
 
-    private ArrayList<Pair<Float, Float>> calculateSpotsFor(int number) {
-        ArrayList<Pair<Float, Float>> spots = new ArrayList<>();
+    private void createDots() {
+        float offset = (width - height) / 2;
+        float dieDiameter = height / 5;
+        dieDots = new float[][]{{offset + dieDiameter, dieDiameter}, {offset + (4 * dieDiameter), 4 * dieDiameter},
+                {offset + (4 * dieDiameter), dieDiameter}, {offset + dieDiameter, 4 * dieDiameter},
+                {offset + (2 * dieDiameter) + dotRadius, dieDiameter}, {offset + (2 * dieDiameter) + dotRadius, 4 * dieDiameter},
+                {offset + (2 * dieDiameter) + dotRadius, (2 * dieDiameter) + dotRadius}
+        };
+    }
+
+    private void drawBackground() {
+        int backgroundColour = rollable ? onColour : offColour;
+        canvas.drawColor(backgroundColour);
+    }
+
+    private void drawDots(int number) {
+        Paint p = setUpPaint();
+
+        ArrayList<Pair<Float, Float>> dieDotsByNumber = calculateDotsFor(number);
+        for (Pair<Float, Float> x : dieDotsByNumber)
+            canvas.drawCircle(x.first, x.second, dotRadius, p);
+    }
+
+    @NonNull
+    private Paint setUpPaint() {
+        Paint p = new Paint();
+        p.setAntiAlias(true);
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(dotColour);
+        return p;
+    }
+
+    @NonNull
+    private ArrayList<Pair<Float, Float>> calculateDotsFor(int number) {
+        ArrayList<Pair<Float, Float>> dots = new ArrayList<>();
         if (number % 2 == 1) {
-            spots.add(new Pair<>(dieSpots[6][0], dieSpots[6][1]));
+            dots.add(new Pair<>(dieDots[6][0], dieDots[6][1]));
             --number;
         }
         while (number > 0) {
-            spots.add(new Pair<>(dieSpots[number - 2][0], dieSpots[number - 2][1]));
-            spots.add(new Pair<>(dieSpots[number - 1][0], dieSpots[number - 1][1]));
+            dots.add(new Pair<>(dieDots[number - 2][0], dieDots[number - 2][1]));
+            dots.add(new Pair<>(dieDots[number - 1][0], dieDots[number - 1][1]));
             number -= 2;
         }
-        return spots;
+        return dots;
     }
 
-    public float getHeight() {
-        return height;
+    private Bitmap flipBitmap() {
+        Matrix mx = new Matrix();
+        mx.preScale(1, orientation == 180 ? -1 : 1);
+
+        return Bitmap.createBitmap(bitmap, 0, 0, (int) width, (int) height, mx, false);
+    }
+
+    public void signalRoll() {
+        onRollListener.onRoll(value);
+    }
+
+    private void setUpColours() {
+        offColour = getColour(context, R.color.dice_off);
+        onColour = getColour(context, R.color.dice_on);
+        dotColour = getColour(context, R.color.dice_num);
+    }
+
+    private void attachInterfaces(Player player) {
+        try {
+            onRollListener = player;
+            onErrorListener = player;
+        } catch (Exception ignored) {
+        }
     }
 
     public void setHeight(float height) {
         this.height = height;
-        this.spotRadius = height / 10;
+        this.dotRadius = height / 10;
     }
 
     public void setWidth(float width) {
@@ -182,10 +212,6 @@ public class Die {
 
     private boolean isInitialised() {
         return initialised;
-    }
-
-    public boolean isRollable() {
-        return rollable;
     }
 
     public void setRollable(boolean rollable) {
@@ -229,16 +255,13 @@ public class Die {
         Thread.sleep(250, 0);
     }
 
-    public int getValue() {
-        return value;
-    }
-
     public void setValue(int value) {
         this.value = value;
     }
 
     public void stopDieAnimationThread() {
-        dieAnimationThread.interrupt();
+        if (dieAnimationThread != null && dieAnimationThread.isAlive())
+            dieAnimationThread.interrupt();
     }
 
     public interface OnRollListener {

@@ -90,7 +90,7 @@ public class Player implements Die.OnRollListener, Die.OnErrorListener {
     }
 
     public void triggerRoll() {
-        die.triggerRoll();
+        die.signalRoll();
     }
 
     public void stopDieAnimationThread() {
