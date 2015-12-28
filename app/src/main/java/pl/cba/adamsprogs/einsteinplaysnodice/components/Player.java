@@ -28,6 +28,7 @@ public class Player implements Die.OnRollListener, Die.OnErrorListener {
     @NonNull
     private final ServerGame game;
 
+    @NonNull
     private final Context context;
     private OnRollListener onRollListener;
 
@@ -41,7 +42,7 @@ public class Player implements Die.OnRollListener, Die.OnErrorListener {
         createDie(dieImage);
     }
 
-    private void createDie(ImageView dieImage) {
+    private void createDie(@Nullable ImageView dieImage) {
         if (dieImage != null)
             die = new Die(context, orientation, dieImage, this);
     }

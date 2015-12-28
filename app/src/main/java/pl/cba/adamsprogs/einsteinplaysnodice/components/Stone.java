@@ -10,17 +10,25 @@ import pl.cba.adamsprogs.einsteinplaysnodice.R;
 import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
 
 public class Stone implements Comparable<Stone> {
-    private String value;
-    private int textColour;
-    private Bitmap ambientShadow, directionalShadow;
-    private int x, y;
-    private int colour;
+    private final Bitmap ambientShadow, directionalShadow;
     private Bitmap bitmap;
-    private boolean selectable;
-    private int orientation;
+    private Canvas canvas;
+
+    private int x, y;
+    @NonNull
+    private final String value;
+    private final int orientation;
     private float squareSize;
 
-    public Stone(Context context, Player player, int value, Point position) {
+    private final int textColour;
+    private final int colour;
+
+    @NonNull
+    private Paint p = new Paint();
+
+    private boolean selectable;
+
+    public Stone(@NonNull Context context, @NonNull Player player, int value, @NonNull Point position) {
         ambientShadow = ((BitmapDrawable) getDrawable(context, R.drawable.shadow_ambient)).getBitmap();
         directionalShadow = ((BitmapDrawable) getDrawable(context, R.drawable.shadow_directional)).getBitmap();
 
@@ -30,39 +38,71 @@ public class Stone implements Comparable<Stone> {
         this.value = value + "";
         x = position.x;
         y = position.y;
+
+        createBitmap();
+    }
+
+
+    private void createBitmap() {
+        bitmap = Bitmap.createBitmap((int) squareSize, (int) squareSize, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(bitmap);
     }
 
     public void create(float squareSize) {
-        bitmap = Bitmap.createBitmap((int) squareSize, (int) squareSize, Bitmap.Config.ARGB_8888);
         this.squareSize = squareSize;
-        Canvas canvas = new Canvas(bitmap);
-        Paint p = new Paint();
-        Rect bounds = new Rect();
+        draw(createStone(), createAmbientShadow());
+    }
 
+    private Bitmap createStone() {
+        Bitmap stoneBitmap = Bitmap.createBitmap((int) squareSize, (int) squareSize, Bitmap.Config.ARGB_8888);
+        Canvas stoneCanvas = new Canvas(stoneBitmap);
+
+        drawBlankStone(stoneCanvas);
+        printValue(stoneCanvas);
+
+        return rotateBitmap(stoneBitmap);
+    }
+
+    private void drawBlankStone(@NonNull Canvas stoneCanvas) {
         p.setColor(colour);
-        canvas.drawCircle(squareSize / 2, squareSize / 2, squareSize / 3, p);
+        stoneCanvas.drawCircle(squareSize / 2, squareSize / 2, squareSize / 3, p);
+    }
 
+    private void printValue(@NonNull Canvas stoneCanvas) {
         p.setColor(textColour);
         p.setTextSize(squareSize / 2);
         p.setTextAlign(Paint.Align.CENTER);
+
+        Rect bounds = new Rect();
         p.getTextBounds(value, 0, value.length(), bounds);
-        canvas.drawText(value, squareSize / 2, squareSize / 2 + bounds.height() / 2, p);
 
-        Matrix mx = new Matrix();
-        mx.postRotate(orientation);
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) squareSize, (int) squareSize, mx, false);
-
-        Bitmap sND = Bitmap.createBitmap((int) squareSize, (int) squareSize, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(sND);
-        Rect ambientShadowRect = new Rect(0, 0, ambientShadow.getWidth(), ambientShadow.getHeight());
-        Rect bitmapRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        canvas.drawBitmap(ambientShadow, ambientShadowRect, bitmapRect, null);
-        canvas.drawBitmap(bitmap, 0, 0, null);
-
-        bitmap = sND;
+        stoneCanvas.drawText(value, squareSize / 2, squareSize / 2 + bounds.height() / 2, p);
     }
 
-    public void moveTo(int x, int y) {
+    private Bitmap rotateBitmap(Bitmap stoneBitmap) {
+        Matrix mx = new Matrix();
+        mx.postRotate(orientation);
+        return Bitmap.createBitmap(stoneBitmap, 0, 0, (int) squareSize, (int) squareSize, mx, false);
+    }
+
+    private Bitmap createAmbientShadow() {
+        Bitmap ambientShadowBitmap = Bitmap.createBitmap((int) squareSize, (int) squareSize, Bitmap.Config.ARGB_8888);
+        Canvas ambientShadowCanvas = new Canvas(ambientShadowBitmap);
+
+        Rect ambientShadowRect = new Rect(0, 0, ambientShadow.getWidth(), ambientShadow.getHeight());
+        Rect bitmapRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        ambientShadowCanvas.drawBitmap(ambientShadow, ambientShadowRect, bitmapRect, null);
+
+        return ambientShadowBitmap;
+    }
+
+    private void draw(@NonNull Bitmap stone, @NonNull Bitmap ambientShadow) {
+        canvas.drawBitmap(ambientShadow, 0, 0, null);
+        canvas.drawBitmap(stone, 0, 0, null);
+    }
+
+    private void moveTo(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -83,11 +123,7 @@ public class Stone implements Comparable<Stone> {
         return y;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public int getIntValue() {
+    private int getIntValue() {
         return Integer.parseInt(value);
     }
 
@@ -112,15 +148,17 @@ public class Stone implements Comparable<Stone> {
         return this.getIntValue() - another.getIntValue();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Stone: " + value + "@" + x + ", " + y + "/player" + getPlayerId();
     }
 
-    public void moveTo(Point target) {
+    public void moveTo(@NonNull Point target) {
         moveTo(target.x, target.y);
     }
 
+    @NonNull
     public Point getPosition() {
         return new Point(x, y);
     }
@@ -138,19 +176,19 @@ public class Stone implements Comparable<Stone> {
         return toString().hashCode();
     }
 
-    public boolean hasRolledValue(Player player) {
+    public boolean hasRolledValue(@NonNull Player player) {
         return this.getPlayerId() == player.getId() && this.value.equals("" + player.getDieValue());
     }
 
-    public boolean isRolledValueNextBigger(Player player) {
+    public boolean isRolledValueNextBigger(@NonNull Player player) {
         return getIntValue() > player.getDieValue() && getPlayerId() == player.getId();
     }
 
-    public boolean isPlayerBigger(Player player) {
+    public boolean isPlayerBigger(@NonNull Player player) {
         return getPlayerId() > player.getId();
     }
 
-    public void drawDirectionalShadow(Canvas canvas, int gridWidth) {
+    public void drawDirectionalShadow(@NonNull Canvas canvas, int gridWidth) {
         Rect shadowRect = new Rect(0, 0, directionalShadow.getWidth(), directionalShadow.getHeight());
         Rect out = new Rect(x * (int) squareSize + gridWidth, y * (int) squareSize + gridWidth,
                 (x + 1) * (int) squareSize - gridWidth, (y + 1) * (int) squareSize - gridWidth);
