@@ -2,11 +2,7 @@ package pl.cba.adamsprogs.einsteinplaysnodice.utilities;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
-
 import java.io.*;
-
-import pl.cba.adamsprogs.einsteinplaysnodice.R;
 
 public class ResultsFile {
     private final String fileName = "EinsteinResults";
@@ -38,7 +34,6 @@ public class ResultsFile {
     private void handleException(IOException e) {
         Log.e("ResultFile", "Reading error " + e.getMessage());
         e.printStackTrace();
-        Toast.makeText(context, context.getString(R.string.resultsReadingError), Toast.LENGTH_SHORT).show();
     }
 
     public void apply() {

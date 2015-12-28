@@ -14,8 +14,6 @@ import android.widget.*;
 
 import com.google.android.gms.ads.*;
 
-import java.io.IOException;
-
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
 import pl.cba.adamsprogs.einsteinplaysnodice.components.Player;
 import pl.cba.adamsprogs.einsteinplaysnodice.utilities.ResultsFile;
@@ -126,13 +124,13 @@ public class MainMenuActivity extends AppCompatActivity {
         addPopUpPadding(popUp);
         if (settings.getBoolean(isFirstRun, true)) {
             showPopUp(popUp);
-            try {
-                resultsFile.delete();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e("onStart", e.getMessage());
-            }
+            createNewResults();
         }
+    }
+
+    private void createNewResults() {
+        resultsFile.clear();
+        resultsFile.apply();
     }
 
     @NonNull
