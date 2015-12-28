@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
 
+<resources>
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="android:windowBackground">@color/bg</item>
@@ -8,5 +8,9 @@
         <item name="android:textColorPrimary">@color/text_light</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorAccent">@color/secondary</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
     </style>
 </resources>
