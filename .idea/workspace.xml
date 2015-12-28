@@ -30,7 +30,6 @@
       <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/libraries/play_services_basement_8_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/play_services_basement_8_4_0.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
     </list>
     <ignored path="Einstein.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -2627,7 +2626,13 @@
       <option name="project" value="LOCAL" />
       <updated>1451317594159</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Fixed Orientation for splash screen">
+      <created>1451317635777</created>
+      <option name="number" value="00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1451317635777</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -2696,7 +2701,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Animating die when press is awaited" />
     <MESSAGE value="Dice are subjected to orientation" />
     <MESSAGE value="Dropped support for legacy Apache (had been needed by adMob) &amp; incremented version number to 1.1.0" />
     <MESSAGE value="Changed margins to paddings — EdgeEffect looks better" />
@@ -2721,7 +2725,8 @@
     <MESSAGE value="Refactoring&#10;" />
     <MESSAGE value="Added Exception throwing" />
     <MESSAGE value="Refactoring" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring" />
+    <MESSAGE value="Fixed Orientation for splash screen" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed Orientation for splash screen" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
