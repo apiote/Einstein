@@ -11,7 +11,7 @@ import pl.cba.adamsprogs.einsteinplaysnodice.R;
 import pl.cba.adamsprogs.einsteinplaysnodice.components.Player;
 import pl.cba.adamsprogs.einsteinplaysnodice.games.*;
 
-public class BoardActivity extends AppCompatActivity implements ServerGame.OnWinListener {
+public class BoardActivity extends AppCompatActivity implements ServerGame.OnWinListener, ServerGame.OnErrorExit{
     private ServerGame serverGame;
     private int startPlayer;
     private static final int REQUEST_ENDING_DIALOGUE = 101;
@@ -85,5 +85,11 @@ public class BoardActivity extends AppCompatActivity implements ServerGame.OnWin
     public void onBackPressed() {
         serverGame.destroy();
         super.onBackPressed();
+    }
+
+    @Override
+    public void onError(Exception e) {
+        serverGame.destroy();
+        finish();
     }
 }

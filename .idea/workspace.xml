@@ -27,7 +27,8 @@
   <component name="ChangeListManager">
     <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java" />
     </list>
     <ignored path="Einstein.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -55,35 +56,30 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Board.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java">
+      <file leaf-file-name="ServerGame.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="291" column="41" selection-start-line="291" selection-start-column="41" selection-end-line="291" selection-end-column="41" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Player.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.25775656">
-              <caret line="49" column="33" selection-start-line="49" selection-start-column="33" selection-end-line="49" selection-end-column="33" />
+            <state vertical-scroll-proportion="0.7732697">
+              <caret line="28" column="31" selection-start-line="28" selection-start-column="31" selection-end-line="28" selection-end-column="31" />
               <folding>
-                <element signature="e#2347#2348#0" expanded="true" />
-                <element signature="e#2376#2377#0" expanded="true" />
+                <element signature="e#2341#2381#0" expanded="true" />
+                <element signature="e#4674#4675#0" expanded="true" />
+                <element signature="e#4712#4713#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Stone.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Stone.java">
+      <file leaf-file-name="BoardActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
-              <folding />
+              <caret line="92" column="17" selection-start-line="92" selection-start-column="17" selection-end-line="92" selection-end-column="17" />
+              <folding>
+                <element signature="e#1282#1320#0" expanded="true" />
+                <element signature="e#1496#1497#0" expanded="true" />
+                <element signature="e#1530#1531#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1702,7 +1698,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/htp_layout.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/HowToPlayActivity.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
-        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/SplashScreenActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/splash_screen.xml" />
@@ -1714,12 +1709,13 @@
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/utilities/Utilities.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/MainMenuActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/utilities/ResultsFile.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Stone.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java" />
       </list>
     </option>
   </component>
@@ -2021,16 +2017,12 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="einsteinplaysnodice" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="utilities" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemId" value="anim" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -2045,54 +2037,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="java" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="einsteinplaysnodice" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Einstein" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="einsteinplaysnodice" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="components" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Einstein" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="einsteinplaysnodice" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="activities" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -2671,7 +2615,19 @@
       <option name="project" value="LOCAL" />
       <updated>1451312103027</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Bug fix">
+      <created>1451312787927</created>
+      <option name="number" value="00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1451312787927</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Refactoring&#10;">
+      <created>1451313693129</created>
+      <option name="number" value="00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1451313693129</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -2693,7 +2649,7 @@
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3075734" sideWeight="0.5043924" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3106646" sideWeight="0.4956076" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3106646" sideWeight="0.4956076" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24963397" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
@@ -2740,8 +2696,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Removed TODO according to fixing commit" />
-    <MESSAGE value="Fixed Toolbar not found" />
     <MESSAGE value="Activity transitions to and from EndingDialogueActivity made custom" />
     <MESSAGE value="Animating die when press is awaited" />
     <MESSAGE value="Dice are subjected to orientation" />
@@ -2765,7 +2719,9 @@
     <MESSAGE value="Refactoring" />
     <MESSAGE value="Translations" />
     <MESSAGE value="Sequence change to fix a bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="Sequence change to fix a bug" />
+    <MESSAGE value="Bug fix" />
+    <MESSAGE value="Refactoring&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2774,13 +2730,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/.android-sdk/sources/android-23/android/graphics/Matrix.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33254156">
-          <caret line="509" column="19" selection-start-line="509" selection-start-column="19" selection-end-line="509" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../Data/Einstein/screenPlayTouched.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -3004,24 +2953,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="61" column="50" selection-start-line="61" selection-start-column="50" selection-end-line="61" selection-end-column="50" />
-          <folding>
-            <element signature="e#1768#1769#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/EndingDialogueActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -3088,14 +3019,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="51" selection-start-line="37" selection-start-column="51" selection-end-line="37" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/utilities/ResultsFile.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -3117,26 +3040,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.823389">
-          <caret line="55" column="75" selection-start-line="55" selection-start-column="75" selection-end-line="55" selection-end-column="75" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/MainMenuActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="2.6825776">
           <caret line="132" column="49" selection-start-line="132" selection-start-column="49" selection-end-line="132" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="291" column="41" selection-start-line="291" selection-start-column="41" selection-end-line="291" selection-end-column="41" />
           <folding />
         </state>
       </provider>
@@ -3149,13 +3056,74 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="181" column="16" selection-start-line="181" selection-start-column="16" selection-end-line="181" selection-end-column="16" />
+          <folding>
+            <element signature="e#5235#5236#0" expanded="true" />
+            <element signature="e#5279#5280#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25775656">
-          <caret line="49" column="33" selection-start-line="49" selection-start-column="33" selection-end-line="49" selection-end-column="33" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="109" column="34" selection-start-line="109" selection-start-column="34" selection-end-line="109" selection-end-column="34" />
           <folding>
             <element signature="e#2347#2348#0" expanded="true" />
             <element signature="e#2376#2377#0" expanded="true" />
+            <element signature="e#2815#2816#0" expanded="true" />
+            <element signature="e#2864#2865#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="40" column="23" selection-start-line="40" selection-start-column="23" selection-end-line="40" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33174226">
+          <caret line="192" column="16" selection-start-line="192" selection-start-column="16" selection-end-line="192" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="92" column="17" selection-start-line="92" selection-start-column="17" selection-end-line="92" selection-end-column="17" />
+          <folding>
+            <element signature="e#1282#1320#0" expanded="true" />
+            <element signature="e#1496#1497#0" expanded="true" />
+            <element signature="e#1530#1531#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/anim/fade_in.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="0" column="6" selection-start-line="0" selection-start-column="6" selection-end-line="0" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7732697">
+          <caret line="28" column="31" selection-start-line="28" selection-start-column="31" selection-end-line="28" selection-end-column="31" />
+          <folding>
+            <element signature="e#2341#2381#0" expanded="true" />
+            <element signature="e#4674#4675#0" expanded="true" />
+            <element signature="e#4712#4713#0" expanded="true" />
           </folding>
         </state>
       </provider>

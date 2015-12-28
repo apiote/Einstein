@@ -23,6 +23,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
     private BoardActivity context;
 
     private OnWinListener onWinListener;
+    private OnErrorExit onErrorExit;
 
     public ServerGame(BoardActivity context, int startPlayer) {
         this.context = context;
@@ -38,14 +39,14 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
         board = new Board(this, (ImageView) context.findViewById(R.id.board));
     }
 
-    protected void createPlayers(int startPlayer){
+    protected void createPlayers(int startPlayer) {
         int[] dieImages = {R.id.dieLight, R.id.dieDark};
 
         currentPlayer = new Player(this, startPlayer, (ImageView) context.findViewById(dieImages[startPlayer]));
         waitingPlayer = new Player(this, 1 - startPlayer, (ImageView) context.findViewById(dieImages[1 - startPlayer]));
     }
 
-    protected void setSizes(){
+    protected void setSizes() {
         DisplayMetrics metrics = new DisplayMetrics();
         context.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
@@ -61,6 +62,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
     private void attachInterfaces() {
         try {
             onWinListener = context;
+            onErrorExit = context;
         } catch (Exception ignored) {
         }
     }
@@ -79,7 +81,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
     }
 
     @Override
-    public void onRoll() throws IllegalStateException {
+    public void onRoll() {
         passControlsToBoard();
         if (einStein) {
             hintAsEinStein();
@@ -98,7 +100,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
         einStein = false;
     }
 
-    private void tryToHint() {
+    private void tryToHint() throws IllegalStateException {
         try {
             board.hint(currentPlayer);
         } catch (NoSuchElementException e) {
@@ -139,10 +141,6 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
         context = null;
     }
 
-    public interface OnWinListener {
-        void onWin(int winner);
-    }
-
     protected void calculateEinStein() {
         int id = currentPlayer.getId();
         int sum = 0;
@@ -154,18 +152,25 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
     }
 
     @NonNull
-    private Point getEinSteinPoint() {
+    private Point getEinSteinPoint() throws IllegalStateException {
         int id = currentPlayer.getId();
         for (Map.Entry<?, Stone> stone : board.getStones().entrySet()) {
             if (stone.getValue().getPlayerId() == id) {
                 return (Point) stone.getKey();
             }
         }
-        //TODO throw
-        return null;
+        throw new IllegalStateException("EinStein point not found");
     }
 
     public void exceptionExit(Exception e) {
-        //TODO
+        onErrorExit.onError(e);
+    }
+
+    public interface OnWinListener {
+        void onWin(int winner);
+    }
+
+    public interface OnErrorExit {
+        void onError(Exception e);
     }
 }
