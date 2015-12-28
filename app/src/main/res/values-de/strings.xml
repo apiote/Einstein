@@ -18,7 +18,7 @@
 
     <string name="htpTile">Wie spielt man\n„Einstein“</string>
     <string name="htpHeader1">1. Anfang</string>
-    <string name="htpPara1">Am Anfang ist das Spielbrett aufgestellt, wie wird im Bild 1 gezeigte. Die Steine werden in zufälliger Reihenfolge angeordnet. Helle Steine beginnen.</string>
+    <string name="htpPara1">Am Anfang ist das Spielbrett aufgestellt, wie wird im Bild 1 gezeigt. Die Steine werden in zufälliger Reihenfolge angeordnet. Helle Steine beginnen.</string>
     <string name="htpPicDes1">Bild 1.</string>
     <string name="htpPicSub1">Bild 1.</string>
 
@@ -35,6 +35,7 @@
 
     <string name="plDarkWon">Dunkle Steine habt gewonnen</string>
     <string name="plLightWon">Helle Steine habt gewonnen</string>
+
     <string name="dieDrawError">Kann nicht Spielbrett zeichnen</string>
     <string name="illegalStateCaught">Kann nicht das Spiel initialisieren aufgrund einer unglaublichen Fehler</string>
     <string name="resultsReadingError">Einstein kann nicht die Ergebnis Datei lesen</string>

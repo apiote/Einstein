@@ -27,5 +27,4 @@
         android:layout_below="@+id/dieDark"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/boardDes" />
-    <!--android:scaleType="fitXY"-->
 </RelativeLayout>

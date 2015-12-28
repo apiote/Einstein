@@ -34,6 +34,7 @@
 
     <string name="plDarkWon">Ciemne kamienie wygrały</string>
     <string name="plLightWon">Jasne kamienie wygrały</string>
+
     <string name="illegalStateCaught">Nie można zainicjalizować gry ze względu na niewyobrażalny błąd</string>
     <string name="resultsReadingError">Einstein nie mógł odczytać wyników</string>
     <string name="dieDrawError">Nie można narysować planszy</string>
