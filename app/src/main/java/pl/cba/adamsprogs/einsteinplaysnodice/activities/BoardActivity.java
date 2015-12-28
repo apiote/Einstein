@@ -35,7 +35,7 @@ public class BoardActivity extends AppCompatActivity implements ServerGame.OnWin
         try {
             serverGame = new LocalGame(this, startPlayer);
         } catch(IllegalStateException e){
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.illegalStateCaught), Toast.LENGTH_SHORT).show();
             Log.wtf("IllegalStateException", e.getMessage());
             e.printStackTrace();
         }

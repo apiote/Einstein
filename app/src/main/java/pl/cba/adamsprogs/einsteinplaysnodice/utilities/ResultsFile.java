@@ -2,36 +2,43 @@ package pl.cba.adamsprogs.einsteinplaysnodice.utilities;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.*;
 
+import pl.cba.adamsprogs.einsteinplaysnodice.R;
+
 public class ResultsFile {
-    private String fileName = "EinsteinResults";
-    private Context context;
-    private int[] results;
+    private final String fileName = "EinsteinResults";
+    private final Context context;
+    private String[] results;
 
     public ResultsFile(Context context) {
         this.context = context;
-        results = new int[2];
+        results = new String[2];
         readFile();
     }
 
     private void readFile() {
-        String inputString;
-        String[] results;
         try {
-            BufferedReader inputReader = new BufferedReader(new InputStreamReader(
-                    context.openFileInput(fileName)));
-            if ((inputString = inputReader.readLine()) != null) {
-                results = inputString.split(" ");
-                for (int i = 0; i < 2; ++i) {
-                    this.results[i] = Integer.parseInt(results[i]);
-                }
-            }
-        } catch (Exception e) {
-            Log.e("ResultFile", "Reading error "+e.getMessage());
-            e.printStackTrace();
+            readResults();
+        } catch (IOException e) {
+            handleException(e);
         }
+    }
+
+    private void readResults() throws IOException {
+        String inputString;
+        BufferedReader inputReader = new BufferedReader(new InputStreamReader(
+                context.openFileInput(fileName)));
+        if ((inputString = inputReader.readLine()) != null)
+            results = inputString.split(" ");
+    }
+
+    private void handleException(IOException e) {
+        Log.e("ResultFile", "Reading error " + e.getMessage());
+        e.printStackTrace();
+        Toast.makeText(context, context.getString(R.string.resultsReadingError), Toast.LENGTH_SHORT).show();
     }
 
     public void apply() {
@@ -41,7 +48,7 @@ public class ResultsFile {
             fos.write(res.getBytes());
             fos.close();
         } catch (Exception e) {
-            Log.e("ResultFile", "Writing error "+e.getMessage());
+            Log.e("ResultFile", "Writing error " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -57,23 +64,27 @@ public class ResultsFile {
         return r;
     }
 
-    public void setResults(int[] results) {
+    private void setResults(String[] results) {
         this.results = results;
     }
 
     public void increment(int which) {
-        ++results[which];
+        int result = Integer.parseInt(results[which]);
+        ++result;
+        results[which] = result + "";
     }
 
     public void clear() {
-        setResults(new int[]{0, 0});
+        setResults(new String[]{"0", "0"});
     }
 
-    public void delete() {
+    public void delete() throws IOException {
         File dir = context.getFilesDir();
         File file = new File(dir, fileName);
-        //noinspection ResultOfMethodCallIgnored
-        file.delete();
+
+        if(!file.delete()){
+            throw new IOException("Couldn't delete results file");
+        }
     }
 
     @Override

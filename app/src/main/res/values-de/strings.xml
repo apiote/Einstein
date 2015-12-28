@@ -35,4 +35,7 @@
 
     <string name="plDarkWon">Dunkle Steine habt gewonnen</string>
     <string name="plLightWon">Helle Steine habt gewonnen</string>
+    <string name="dieDrawError">Kann nicht Spielbrett zeichnen</string>
+    <string name="illegalStateCaught">Kann nicht das Spiel initialisieren aufgrund einer unglaublichen Fehler</string>
+    <string name="resultsReadingError">Einstein kann nicht die Ergebnis Datei lesen</string>
 </resources>

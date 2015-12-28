@@ -42,4 +42,8 @@
     <string name="plLightWon">Light-stones player won.</string>
     <string name="plDarkWon">Dark-stones player won.</string>
     <string name="Cookies">Cookies</string>
+
+    <string name="illegalStateCaught">Couldn’t initialise game due to an unbelievable error</string>
+    <string name="dieDrawError">Couldn’t draw the board</string>
+    <string name="resultsReadingError">Einstein couldn’t read the result file</string>
 </resources>

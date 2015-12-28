@@ -53,7 +53,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
             board.initialise();
             board.draw();
         } catch (IllegalStateException e) {
-            Toast.makeText(context, "Couldn't draw the board", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.dieDrawError), Toast.LENGTH_SHORT).show();
         }
 
         currentPlayer.setActive(true);
