@@ -3,6 +3,7 @@
     <string name="title_activity_board">Plansza</string>
     <string name="title_activity_how_to_play">JakGrać</string>
 
+    <string name="Cookies">Ciasteczka</string>
     <string name="cookies_message">Wykorzystujemy identyfikatory urządzeń do personalizacji treści i reklam, aby oferować funkcje mediów społecznościowych i analizować ruch. Takie identyfikatory i inne informacje z Twojego urządzenia udostępniamy partnerom społecznościowym, reklamowym i analitycznym.</string>
     <string name="close_message">Zamknij wiadomość</string>
     <string name="see_details">Zobacz szczegóły</string>
@@ -12,26 +13,25 @@
     <string name="resetResults">Zresetuj wyniki</string>
 
     <string name="boardDes">Obraz planszy</string>
-    <string name="dieDes">Obraz kości</string>
-    <string name="endingDialogueDes">Obraz EndingDialogue</string>
+    <string name="dieDes">Obraz kostki</string>
+    <string name="endingDialogueDes">Obraz dialogu wyników</string>
 
     <string name="htpTile">Jak grać w\n„Einsteina”</string>
     <string name="htpHeader1">1. Początek</string>
-    <string name="htpPara1">Gracze rozpoczynają z planszą ustawioną jak pokazano na zdjęciu 1. Żetony ustawione są w kolejności losowej. Rozpoczynają jasne żetony.</string>
+    <string name="htpPara1">Gracze rozpoczynają z planszą ustawioną jak pokazano na zdjęciu 1. Kamienie ustawione są w kolejności losowej. Rozpoczynają jasne kamienie.</string>
     <string name="htpPicDes1">zdj 1.</string>
     <string name="htpPicSub1">zdj 1.</string>
 
     <string name="htpHeader2">2. Kolejki</string>
-    <string name="htpPara2">Każda kolejka rozpoczyna się od rzutu kostką. Następnie gracz musi ruszyć odpowiadającym żetonem. Jeśli nie jest on dostępny, gracz musi ruszyć żetonem z najbliższym numerem wyższym lub niższym od wylosowanego.\nGracz może ruszyć żetonem tylko jedną komórkę w górę, lewo lub po skosie w górne lewo (zdjęcie 2).\nJeśli żeton leży na docelowej komórce, jest on usuwany z planszy (zdjęcie 3).</string>
+    <string name="htpPara2">Każda kolejka rozpoczyna się od rzutu kostką. Następnie gracz musi ruszyć odpowiadającym kamieniem. Jeśli nie jest on dostępny, gracz musi ruszyć kamieniem z najbliższym numerem wyższym lub niższym od wylosowanego.\nGracz może ruszyć kamieniem tylko jedną komórkę w górę, lewo lub po skosie w górne lewo (zdjęcie 2).\nJeśli kamień leży na docelowej komórce, jest on usuwany z planszy (zdjęcie 3).\nJeżeli na planszy pozostał tylko jeden kamień gracza, nie trzeba rzucać kostką – jest on automatycznie wybierany.</string>
     <string name="htpPicDes2">zdj 2.</string>
     <string name="htpPicSub2">zdj 2.</string>
     <string name="htpPicDes3">zdj 3.</string>
     <string name="htpPicSub3">zdj 3.</string>
 
     <string name="htpHeader3">3. Koniec</string>
-    <string name="htpPara3">Gra kończy się gdy:\n- gracz umieści jeden ze swoich żetonów w rogu przeciwnika, lub\n- wszystkie żetony przeciwnika zostaną zdjęte z planszy.</string>
+    <string name="htpPara3">Gra kończy się gdy:\n- gracz umieści jeden ze swoich kamieni w rogu przeciwnika, lub\n- wszystkie kamienie przeciwnika zostaną zdjęte z planszy.</string>
 
-    <string name="plDarkWon">Ciemne żetony wygrały</string>
-    <string name="plLightWon">Jasne żetony wygrały</string>
-    <string name="Cookies">Ciasteczka</string>
+    <string name="plDarkWon">Ciemne kamienie wygrały</string>
+    <string name="plLightWon">Jasne kamienie wygrały</string>
 </resources>

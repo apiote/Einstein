@@ -25,21 +25,21 @@
 
     <string name="htpTile">How To Play\n“Einstein”</string>
     <string name="htpHeader1">1. Start</string>
-    <string name="htpPara1">Players start with the board arranged as shown in picture 1. Each player’s cubes are in random order. Person playing with light cubes starts.</string>
+    <string name="htpPara1">Players start with the board arranged as shown in picture 1. Each player’s stones are in random order. Person playing with light stones starts.</string>
     <string name="htpPicDes1">pic 1.</string>
     <string name="htpPicSub1">pic 1.</string>
 
     <string name="htpHeader2">2. Turns</string>
-    <string name="htpPara2">Each turn starts with rolling a die. Then player must move their matching cube. If it’s no longer on the board, the player must move remaining cube whose number is next-highest or next-lowest to the one shown by the die.\nPlayer may move their cube only one cell to their up, left or diagonal up-left (picture 2).\nIf a cube lies already on the target cell, it’s removed from the board (picture 3).</string>
+    <string name="htpPara2">Each turn starts with rolling a die. Then player must move their matching stone. If it’s no longer on the board, the player must move remaining stone whose number is next-highest or next-lowest to the one shown by the die.\nPlayer may move their stone only one cell to their up, left or diagonal up-left (picture 2).\nIf a stone lies already on the target cell, it’s removed from the board (picture 3).\nIf there’s only one of player’s stones remaining on the board, there’s no need to roll the die—the stone is automatically selected.</string>
     <string name="htpPicDes2">pic 2.</string>
     <string name="htpPicSub2">pic 2.</string>
     <string name="htpPicDes3">pic 3.</string>
     <string name="htpPicSub3">pic 3.</string>
 
     <string name="htpHeader3">3. End</string>
-    <string name="htpPara3">Game ends when:\n- a player gets one of their cubes to the far corner where his opponent started, or\n- all opponent’s cubes are removed from the board.</string>
+    <string name="htpPara3">Game ends when:\n- a player gets one of their stones to the far corner where their opponent started, or\n- all opponent’s stones are removed from the board.</string>
 
-    <string name="plLightWon">Light-cubes player won.</string>
-    <string name="plDarkWon">Dark-cubes player won.</string>
+    <string name="plLightWon">Light-stones player won.</string>
+    <string name="plDarkWon">Dark-stones player won.</string>
     <string name="Cookies">Cookies</string>
 </resources>
