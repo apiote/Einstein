@@ -28,15 +28,9 @@
     <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="">
       <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/libraries/play_services_ads_8_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/play_services_ads_8_4_0.xml" />
       <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/libraries/play_services_basement_8_3_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/play_services_basement_8_4_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/board_layout.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/board_layout.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/ending_layout.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/ending_layout.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values-pl/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values-pl/strings.xml" />
     </list>
     <ignored path="Einstein.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -2627,7 +2621,13 @@
       <option name="project" value="LOCAL" />
       <updated>1451316448846</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Refactoring">
+      <created>1451317594159</created>
+      <option name="number" value="00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1451317594159</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -2715,13 +2715,13 @@
     <MESSAGE value="Destroying game on exit" />
     <MESSAGE value="Translation improvements" />
     <MESSAGE value="Added German translation" />
-    <MESSAGE value="Refactoring" />
     <MESSAGE value="Translations" />
     <MESSAGE value="Sequence change to fix a bug" />
     <MESSAGE value="Bug fix" />
     <MESSAGE value="Refactoring&#10;" />
     <MESSAGE value="Added Exception throwing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Exception throwing" />
+    <MESSAGE value="Refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2842,6 +2842,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="42" column="27" selection-start-line="42" selection-start-column="27" selection-end-line="42" selection-end-column="27" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
