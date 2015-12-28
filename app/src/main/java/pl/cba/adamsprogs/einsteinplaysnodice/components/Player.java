@@ -48,7 +48,7 @@ public class Player implements Die.OnRollListener, Die.OnErrorListener {
     }
 
     private void setUpColours() {
-        if (colour == COLOUR_LIGHT) {
+        if (id == COLOUR_LIGHT) {
             orientation = ORIENTATION_NORTH;
             this.colour = Utilities.getColour(context, R.color.light);
             textColour = Utilities.getColour(context, R.color.text);
