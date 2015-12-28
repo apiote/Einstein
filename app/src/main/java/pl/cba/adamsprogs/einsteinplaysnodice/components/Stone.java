@@ -38,19 +38,17 @@ public class Stone implements Comparable<Stone> {
         this.value = value + "";
         x = position.x;
         y = position.y;
-
-        createBitmap();
-    }
-
-
-    private void createBitmap() {
-        bitmap = Bitmap.createBitmap((int) squareSize, (int) squareSize, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(bitmap);
     }
 
     public void create(float squareSize) {
         this.squareSize = squareSize;
+        createBitmap();
         draw(createStone(), createAmbientShadow());
+    }
+
+    private void createBitmap() {
+        bitmap = Bitmap.createBitmap((int) squareSize, (int) squareSize, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(bitmap);
     }
 
     private Bitmap createStone() {
