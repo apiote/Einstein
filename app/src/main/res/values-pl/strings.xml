@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_activity_board">Plansza</string>
-    <string name="title_activity_how_to_play">JakGrać</string>
+    <string name="title_activity_how_to_play">Jak Grać</string>
 
     <string name="Cookies">Ciasteczka</string>
     <string name="cookies_message">Wykorzystujemy identyfikatory urządzeń do personalizacji treści i reklam, aby oferować funkcje mediów społecznościowych i analizować ruch. Takie identyfikatory i inne informacje z Twojego urządzenia udostępniamy partnerom społecznościowym, reklamowym i analitycznym.</string>
