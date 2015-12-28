@@ -1,6 +1,8 @@
 package pl.cba.adamsprogs.einsteinplaysnodice.components;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.*;
 
 import pl.cba.adamsprogs.einsteinplaysnodice.R;
@@ -10,21 +12,41 @@ import pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities;
 public class Player implements Die.OnRollListener, Die.OnErrorListener {
     public static final int COLOUR_LIGHT = 1;
     public static final int COLOUR_DARK = 0;
-    public static final int ORIENTATION_NORTH = 180;
-    public static final int ORIENTATION_SOUTH = 0;
+    private static final int ORIENTATION_NORTH = 180;
+    private static final int ORIENTATION_SOUTH = 0;
+
     private int orientation;
+    private final int id;
+
     private int colour;
     private int textColour;
+
+    @Nullable
     private Die die;
     private int dieValue;
-    private Context context;
-    private OnRollListener onRollListener;
-    private int id;
-    private ServerGame game;
 
-    public Player(ServerGame serverGame, int colour, ImageView dieImage) {
-        game = serverGame;
-        this.context = serverGame.getContext();
+    @NonNull
+    private final ServerGame game;
+
+    private final Context context;
+    private OnRollListener onRollListener;
+
+    public Player(@NonNull ServerGame game, int id, @Nullable ImageView dieImage) {
+        this.game = game;
+        this.context = game.getContext();
+        this.id = id;
+
+        setUpColours();
+        attachInterfaces();
+        createDie(dieImage);
+    }
+
+    private void createDie(ImageView dieImage) {
+        if (dieImage != null)
+            die = new Die(context, orientation, dieImage, this);
+    }
+
+    private void setUpColours() {
         if (colour == COLOUR_LIGHT) {
             orientation = ORIENTATION_NORTH;
             this.colour = Utilities.getColour(context, R.color.light);
@@ -34,19 +56,17 @@ public class Player implements Die.OnRollListener, Die.OnErrorListener {
             this.colour = Utilities.getColour(context, R.color.dark);
             textColour = Utilities.getColour(context, R.color.text_light);
         }
-
-        id = colour;
-
-        try {
-            onRollListener = serverGame;
-        } catch (Exception ignored) {
-        }
-
-        if (dieImage != null) die = new Die(context, orientation, dieImage, this);
     }
 
-    public Player(ServerGame serverGame, int colourLight) {
-        this(serverGame, colourLight, null);
+    private void attachInterfaces() {
+        try {
+            onRollListener = game;
+        } catch (Exception ignored) {
+        }
+    }
+
+    public Player(@NonNull ServerGame game, int id) {
+        this(game, id, null);
     }
 
     public int getId() {
@@ -54,7 +74,7 @@ public class Player implements Die.OnRollListener, Die.OnErrorListener {
     }
 
     public void setActive(boolean active) {
-        die.setRollable(active);
+        if (die != null) die.setRollable(active);
     }
 
     public int getOrientation() {
@@ -74,27 +94,23 @@ public class Player implements Die.OnRollListener, Die.OnErrorListener {
     }
 
     public void setDieWidth(int dieWidth) {
-        die.setWidth(dieWidth);
+        if (die != null) die.setWidth(dieWidth);
     }
 
     public void setDieHeight(int dieHeight) {
-        die.setHeight(dieHeight);
+        if (die != null) die.setHeight(dieHeight);
     }
 
     public void drawDie() {
-        try {
-            die.draw();
-        } catch (IllegalStateException e) {
-            Toast.makeText(context, "Couldn't draw dice", Toast.LENGTH_SHORT).show();
-        }
+        if (die != null) die.draw();
     }
 
     public void triggerRoll() {
-        die.signalRoll();
+        if (die != null) die.signalRoll();
     }
 
     public void stopDieAnimationThread() {
-        die.stopDieAnimationThread();
+        if (die != null) die.stopDieAnimationThread();
     }
 
     @Override

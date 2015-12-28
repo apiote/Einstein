@@ -24,9 +24,9 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="Translation improvements">
+    <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values-pl/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values-pl/strings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" afterPath="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" />
     </list>
     <ignored path="Einstein.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -54,40 +54,81 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values-pl/strings.xml">
+      <file leaf-file-name="Board.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.7358491">
-              <caret line="11" column="40" selection-start-line="11" selection-start-column="40" selection-end-line="11" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="283" column="28" selection-start-line="283" selection-start-column="28" selection-end-line="283" selection-end-column="28" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <file leaf-file-name="Player.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.245283">
-              <caret line="32" column="493" selection-start-line="32" selection-start-column="493" selection-end-line="32" selection-end-column="493" />
+            <state vertical-scroll-proportion="0.6516129">
+              <caret line="39" column="27" selection-start-line="39" selection-start-column="27" selection-end-line="39" selection-end-column="27" />
+              <folding>
+                <element signature="e#2041#2042#0" expanded="true" />
+                <element signature="e#2077#2078#0" expanded="true" />
+                <element signature="e#2173#2174#0" expanded="true" />
+                <element signature="e#2229#2230#0" expanded="true" />
+                <element signature="e#2532#2533#0" expanded="true" />
+                <element signature="e#2587#2588#0" expanded="true" />
+                <element signature="e#2634#2635#0" expanded="true" />
+                <element signature="e#2691#2692#0" expanded="true" />
+                <element signature="e#2720#2721#0" expanded="true" />
+                <element signature="e#2763#2764#0" expanded="true" />
+                <element signature="e#2796#2797#0" expanded="true" />
+                <element signature="e#2845#2846#0" expanded="true" />
+                <element signature="e#2889#2890#0" expanded="true" />
+                <element signature="e#2950#2951#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BoardActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="44" column="9" selection-start-line="44" selection-start-column="9" selection-end-line="44" selection-end-column="9" />
+              <folding>
+                <element signature="e#1449#1450#0" expanded="true" />
+                <element signature="e#1483#1484#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Die.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="44" column="11" selection-start-line="44" selection-start-column="11" selection-end-line="44" selection-end-column="11" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values-de/strings.xml">
+      <file leaf-file-name="ServerGame.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.015873017">
-              <caret line="12" column="61" selection-start-line="12" selection-start-column="61" selection-end-line="12" selection-end-column="61" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Translations Editor" pinned="false" current-in-tab="false">
-        <entry file="android-dummy:///home/adam/Git/AndroidstudioProjects/Einstein/app/Translations Editor">
-          <provider selected="true" editor-type-id="string-resource-editor">
-            <state />
+      <file leaf-file-name="LocalGame.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+              <folding />
+            </state>
           </provider>
         </entry>
       </file>
@@ -1706,7 +1747,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/htp_layout.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/HowToPlayActivity.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
-        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/MainMenuActivity.java" />
@@ -1723,6 +1763,7 @@
         <option value="$PROJECT_DIR$/app/src/main/res/values-pl/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values-de/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java" />
       </list>
     </option>
   </component>
@@ -1980,60 +2021,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Einstein" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Einstein" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="values" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Einstein" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="values" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="strings.xml" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResGroupNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -2638,7 +2625,19 @@
       <option name="project" value="LOCAL" />
       <updated>1451304068370</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Translation improvements">
+      <created>1451307884973</created>
+      <option name="number" value="00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1451307884973</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Added German translation">
+      <created>1451307905500</created>
+      <option name="number" value="00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1451307905500</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -2730,7 +2729,8 @@
     <MESSAGE value="Refactoring" />
     <MESSAGE value="Destroying game on exit" />
     <MESSAGE value="Translation improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="Translation improvements" />
+    <MESSAGE value="Added German translation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added German translation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2968,21 +2968,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="227" column="35" selection-start-line="227" selection-start-column="35" selection-end-line="227" selection-end-column="35" />
-          <folding>
-            <element signature="e#3180#3181#0" expanded="false" />
-            <element signature="e#3210#3211#0" expanded="false" />
-            <element signature="e#11121#11122#0" expanded="false" />
-            <element signature="e#11155#11156#0" expanded="false" />
-            <element signature="e#11193#11194#0" expanded="false" />
-            <element signature="e#11237#11238#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Stone.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.029032258">
@@ -3035,17 +3020,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
-          <folding>
-            <element signature="e#290#291#0" expanded="true" />
-            <element signature="e#333#334#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/MainMenuActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -3061,55 +3035,6 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="63" column="36" selection-start-line="63" selection-start-column="36" selection-end-line="63" selection-end-column="36" />
-          <folding>
-            <element signature="e#5235#5236#0" expanded="true" />
-            <element signature="e#5279#5280#0" expanded="true" />
-            <element signature="e#5845#5846#0" expanded="true" />
-            <element signature="e#5879#5880#0" expanded="true" />
-            <element signature="e#5917#5918#0" expanded="true" />
-            <element signature="e#5958#5959#0" expanded="true" />
-            <element signature="e#5997#5998#0" expanded="true" />
-            <element signature="e#6031#6032#0" expanded="true" />
-            <element signature="e#6456#6845#0" expanded="true" />
-            <element signature="e#6844#6845#0" expanded="true" />
-            <element signature="e#7094#7213#0" expanded="true" />
-            <element signature="e#7212#7213#0" expanded="true" />
-            <element signature="e#7289#7290#0" expanded="true" />
-            <element signature="e#7323#7324#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
-          <folding>
-            <element signature="e#2658#2659#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3136,9 +3061,75 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values-de/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.015873017">
-          <caret line="12" column="61" selection-start-line="12" selection-start-column="61" selection-end-line="12" selection-end-column="61" />
+        <state vertical-scroll-proportion="-12.566038">
+          <caret line="37" column="12" selection-start-line="37" selection-start-column="12" selection-end-line="37" selection-end-column="12" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/ServerGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Board.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="283" column="28" selection-start-line="283" selection-start-column="28" selection-end-line="283" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/games/LocalGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/activities/BoardActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="44" column="9" selection-start-line="44" selection-start-column="9" selection-end-line="44" selection-end-column="9" />
+          <folding>
+            <element signature="e#1449#1450#0" expanded="true" />
+            <element signature="e#1483#1484#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Die.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="44" column="11" selection-start-line="44" selection-start-column="11" selection-end-line="44" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/pl/cba/adamsprogs/einsteinplaysnodice/components/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6516129">
+          <caret line="39" column="27" selection-start-line="39" selection-start-column="27" selection-end-line="39" selection-end-column="27" />
+          <folding>
+            <element signature="e#2041#2042#0" expanded="true" />
+            <element signature="e#2077#2078#0" expanded="true" />
+            <element signature="e#2173#2174#0" expanded="true" />
+            <element signature="e#2229#2230#0" expanded="true" />
+            <element signature="e#2532#2533#0" expanded="true" />
+            <element signature="e#2587#2588#0" expanded="true" />
+            <element signature="e#2634#2635#0" expanded="true" />
+            <element signature="e#2691#2692#0" expanded="true" />
+            <element signature="e#2720#2721#0" expanded="true" />
+            <element signature="e#2763#2764#0" expanded="true" />
+            <element signature="e#2796#2797#0" expanded="true" />
+            <element signature="e#2845#2846#0" expanded="true" />
+            <element signature="e#2889#2890#0" expanded="true" />
+            <element signature="e#2950#2951#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
