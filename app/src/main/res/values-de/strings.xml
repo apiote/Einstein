@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_board">Spielbrett</string>
+    <string name="title_activity_how_to_play">Wie spielt man</string>
+
+    <string name="Cookies">Cookies</string>
+    <string name="cookies_message">Wir verwenden Gerätekennungen, um Inhalte und Anzeigen zu personalisieren, Funktionen für soziale Medien anbieten zu können und die Zugriffe auf unsere App zu analysieren. Außerdem geben wir diese Kennungen und andere Informationen über Ihr Gerät an unsere Partner für soziale Medien, Werbung und Analysen weiter.</string>
+    <string name="close_message">Nachricht schließen</string>
+    <string name="see_details">Details ansehen</string>
+
+    <string name="Play">Spiel starten</string>
+    <string name="Htp">Wie spielt man</string>
+    <string name="resetResults">Ergebnis neu stellen</string>
+
+    <string name="boardDes">Spielbrett Bild</string>
+    <string name="dieDes">Würfel Bild</string>
+    <string name="endingDialogueDes">Ergebnis Dialogbox Bild</string>
+
+    <string name="htpTile">Wie spielt man\n„Einstein“</string>
+    <string name="htpHeader1">1. Anfang</string>
+    <string name="htpPara1">Am Anfang ist das Spielbrett aufgestellt, wie wird im Bild 1 gezeigte. Die Steine werden in zufälliger Reihenfolge angeordnet. Helle Steine beginnen.</string>
+    <string name="htpPicDes1">Bild 1.</string>
+    <string name="htpPicSub1">Bild 1.</string>
+
+    <string name="htpHeader2">2. Runden</string>
+    <string name="htpPara2">Jede Runde beginnt mit einem Würfelwurf. Dann muss der Spieler den entsprechenden Stein ziehen. Wenn es nicht verfügbar ist, muss der Spieler den Stein, mit der nächsten Zahl höher oder niedriger als gewürfelt ziehen.\n Der Spieler darf einen Stein nur eine Zelle nach oben, links, oder in der oberen linken Richtung (Bild 2) ziehen.\n Wenn auf einer Zielzelle ein Stein sich befindet, wird er von der Spielbrett entfernt (Bild 3).\n Wenn auf dem Spielbrett es nur einen Stein des Spielers gibt, muss der Spieler nicht würfeln – der Stein wird automatisch gewählt.</string>
+    <string name="htpPicDes2">Bild 2.</string>
+    <string name="htpPicSub2">Bild 2.</string>
+    <string name="htpPicDes3">Bild 3.</string>
+    <string name="htpPicSub3">Bild 3.</string>
+
+    <string name="htpHeader3">3. Schluss</string>
+    <string name="htpPara3">Das Spiel endet, wenn:\n- ein Spieler einen seiner Steine in der Ecke des Gegners legt, oder\n- alle Steine des Gegners vom Brett entfernt werden.
+    </string>
+
+    <string name="plDarkWon">Dunkle Steine habt gewonnen</string>
+    <string name="plLightWon">Helle Steine habt gewonnen</string>
+</resources>
