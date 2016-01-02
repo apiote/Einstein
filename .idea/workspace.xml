@@ -26,16 +26,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98fd999f-188f-4254-af4b-89f37da5cf0d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/logo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/logo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/logo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/logo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/logo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/splash_screen.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable/splash.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
     </list>
     <ignored path="Einstein.iws" />
@@ -2726,7 +2717,13 @@
       <option name="project" value="LOCAL" />
       <updated>1451325148735</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Splash screen beautiful on all devices">
+      <created>1451757319323</created>
+      <option name="number" value="00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1451757319323</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -2795,7 +2792,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changed margins to paddings — EdgeEffect looks better" />
     <MESSAGE value="EndingDialogue buttons image size changed" />
     <MESSAGE value="Updated screenshots in HowToPlay" />
     <MESSAGE value="Refactored strings" />
@@ -2820,7 +2816,8 @@
     <MESSAGE value="Fixed Orientation for splash screen" />
     <MESSAGE value="Updated gradle script to play-services-ads 8.4.0" />
     <MESSAGE value="Fixed strange behaviour on first run" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed strange behaviour on first run" />
+    <MESSAGE value="Splash screen beautiful on all devices" />
+    <option name="LAST_COMMIT_MESSAGE" value="Splash screen beautiful on all devices" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
