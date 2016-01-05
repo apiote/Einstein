@@ -1,0 +1,20 @@
+3c3029d	new ending dialogue, main menu, icon, & swapping players on new game
+a368b24	name changed to Einstein
+9b04918	stones subjected to orientation
+7144ef9	visual fixes for smaller screens, fixes for pre-Lollipop, & ResultsFile class
+37d6dd4	stones numbers centred
+4175ca2	EndingDialogue only in portrait orientation
+cf06335	refactoring – divided into classes
+6a9b529	fixes in shadow dropping, EinStein feature, & fixes in board touch offset
+ca58868	animating dice while awaiting press
+44b6d33	dice subjected to orientation
+ce8016b	dropped support for legacy Apache (needed by adMob)
+0bdd1e3	fixes in margins – better EdgeEffect
+ae661b3	new screenshots in HowToPlay
+d31906f	cookies popup title internationalised
+a7151e4	acknowledgements
+81b7a44	splash screen
+598e983	translations improvements
+42ed4e1	added German translation
+19c4afa	throwing exceptions
+3284e2e	incremented Gradle version
