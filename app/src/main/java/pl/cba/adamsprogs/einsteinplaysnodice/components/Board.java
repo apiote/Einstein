@@ -222,7 +222,7 @@ public class Board {
     }
 
     private void drawSelectableStones() {
-        if(selectableStones==null)
+        if (selectableStones == null)
             return;
         for (Stone s : selectableStones) {
             drawSelectableStone(s);
@@ -270,11 +270,11 @@ public class Board {
         }
     }
 
-    private void shuffleBoard() throws IllegalStateException{
+    private void shuffleBoard() throws IllegalStateException {
         try {
             putPlayerStones(Player.COLOUR_LIGHT, new int[]{0, 1, 2});
             putPlayerStones(Player.COLOUR_DARK, new int[]{4, 3, 2});
-        }catch(IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             throw new IllegalStateException(e.getMessage());
         }
     }
@@ -327,7 +327,7 @@ public class Board {
     private boolean areThereNoOpponentStones(int id) {
         int sum = 0;
         for (Map.Entry<?, Stone> stoneEntry : stones.entrySet()) {
-            if (stoneEntry.getValue().getPlayerId() == id)
+            if (stoneEntry.getValue().getPlayerId() == opponent(id))
                 ++sum;
         }
         return sum == 0;
