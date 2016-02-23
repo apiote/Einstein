@@ -43,4 +43,8 @@ public class Utilities {
             ar[i] = a;
         }
     }
+
+    public static int opponent(int id) {
+        return 1 - id;
+    }
 }

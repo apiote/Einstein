@@ -12,6 +12,8 @@ import pl.cba.adamsprogs.einsteinplaysnodice.R;
 import pl.cba.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
 import pl.cba.adamsprogs.einsteinplaysnodice.components.*;
 
+import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
+
 public abstract class ServerGame implements Player.OnRollListener, Board.OnStoneMoved {
     protected boolean einStein = false;
 
@@ -43,7 +45,7 @@ public abstract class ServerGame implements Player.OnRollListener, Board.OnStone
         int[] dieImages = {R.id.dieLight, R.id.dieDark};
 
         currentPlayer = new Player(this, startPlayer, (ImageView) context.findViewById(dieImages[startPlayer]));
-        waitingPlayer = new Player(this, 1 - startPlayer, (ImageView) context.findViewById(dieImages[1 - startPlayer]));
+        waitingPlayer = new Player(this, opponent(startPlayer), (ImageView) context.findViewById(dieImages[opponent(startPlayer)]));
     }
 
     protected void setSizes() {
