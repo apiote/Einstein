@@ -1,4 +1,4 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.activities;
+package ml.adamsprogs.einsteinplaysnodice.activities;
 
 import android.content.*;
 import android.graphics.*;
@@ -10,11 +10,11 @@ import android.util.DisplayMetrics;
 import android.view.*;
 import android.widget.ImageView;
 
-import pl.cba.adamsprogs.einsteinplaysnodice.R;
-import pl.cba.adamsprogs.einsteinplaysnodice.components.Player;
-import pl.cba.adamsprogs.einsteinplaysnodice.utilities.ResultsFile;
+import ml.adamsprogs.einsteinplaysnodice.R;
+import ml.adamsprogs.einsteinplaysnodice.components.Player;
+import ml.adamsprogs.einsteinplaysnodice.utilities.ResultsFile;
 
-import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.getColour;
+import static ml.adamsprogs.einsteinplaysnodice.utilities.Utilities.getColour;
 
 public class EndingDialogueActivity extends AppCompatActivity {
     private static final int NOT_FOUND = -1;
@@ -222,17 +222,14 @@ public class EndingDialogueActivity extends AppCompatActivity {
     }
 
     private void setButtonsOnTouchListener() {
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, @NonNull MotionEvent event) {
-                float y = event.getY();
-                if (y >= windowHeight / 2) {
-                    goBackToMenu();
-                } else {
-                    playAgain();
-                }
-                return true;
+        view.setOnTouchListener((v, event) -> {
+            float y = event.getY();
+            if (y >= windowHeight / 2) {
+                goBackToMenu();
+            } else {
+                playAgain();
             }
+            return true;
         });
     }
 

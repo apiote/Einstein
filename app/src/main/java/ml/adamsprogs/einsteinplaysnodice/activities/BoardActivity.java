@@ -1,4 +1,4 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.activities;
+package ml.adamsprogs.einsteinplaysnodice.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,9 @@ import android.support.v7.app.*;
 import android.util.Log;
 import android.widget.Toast;
 
-import pl.cba.adamsprogs.einsteinplaysnodice.R;
-import pl.cba.adamsprogs.einsteinplaysnodice.components.Player;
-import pl.cba.adamsprogs.einsteinplaysnodice.games.*;
+import ml.adamsprogs.einsteinplaysnodice.R;
+import ml.adamsprogs.einsteinplaysnodice.components.Player;
+import ml.adamsprogs.einsteinplaysnodice.games.*;
 
 public class BoardActivity extends AppCompatActivity implements ServerGame.OnWinListener, ServerGame.OnErrorExit{
     private ServerGame serverGame;

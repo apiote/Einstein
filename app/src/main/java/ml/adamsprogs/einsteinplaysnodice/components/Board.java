@@ -1,4 +1,4 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.components;
+package ml.adamsprogs.einsteinplaysnodice.components;
 
 import android.content.Context;
 import android.graphics.*;
@@ -10,10 +10,10 @@ import android.widget.ImageView;
 
 import java.util.*;
 
-import pl.cba.adamsprogs.einsteinplaysnodice.R;
-import pl.cba.adamsprogs.einsteinplaysnodice.games.ServerGame;
+import ml.adamsprogs.einsteinplaysnodice.R;
+import ml.adamsprogs.einsteinplaysnodice.games.ServerGame;
 
-import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
+import static ml.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
 
 public class Board {
     private static final int gridWidth = 2;
@@ -76,11 +76,9 @@ public class Board {
 
     private void setUpOnClickListener() {
         this.view.setOnTouchListener(
-                new ImageView.OnTouchListener() {
-                    public boolean onTouch(View v, @NonNull MotionEvent m) {
-                        handleTouch(m);
-                        return true;
-                    }
+                (v, m) -> {
+                    handleTouch(m);
+                    return true;
                 }
         );
     }

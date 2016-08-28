@@ -1,4 +1,4 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.games;
+package ml.adamsprogs.einsteinplaysnodice.games;
 
 import android.support.annotation.NonNull;
 import android.graphics.Point;
@@ -8,11 +8,11 @@ import android.widget.*;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import pl.cba.adamsprogs.einsteinplaysnodice.R;
-import pl.cba.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
-import pl.cba.adamsprogs.einsteinplaysnodice.components.*;
+import ml.adamsprogs.einsteinplaysnodice.R;
+import ml.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
+import ml.adamsprogs.einsteinplaysnodice.components.*;
 
-import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
+import static ml.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
 
 public abstract class ServerGame implements Player.OnRollListener, Board.OnStoneMoved {
     protected boolean einStein = false;

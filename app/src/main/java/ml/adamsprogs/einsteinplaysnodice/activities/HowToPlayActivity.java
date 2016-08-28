@@ -1,4 +1,4 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.activities;
+package ml.adamsprogs.einsteinplaysnodice.activities;
 
 import android.graphics.Typeface;
 import android.support.v7.app.*;
@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.*;
-
-import pl.cba.adamsprogs.einsteinplaysnodice.R;
+import ml.adamsprogs.einsteinplaysnodice.R;
 
 
 public class HowToPlayActivity extends AppCompatActivity {
@@ -16,10 +14,9 @@ public class HowToPlayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(pl.cba.adamsprogs.einsteinplaysnodice.R.layout.htp_layout);
+        setContentView(ml.adamsprogs.einsteinplaysnodice.R.layout.htp_layout);
 
         setUpToolbar();
-        setUpAd();
         setTitleTypeface();
     }
 
@@ -29,12 +26,6 @@ public class HowToPlayActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void setUpAd() {
-        AdView mAdView = (AdView) findViewById(R.id.adView_htp);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
     }
 
     private void setTitleTypeface() {

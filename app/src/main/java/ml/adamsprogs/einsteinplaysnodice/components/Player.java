@@ -1,13 +1,13 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.components;
+package ml.adamsprogs.einsteinplaysnodice.components;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.*;
 
-import pl.cba.adamsprogs.einsteinplaysnodice.R;
-import pl.cba.adamsprogs.einsteinplaysnodice.games.ServerGame;
-import pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities;
+import ml.adamsprogs.einsteinplaysnodice.R;
+import ml.adamsprogs.einsteinplaysnodice.games.ServerGame;
+import ml.adamsprogs.einsteinplaysnodice.utilities.Utilities;
 
 public class Player implements Die.OnRollListener, Die.OnErrorListener {
     public static final int COLOUR_LIGHT = 1;

@@ -1,4 +1,4 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.utilities;
+package ml.adamsprogs.einsteinplaysnodice.utilities;
 
 import android.content.Context;
 import android.util.Log;

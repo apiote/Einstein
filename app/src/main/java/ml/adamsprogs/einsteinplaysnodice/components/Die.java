@@ -1,4 +1,4 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.components;
+package ml.adamsprogs.einsteinplaysnodice.components;
 
 import android.content.Context;
 import android.graphics.*;
@@ -9,10 +9,10 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
-import pl.cba.adamsprogs.einsteinplaysnodice.R;
-import pl.cba.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
+import ml.adamsprogs.einsteinplaysnodice.R;
+import ml.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
 
-import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
+import static ml.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
 
 public class Die {
     private ImageView view;
@@ -58,11 +58,9 @@ public class Die {
 
     private void attachOnClickListener() {
         this.view.setOnTouchListener(
-                new ImageView.OnTouchListener() {
-                    public boolean onTouch(View v, MotionEvent m) {
-                        diePressed(m);
-                        return true;
-                    }
+                (v, m) -> {
+                    diePressed(m);
+                    return true;
                 }
         );
     }
@@ -226,18 +224,15 @@ public class Die {
     }
 
     private void createDieAnimationThread() {
-        dieAnimationThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int i = 0;
-                while (true) {
-                    try {
-                        drawDieAnimationFrame(i);
-                    } catch (InterruptedException e) {
-                        break;
-                    }
-                    i = (++i) % 6;
+        dieAnimationThread = new Thread(() -> {
+            int i = 0;
+            while (true) {
+                try {
+                    drawDieAnimationFrame(i);
+                } catch (InterruptedException e) {
+                    break;
                 }
+                i = (++i) % 6;
             }
         });
     }
@@ -246,12 +241,7 @@ public class Die {
         if (Thread.currentThread().isInterrupted())
             throw new InterruptedException();
         final int v = dieOrder[i];
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                draw(v);
-            }
-        });
+        context.runOnUiThread(() -> draw(v));
         Thread.sleep(250, 0);
     }
 

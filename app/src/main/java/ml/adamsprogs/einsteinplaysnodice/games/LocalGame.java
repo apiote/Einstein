@@ -1,7 +1,7 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.games;
+package ml.adamsprogs.einsteinplaysnodice.games;
 
-import pl.cba.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
-import pl.cba.adamsprogs.einsteinplaysnodice.components.*;
+import ml.adamsprogs.einsteinplaysnodice.activities.BoardActivity;
+import ml.adamsprogs.einsteinplaysnodice.components.*;
 
 public class LocalGame extends ServerGame {
     public LocalGame(BoardActivity context, int startPlayer) {

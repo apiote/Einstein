@@ -1,13 +1,13 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.components;
+package ml.adamsprogs.einsteinplaysnodice.components;
 
 import android.content.Context;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 
-import pl.cba.adamsprogs.einsteinplaysnodice.R;
+import ml.adamsprogs.einsteinplaysnodice.R;
 
-import static pl.cba.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
+import static ml.adamsprogs.einsteinplaysnodice.utilities.Utilities.*;
 
 public class Stone implements Comparable<Stone> {
     private final Bitmap ambientShadow, directionalShadow;

@@ -1,4 +1,4 @@
-package pl.cba.adamsprogs.einsteinplaysnodice.activities;
+package ml.adamsprogs.einsteinplaysnodice.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
