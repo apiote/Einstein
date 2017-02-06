@@ -1,99 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="384dp"
+        android:layout_height="56dp"
         android:background="@color/primary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        tools:ignore="UnusedAttribute" />
+        tools:ignore="UnusedAttribute"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
 
-        <TextView
-            android:id="@+id/playBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/resultLight"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:clickable="true"
-            android:gravity="center_horizontal"
-            android:onClick="change"
-            android:text="@string/Play"
-            android:textSize="40sp" />
+    <TextView
+        android:id="@+id/htpBtn"
+        android:layout_width="384dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:gravity="center_horizontal"
+        android:onClick="change"
+        android:text="@string/Htp"
+        android:textIsSelectable="false"
+        android:textSize="40sp"
+        tools:layout_editor_absoluteX="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/playBtn"/>
 
-        <TextView
-            android:id="@+id/htpBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:gravity="center_horizontal"
-            android:onClick="change"
-            android:text="@string/Htp"
-            android:textIsSelectable="false"
-            android:textSize="40sp" />
+    <TextView
+        android:id="@+id/playBtn"
+        android:layout_width="384dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:gravity="center_horizontal"
+        android:onClick="change"
+        android:text="@string/Play"
+        android:textSize="40sp"
+        tools:layout_conversion_absoluteX="0dp"
+        tools:layout_conversion_absoluteY="200dp"
+        tools:layout_conversion_absoluteWidth="384dp"
+        tools:layout_conversion_absoluteHeight="47dp"
+        tools:layout_editor_absoluteX="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"/>
 
-        <TextView
-            android:id="@+id/resultLight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/htpBtn"
-            android:layout_toLeftOf="@+id/resultsDivider"
-            android:layout_toStartOf="@id/resultsDivider"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textColor="@color/secondary"
-            android:textSize="30sp" />
 
-        <TextView
-            android:id="@+id/resultsDivider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/htpBtn"
-            android:layout_centerHorizontal="true"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="@string/resultsSeparator"
-            android:textColor="@color/text"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/resultDark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/htpBtn"
-            android:layout_toEndOf="@id/resultsDivider"
-            android:layout_toRightOf="@id/resultsDivider"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textColor="@color/primary"
-            android:textSize="30sp" />
-
-        <Button
-            android:id="@+id/resetButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/htpBtn"
-            android:layout_marginTop="31dp"
-            android:elevation="2dp"
-            android:text="@string/resetResults"
-            tools:ignore="UnusedAttribute" />
-
-    </RelativeLayout>
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
