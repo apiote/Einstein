@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import static ml.adamsprogs.einstein.engine.utils.Utils.pointToString;
+
 public abstract class AbstractGame implements Player.OnRollListener, Board.OnStoneMoved {
     protected boolean einStein = false;
 
@@ -20,7 +22,10 @@ public abstract class AbstractGame implements Player.OnRollListener, Board.OnSto
     protected OnWinListener onWinListener;
     protected OnErrorExit onErrorExit;
 
-    protected AbstractGame() {
+    protected Object androidContext;
+
+    protected AbstractGame(Object androidContext) {
+        this.androidContext = androidContext;
         createBoard();
         attachInterfaces();
     }
@@ -59,12 +64,13 @@ public abstract class AbstractGame implements Player.OnRollListener, Board.OnSto
     }
 
     private void hintAsEinStein() {
-        Point p = getEinSteinPoint();
-        board.processSelectTouch(p);
+        String p = getEinSteinPoint();
+        board.processSelectTouch(pointToString(p));
         einStein = false;
     }
 
     private void tryToHint() throws IllegalStateException {
+        System.out.println("tryingtohint");
         try {
             board.hint(currentPlayer);
         } catch (NoSuchElementException e) {
@@ -111,11 +117,11 @@ public abstract class AbstractGame implements Player.OnRollListener, Board.OnSto
     }
 
     @NotNull
-    private Point getEinSteinPoint() throws IllegalStateException {
+    private String getEinSteinPoint() throws IllegalStateException {
         int id = currentPlayer.getId();
         for (Map.Entry<?, Stone> stone : board.getStones().entrySet()) {
             if (stone.getValue().getPlayerId() == id) {
-                return (Point) stone.getKey();
+                return (String) stone.getKey();
             }
         }
         throw new IllegalStateException("EinStein point not found");

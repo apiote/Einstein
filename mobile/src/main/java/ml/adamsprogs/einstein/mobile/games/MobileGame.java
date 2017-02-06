@@ -11,12 +11,8 @@ import ml.adamsprogs.einstein.mobile.components.*;
 import static ml.adamsprogs.einstein.engine.utils.Utils.opponent;
 
 public abstract class MobileGame extends AbstractGame{
-
-    private BoardActivity context;
-
     public MobileGame(BoardActivity context, int startPlayer) {
-        super();
-        this.context = context;
+        super(context);
 
         createPlayers(startPlayer);
         setSizes();
@@ -24,26 +20,26 @@ public abstract class MobileGame extends AbstractGame{
 
     protected void attachInterfaces() {
         try {
-            onWinListener = context;
-            onErrorExit = context;
+            onWinListener = (OnWinListener) androidContext;
+            onErrorExit = (OnErrorExit) androidContext;
         } catch (Exception ignored) {
         }
     }
 
     protected void createBoard() {
-        board = new MobileBoard(this, (ImageView) context.findViewById(R.id.board));
+        board = new MobileBoard(this, (ImageView) ((BoardActivity) androidContext).findViewById(R.id.board));
     }
 
     protected void createPlayers(int startPlayer) {
         int[] dieImages = {R.id.dieLight, R.id.dieDark};
 
-        currentPlayer = new MobilePlayer(this, startPlayer, (ImageView) context.findViewById(dieImages[startPlayer]));
-        waitingPlayer = new MobilePlayer(this, opponent(startPlayer), (ImageView) context.findViewById(dieImages[opponent(startPlayer)]));
+        currentPlayer = new MobilePlayer(this, startPlayer, (ImageView) ((BoardActivity) androidContext).findViewById(dieImages[startPlayer]));
+        waitingPlayer = new MobilePlayer(this, opponent(startPlayer), (ImageView) ((BoardActivity) androidContext).findViewById(dieImages[opponent(startPlayer)]));
     }
 
     protected void setSizes() {
         DisplayMetrics metrics = new DisplayMetrics();
-        context.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        ((BoardActivity) androidContext).getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
         int height = metrics.heightPixels;
 
@@ -57,10 +53,10 @@ public abstract class MobileGame extends AbstractGame{
     @Override
     public void destroy() {
         super.destroy();
-        context = null;
+        androidContext = null;
     }
 
     public BoardActivity getContext() {
-        return context;
+        return ((BoardActivity) androidContext);
     }
 }

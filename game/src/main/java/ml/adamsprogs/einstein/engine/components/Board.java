@@ -8,12 +8,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static ml.adamsprogs.einstein.engine.utils.Utils.opponent;
+import static ml.adamsprogs.einstein.engine.utils.Utils.positionToString;
 
 public abstract class Board {
     protected OnStoneMoved onStoneMoved;
 
     @NotNull
-    protected HashMap<Point, Stone> stones = new HashMap<>();
+    protected HashMap<String, Stone> stones = new HashMap<>();
     protected ArrayList<Stone> selectableStones;
     protected Stone selectedStone;
     protected Point[] targetablePoints;
@@ -32,12 +33,17 @@ public abstract class Board {
     }
 
     protected boolean isPointTargetable(Point touchedPoint) {
+        System.out.println("targetableChecking");
         if (targetablePoints == null)
             return false;
+        System.out.println("not null");
+        System.out.println("touched: "+positionToString(touchedPoint));
         for (Point p : targetablePoints) {
-            if (p.equals(touchedPoint))
+            System.out.println("checking with "+positionToString(p));
+            if (positionToString(p).equals(positionToString(touchedPoint)))
                 return true;
         }
+        System.out.println("none");
         return false;
     }
 
@@ -64,34 +70,39 @@ public abstract class Board {
     }
 
     protected void moveStone(Point target) {
-        stones.remove(selectedStone.getPosition());
+        stones.remove(positionToString(selectedStone.getPosition()));
         selectedStone.moveTo(target);
-        stones.remove(target);
-        stones.put(target, selectedStone);
+        stones.remove(positionToString(target));
+        stones.put(positionToString(target), selectedStone);
     }
 
     protected boolean isValidSelectTouch(Point touchedPoint) {
-        Stone tempSelectedStone = stones.get(touchedPoint);
+        Stone tempSelectedStone = stones.get(positionToString(touchedPoint));
+        System.out.println("Touched " + touchedPoint.x + "x" + touchedPoint.y);
+        for (Map.Entry<String, Stone> e : stones.entrySet()) {
+            System.out.println("stone at " + e.getKey());
+        }
         return (tempSelectedStone != null && tempSelectedStone.isSelectable());
     }
 
     public void processSelectTouch(@NotNull Point touchedPoint) {
-        selectedStone = stones.get(touchedPoint);
+        selectedStone = stones.get(positionToString(touchedPoint));
         selectedStone.setSelectable(false);
         hintMove(touchedPoint);
     }
 
     protected void hintMove(@NotNull Point point) {
+        System.out.println("Hinting move");
         createTargetablePoints(point);
         draw();
         drawSelectableStones();
-        Stone stone = stones.get(point);
+        Stone stone = stones.get(positionToString(point));
 
         drawLiftedStone(stone);
 
         for (Point targetPoint : targetablePoints) {
             drawMoveHintHighlight(targetPoint.x, targetPoint.y);
-            stone = stones.get(targetPoint);
+            stone = stones.get(positionToString(targetPoint));
             if (stone != null) {
                 drawStone(stone);
             }
@@ -106,8 +117,10 @@ public abstract class Board {
     }
 
     protected void drawSelectableStones() {
+        System.out.println("Drawing selectable Stones");
         if (selectableStones == null)
             return;
+        System.out.println("They’re not null");
         for (Stone s : selectableStones) {
             drawSelectableStone(s);
             s.setSelectable(true);
@@ -154,7 +167,7 @@ public abstract class Board {
 
     protected boolean isInCorner(int id) {
         Point point = new Point(id * 4, id * 4);
-        Stone stone = stones.get(point);
+        Stone stone = stones.get(positionToString(point));
         return stone != null && stone.getOrientation() / 180 == id;
     }
 
@@ -168,7 +181,7 @@ public abstract class Board {
     }
 
     @NotNull
-    public HashMap<Point, Stone> getStones() {
+    public HashMap<String, Stone> getStones() {
         return stones;
     }
 
@@ -263,6 +276,7 @@ public abstract class Board {
     protected abstract void putPlayerStones(int colour, @NotNull int[] arr);
 
     protected abstract void drawSelectableStone(@NotNull Stone s);
+
     protected abstract void drawMoveHintHighlight(int x, int y);
 
     public interface OnStoneMoved {

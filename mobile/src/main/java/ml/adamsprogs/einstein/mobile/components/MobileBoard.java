@@ -2,6 +2,7 @@ package ml.adamsprogs.einstein.mobile.components;
 
 import android.content.Context;
 import android.graphics.*;
+import ml.adamsprogs.einstein.engine.components.Player;
 import ml.adamsprogs.einstein.engine.utils.Point;
 import ml.adamsprogs.einstein.engine.components.Stone;
 import android.support.annotation.NonNull;
@@ -14,6 +15,7 @@ import ml.adamsprogs.einstein.R;
 import ml.adamsprogs.einstein.mobile.games.MobileGame;
 import org.jetbrains.annotations.NotNull;
 
+import static ml.adamsprogs.einstein.engine.utils.Utils.positionToString;
 import static ml.adamsprogs.einstein.engine.utils.Utils.shuffleArray;
 import static ml.adamsprogs.einstein.mobile.utilities.Utilities.*;
 
@@ -74,14 +76,17 @@ public class MobileBoard extends ml.adamsprogs.einstein.engine.components.Board 
     }
 
     private void handleTouch(@NonNull MotionEvent m) {
+        System.out.println("touched");
         int action = m.getActionMasked();
         Point touchedPoint = getTouchPoint(m);
 
         if (isValidTouch(action)) {
+            System.out.println("isValidTouch");
             if (isValidMoveTouch(touchedPoint)) {
                 processMoveTouch(touchedPoint);
             }
             if (isValidSelectTouch(touchedPoint)) {
+                System.out.println("processing select touch");
                 processSelectTouch(touchedPoint);
             }
         }
@@ -175,7 +180,7 @@ public class MobileBoard extends ml.adamsprogs.einstein.engine.components.Board 
             //noinspection ConstantConditions
             for (int j : ar(i, colour)) {
                 Point position = new Point(j, i);
-                stones.put(position, new MobileStone(context, player, stoneShuffleArray[k++], position));
+                stones.put(positionToString(position), new MobileStone(context, player, stoneShuffleArray[k++], position));
             }
     }
 
@@ -205,7 +210,7 @@ public class MobileBoard extends ml.adamsprogs.einstein.engine.components.Board 
         return size + squareSize > 0;
     }
 
-    public void hint(@NonNull MobilePlayer player) throws NoSuchElementException {
+    public void hint(@NonNull Player player) throws NoSuchElementException {
         super.hint(player);
         view.setImageBitmap(bitmap);
     }

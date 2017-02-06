@@ -16,4 +16,13 @@ public class Utils {
             ar[i] = a;
         }
     }
+
+    public static String positionToString(Point p) {
+        return p.x + "_" + p.y;
+    }
+
+    public static Point pointToString(String s) {
+        String[] split = s.split("_");
+        return new Point(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+    }
 }
