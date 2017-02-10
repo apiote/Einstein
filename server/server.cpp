@@ -146,7 +146,7 @@ void handleMessage(char message[]) {
             if(liczbaGraczy == -1) {
                 {
                     cout << "niepoprawna liczba graczy" << endl;
-                    char a[100] = "error create niepoprawna liczba graczy";
+                    char a[100] = "error create invalid_count";
                     if (write(lastDescriptor, a, 100) == -1) {
                         perror("errorCode");
                     }
@@ -178,7 +178,7 @@ void handleMessage(char message[]) {
         } else {
             {
                 cout << "gra jest juz utworzona, nie mozna utworzyc kolejnej" << endl;
-                char a[100] = "error create gra juz istnieje";
+                char a[100] = "error create exists";
                 if (write(lastDescriptor, a, 100) == -1) {
                     perror("errorCode");
                 }
@@ -225,7 +225,7 @@ void handleMessage(char message[]) {
             } else {
                 {
                     cout << "gra trwa, nie ma miejsc w zespolach" << endl;
-                    char a[100] = "error join nie ma miejsc w zespolach";
+                    char a[100] = "error join full";
                     if (write(lastDescriptor, a, 100) == -1) {
                         perror("errorCode");
                     }
@@ -235,7 +235,7 @@ void handleMessage(char message[]) {
         } else {
             {
                 cout << "gra sie jeszcze nie rozpoczela" << endl;
-                char a[100] = "error join gra sie jeszcze nie rozpoczela";
+                char a[100] = "error join not_started";
                 if (write(lastDescriptor, a, 100) == -1) {
                     perror("errorCode");
                 }
