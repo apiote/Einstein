@@ -172,7 +172,7 @@ void handleMessage(char message[]) {
             if(numberOfPlayers == -1) {
                 {
                     cout << "niepoprawna liczba graczy" << endl;
-                    char a[100] = "error create invalid_count";
+                    char a[100] = "error create invalid_count\n";
                     if (write(lastDescriptor, a, 100) == -1) {
                         perror("errorCode");
                     }
@@ -185,14 +185,14 @@ void handleMessage(char message[]) {
                 ++numberOfYellowPlayers;
                 {
                     cout << "gra utworzona dla " << numberOfPlayers << " graczy" << endl;
-                    char a[100] = "success create";
+                    char a[100] = "success create\n";
                     if (write(lastDescriptor, a, 100) == -1) {
                         perror("errorCode");
                     }
                 }
                 {
                     cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
-                    char a[100] = "success join yellow";
+                    char a[100] = "success join yellow\n";
                     if (write(lastDescriptor, a, 100) == -1) {
                         perror("errorCode");
                     }
@@ -201,7 +201,7 @@ void handleMessage(char message[]) {
         } else {
             {
                 cout << "gra jest juz utworzona, nie mozna utworzyc kolejnej" << endl;
-                char a[100] = "error create exists";
+                char a[100] = "error create exists\n";
                 if (write(lastDescriptor, a, 100) == -1) {
                     perror("errorCode");
                 }
@@ -217,7 +217,7 @@ void handleMessage(char message[]) {
                     ++numberOfYellowPlayers;
                     {
                         cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
-                        char a[100] = "success join yellow";
+                        char a[100] = "success join yellow\n";
                         if (write(lastDescriptor, a, 100) == -1) {
                             perror("errorCode");
                         }
@@ -228,7 +228,7 @@ void handleMessage(char message[]) {
                     ++numberOfBluePlayers;
                     {
                         cout << "gra jest utworzona, gracz dolaczyl do zespolu niebieskiego" << endl;
-                        char a[100] = "success join blue";
+                        char a[100] = "success join blue\n";
                         if (write(lastDescriptor, a, 100) == -1) {
                             perror("errorCode");
                         }
@@ -240,7 +240,7 @@ void handleMessage(char message[]) {
                     cout << "rozpoczynamy gre" << endl;
                     for(int i = 0; i < numberOfPlayers; ++i){
                         {
-                            char a[100] = "success game started";
+                            char a[100] = "success game started\n";
                             if (write(yellowTeam[i], a, 100) == -1) {
                                 perror("errorCode");
                             }
@@ -253,7 +253,7 @@ void handleMessage(char message[]) {
                             }
                         }
                         {
-                            char a[100] = "success game started";
+                            char a[100] = "success game started\n";
                             if (write(blueTeam[i], a, 100) == -1) {
                                 perror("errorCode");
                             }
@@ -272,7 +272,7 @@ void handleMessage(char message[]) {
             } else {
                 {
                     cout << "gra trwa, nie ma miejsc w zespolach" << endl;
-                    char a[100] = "error join full";
+                    char a[100] = "error join full\n";
                     if (write(lastDescriptor, a, 100) == -1) {
                         perror("errorCode");
                     }
@@ -282,7 +282,7 @@ void handleMessage(char message[]) {
         } else {
             {
                 cout << "gra sie jeszcze nie rozpoczela" << endl;
-                char a[100] = "error join not_started";
+                char a[100] = "error join not_started\n";
                 if (write(lastDescriptor, a, 100) == -1) {
                     perror("errorCode");
                 }

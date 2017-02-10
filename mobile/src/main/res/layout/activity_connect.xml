@@ -33,12 +33,12 @@
         android:id="@+id/serverPort"
         android:layout_width="64dp"
         android:hint="Port"
-        tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/numberOfPlayers"
         android:layout_marginEnd="24dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="113dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="23dp"
         android:layout_marginRight="24dp"/>
 
     <Switch
@@ -46,11 +46,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/newGameSwitch"
+        tools:layout_constraintTop_creator="1"
         android:layout_marginStart="16dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/numberOfPlayers"
-        tools:layout_constraintBaseline_creator="1"
+        android:layout_marginTop="188dp"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginLeft="16dp"/>
 
     <EditText
@@ -60,26 +61,28 @@
         android:ems="10"
         android:id="@+id/numberOfPlayers"
         android:hint="Number of players"
-        tools:layout_constraintTop_creator="1"
+        android:visibility="invisible"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/serverAddress"
+        app:layout_constraintBaseline_toBaselineOf="@+id/newGameSwitch"
+        tools:layout_constraintBaseline_creator="1"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toRightOf="@+id/newGameSwitch"
-        android:layout_marginLeft="16dp"
-        android:visibility="invisible"/>
+        android:layout_marginLeft="16dp"/>
 
     <Button
         android:text="Start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/startButton"
-        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"
         tools:layout_constraintBottom_creator="1"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        android:layout_marginRight="16dp"/>
 
 </android.support.constraint.ConstraintLayout>

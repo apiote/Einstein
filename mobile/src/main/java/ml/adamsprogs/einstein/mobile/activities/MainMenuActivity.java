@@ -62,7 +62,7 @@ public class MainMenuActivity extends AppCompatActivity {
         Intent intent = null;
 
         if (v.getId() == R.id.playBtn)
-            intent = new Intent(this, ConnectActivity.class);
+            intent = new Intent(this, ChooseGameActivity.class);
         if (v.getId() == R.id.htpBtn)
             intent = new Intent(this, HowToPlayActivity.class);
 

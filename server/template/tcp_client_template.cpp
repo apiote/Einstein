@@ -42,19 +42,20 @@ int main(int argc, char ** argv){
 	
 /****************************/
 	
-	// read from socket, write to stdout
-/*	ssize_t bufsize1 = 255, received1;
-	char buffer1[bufsize1];
-	received1 = readData(sock, buffer1, bufsize1);
-	writeData(1, buffer1, received1);
-*/	
-/****************************/
-	
 	// read from stdin, write to socket
 	ssize_t bufsize2 = 255, received2;
 	char buffer2[bufsize2];
 	received2 = readData(0, buffer2, bufsize2);
 	writeData(sock, buffer2, received2);
+
+/****************************/
+	
+	// read from socket, write to stdout
+	ssize_t bufsize1 = 255, received1;
+	char buffer1[bufsize1];
+	received1 = readData(sock, buffer1, bufsize1);
+	writeData(1, buffer1, received1);
+	
 	
 /****************************/
 	
