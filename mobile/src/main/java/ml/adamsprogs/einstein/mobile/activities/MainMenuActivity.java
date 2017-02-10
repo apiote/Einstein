@@ -17,8 +17,6 @@ import ml.adamsprogs.einstein.mobile.utilities.ResultsFile;
 import static ml.adamsprogs.einstein.mobile.utilities.Utilities.*;
 
 public class MainMenuActivity extends AppCompatActivity {
-    private final static String PREFS_NAME = "EINSTEIN_SETTINGS";
-    private final static String isFirstRun = "isFirstRun";
 
     private final Context context = this;
 
@@ -64,7 +62,7 @@ public class MainMenuActivity extends AppCompatActivity {
         Intent intent = null;
 
         if (v.getId() == R.id.playBtn)
-            intent = new Intent(this, BoardActivity.class);
+            intent = new Intent(this, ConnectActivity.class);
         if (v.getId() == R.id.htpBtn)
             intent = new Intent(this, HowToPlayActivity.class);
 

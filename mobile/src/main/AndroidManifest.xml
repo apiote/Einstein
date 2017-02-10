@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="ml.adamsprogs.einstein">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="ml.adamsprogs.einstein">
 
     <application
         android:allowBackup="true"
@@ -9,23 +9,20 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".mobile.activities.SplashScreenActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".mobile.activities.MainMenuActivity"
-            android:label="@string/title_activity_main" />
-
+            android:label="@string/title_activity_main"/>
         <activity
             android:name=".mobile.activities.HowToPlayActivity"
             android:label="@string/title_activity_how_to_play"
@@ -33,7 +30,7 @@
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mobile.activities.MainMenuActivity" />
+                android:value=".mobile.activities.MainMenuActivity"/>
         </activity>
         <activity
             android:name=".mobile.activities.BoardActivity"
@@ -44,9 +41,8 @@
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mobile.activities.MainMenuActivity" />
+                android:value=".mobile.activities.MainMenuActivity"/>
         </activity>
-
         <activity
             android:name=".mobile.activities.EndingDialogueActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -55,7 +51,10 @@
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mobile.activities.MainMenuActivity" />
+                android:value=".mobile.activities.MainMenuActivity"/>
+        </activity>
+        <activity android:name=".mobile.activities.ConnectActivity">
         </activity>
     </application>
+
 </manifest>
