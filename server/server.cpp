@@ -12,11 +12,13 @@
 #include <ctime>
 #include <sstream>
 #include <iostream>
+#include <arpa/inet.h>
+
 #define MAXEVENTS 64
 
 using namespace std;
 
-int plansza[5][5];
+int board[5][5];
 int liczbaGraczy;
 int liczbaPolaczonychGraczy = 0;
 bool graUtworzona = false;
@@ -91,31 +93,44 @@ static int create_and_bind (char *port) {
 void createPlansza() {
     for(int i = 0; i < 5; ++i) {
         for(int j = 0; j < 5; ++j) {
-            plansza[i][j] = 0;
+            board[i][j] = 0;
         }
     }
     {
         int tab[6] = {1,2,3,4,5,6};
         random_shuffle(tab, tab+5);
-        plansza[0][0]= tab[0];
-        plansza[0][1] = tab[1];
-        plansza[0][2] = tab[2];
-        plansza[1][0] = tab[3];
-        plansza[1][1] = tab[4];
-        plansza[1][2] = tab[5];
+        board[0][0]= tab[0];
+        board[0][1] = tab[1];
+        board[0][2] = tab[2];
+        board[1][0] = tab[3];
+        board[1][1] = tab[4];
+        board[2][0] = tab[5];
     }
     {
         int tab[6] = {11,12,13,14,15,16};
         random_shuffle(tab, tab+5);
-        plansza[4][4]= tab[0];
-        plansza[4][3] = tab[1];
-        plansza[4][2] = tab[2];
-        plansza[3][4] = tab[3];
-        plansza[3][3] = tab[4];
-        plansza[2][4] = tab[5];
+        board[4][4]= tab[0];
+        board[4][3] = tab[1];
+        board[4][2] = tab[2];
+        board[3][4] = tab[3];
+        board[3][3] = tab[4];
+        board[2][4] = tab[5];
     }
 }
 
+string intToString(int i){
+    stringstream ss;
+    string s;
+    ss << i;
+    ss >> s;
+    if (ss.fail()) {
+        return "e";
+        //TODO
+        //e - error
+    } else {
+        return s;
+    }
+}
 int stringToInt(string s) {
     stringstream ss(s);
     int i;
@@ -135,6 +150,17 @@ void messageToStringArray(char message[]) {
         strArray[i] = tmp;
         i++;
     }
+}
+
+string boardToString(){
+    string b = "board";
+    for(int i = 0; i < 5; ++i){
+        for (int j = 0; j < 5; ++j) {
+            b += " ";
+            b += intToString(board[i][j]);
+        }
+    }
+    return b;
 }
 
 void handleMessage(char message[]) {
@@ -171,9 +197,6 @@ void handleMessage(char message[]) {
                         perror("errorCode");
                     }
                 }
-                //TODO
-                //przydziel pierwszego gracza do zoltych
-
             }
         } else {
             {
@@ -190,8 +213,8 @@ void handleMessage(char message[]) {
         if(graUtworzona) {
             if(liczbaPolaczonychGraczy < 2 * liczbaGraczy) {
                 if(liczbaZoltychGraczy < liczbaGraczy) {
-                    ++liczbaZoltychGraczy;
                     zespolZolty[liczbaZoltychGraczy] = lastDescriptor;
+                    ++liczbaZoltychGraczy;
                     {
                         cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
                         char a[100] = "success join yellow";
@@ -203,24 +226,50 @@ void handleMessage(char message[]) {
                     }
                 }
                 else{
-                    ++liczbaNiebieskichGraczy;
                     zespolNiebieski[liczbaNiebieskichGraczy] = lastDescriptor;
+                    ++liczbaNiebieskichGraczy;
                     {
                         cout << "gra jest utworzona, gracz dolaczyl do zespolu niebieskiego" << endl;
                         char a[100] = "success join blue";
                         if (write(lastDescriptor, a, 100) == -1) {
                             perror("errorCode");
                         }
-                        //TODO
-                        //wysyla komuniat ze dolaczyl do niebieskiego
                     }
                 }
                 ++liczbaPolaczonychGraczy;
                 if(liczbaPolaczonychGraczy == 2 * liczbaGraczy){
-                    //TODO
-                    //wyslac komunikat o rozpoczeciu gry
-                    cout << "rozpoczynamy gre" << endl;
                     graRozpoczeta = true;
+                    cout << "rozpoczynamy gre" << endl;
+                    for(int i = 0; i < liczbaGraczy; ++i){
+                        {
+                            char a[100] = "success game started";
+                            if (write(zespolZolty[i], a, 100) == -1) {
+                                perror("errorCode");
+                            }
+                        }
+                        {
+                            char a[100];
+                            strcpy(a, boardToString().c_str());
+                            if (write(zespolZolty[i], a, 100) == -1) {
+                                perror("errorCode");
+                            }
+                        }
+                        {
+                            char a[100] = "success game started";
+                            if (write(zespolNiebieski[i], a, 100) == -1) {
+                                perror("errorCode");
+                            }
+                        }
+                        {
+                            char a[100];
+                            strcpy(a, boardToString().c_str());
+                            if (write(zespolNiebieski[i], a, 100) == -1) {
+                                perror("errorCode");
+                            }
+                        }
+
+
+                    }
                 }
             } else {
                 {
