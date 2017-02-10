@@ -19,14 +19,14 @@
 using namespace std;
 
 int board[5][5];
-int liczbaGraczy;
-int liczbaPolaczonychGraczy = 0;
-bool graUtworzona = false;
-bool graRozpoczeta = false;
-int liczbaZoltychGraczy = 0;
-int liczbaNiebieskichGraczy = 0;
-int zespolZolty[10];
-int zespolNiebieski[10];
+int numberOfPlayers;
+int numberOfConnectedPlayers = 0;
+bool gameCreated = false;
+bool gameStarted = false;
+int numberOfYellowPlayers = 0;
+int numberOfBluePlayers = 0;
+int yellowTeam[10];
+int blueTeam[10];
 int lastDescriptor = 0;
 
 string strArray[100];
@@ -167,9 +167,9 @@ void handleMessage(char message[]) {
     messageToStringArray(message);
 
     if(strArray[0] == "create") {
-        if(!graUtworzona) {
-            liczbaGraczy = stringToInt(strArray[1]);
-            if(liczbaGraczy == -1) {
+        if(!gameCreated) {
+            numberOfPlayers = stringToInt(strArray[1]);
+            if(numberOfPlayers == -1) {
                 {
                     cout << "niepoprawna liczba graczy" << endl;
                     char a[100] = "error create invalid_count";
@@ -179,12 +179,12 @@ void handleMessage(char message[]) {
                 }
             } else {
                 createPlansza();
-                graUtworzona = true;
-                ++liczbaPolaczonychGraczy;
-                zespolZolty[liczbaZoltychGraczy] = lastDescriptor;
-                ++liczbaZoltychGraczy;
+                gameCreated = true;
+                ++numberOfConnectedPlayers;
+                yellowTeam[numberOfYellowPlayers] = lastDescriptor;
+                ++numberOfYellowPlayers;
                 {
-                    cout << "gra utworzona dla " << liczbaGraczy << " graczy" << endl;
+                    cout << "gra utworzona dla " << numberOfPlayers << " graczy" << endl;
                     char a[100] = "success create";
                     if (write(lastDescriptor, a, 100) == -1) {
                         perror("errorCode");
@@ -210,24 +210,22 @@ void handleMessage(char message[]) {
             //zdzojnuj jesli sie da
         }
     } else if(strArray[0] == "join") {
-        if(graUtworzona) {
-            if(liczbaPolaczonychGraczy < 2 * liczbaGraczy) {
-                if(liczbaZoltychGraczy < liczbaGraczy) {
-                    zespolZolty[liczbaZoltychGraczy] = lastDescriptor;
-                    ++liczbaZoltychGraczy;
+        if(gameCreated) {
+            if(numberOfConnectedPlayers < 2 * numberOfPlayers) {
+                if(numberOfYellowPlayers < numberOfPlayers) {
+                    yellowTeam[numberOfYellowPlayers] = lastDescriptor;
+                    ++numberOfYellowPlayers;
                     {
                         cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
                         char a[100] = "success join yellow";
                         if (write(lastDescriptor, a, 100) == -1) {
                             perror("errorCode");
                         }
-                        //TODO
-                        //dolacz do zespolu zoltego
                     }
                 }
                 else{
-                    zespolNiebieski[liczbaNiebieskichGraczy] = lastDescriptor;
-                    ++liczbaNiebieskichGraczy;
+                    blueTeam[numberOfBluePlayers] = lastDescriptor;
+                    ++numberOfBluePlayers;
                     {
                         cout << "gra jest utworzona, gracz dolaczyl do zespolu niebieskiego" << endl;
                         char a[100] = "success join blue";
@@ -236,34 +234,34 @@ void handleMessage(char message[]) {
                         }
                     }
                 }
-                ++liczbaPolaczonychGraczy;
-                if(liczbaPolaczonychGraczy == 2 * liczbaGraczy){
-                    graRozpoczeta = true;
+                ++numberOfConnectedPlayers;
+                if(numberOfConnectedPlayers == 2 * numberOfPlayers){
+                    gameStarted = true;
                     cout << "rozpoczynamy gre" << endl;
-                    for(int i = 0; i < liczbaGraczy; ++i){
+                    for(int i = 0; i < numberOfPlayers; ++i){
                         {
                             char a[100] = "success game started";
-                            if (write(zespolZolty[i], a, 100) == -1) {
+                            if (write(yellowTeam[i], a, 100) == -1) {
                                 perror("errorCode");
                             }
                         }
                         {
                             char a[100];
                             strcpy(a, boardToString().c_str());
-                            if (write(zespolZolty[i], a, 100) == -1) {
+                            if (write(yellowTeam[i], a, 100) == -1) {
                                 perror("errorCode");
                             }
                         }
                         {
                             char a[100] = "success game started";
-                            if (write(zespolNiebieski[i], a, 100) == -1) {
+                            if (write(blueTeam[i], a, 100) == -1) {
                                 perror("errorCode");
                             }
                         }
                         {
                             char a[100];
                             strcpy(a, boardToString().c_str());
-                            if (write(zespolNiebieski[i], a, 100) == -1) {
+                            if (write(blueTeam[i], a, 100) == -1) {
                                 perror("errorCode");
                             }
                         }
