@@ -19,7 +19,13 @@ using namespace std;
 int plansza[5][5];
 int liczbaGraczy;
 int liczbaPolaczonychGraczy = 0;
+bool graUtworzona = false;
 bool graRozpoczeta = false;
+int liczbaZoltychGraczy = 0;
+int liczbaNiebieskichGraczy = 0;
+int zespolZolty[10];
+int zespolNiebieski[10];
+int lastDescriptor = 0;
 
 string strArray[100];
 static int make_socket_non_blocking (int sfd) {
@@ -83,12 +89,11 @@ static int create_and_bind (char *port) {
 
 
 void createPlansza() {
-    for(int i = 0; i <= 5; ++i) {
-        for(int j = 0; j <= 5; ++j) {
+    for(int i = 0; i < 5; ++i) {
+        for(int j = 0; j < 5; ++j) {
             plansza[i][j] = 0;
         }
     }
-    srand(time(0));
     {
         int tab[6] = {1,2,3,4,5,6};
         random_shuffle(tab, tab+5);
@@ -127,7 +132,8 @@ void messageToStringArray(char message[]) {
     int i = 0;
     string tmp;
     while(ss >> tmp) {
-        strArray[i++] = tmp;
+        strArray[i] = tmp;
+        i++;
     }
 }
 
@@ -135,39 +141,68 @@ void handleMessage(char message[]) {
     messageToStringArray(message);
 
     if(strArray[0] == "create") {
-        if(!graRozpoczeta) {
+        if(!graUtworzona) {
             liczbaGraczy = stringToInt(strArray[1]);
             if(liczbaGraczy == -1) {
                 cout << "niepoprawna liczba graczy" << endl;
+                char a[100] = "error niepoprawna liczba graczy";
+                int errorCode = write(lastDescriptor, a, 100);
+                perror("errorCode");
                 //TODO
                 //wyslac komunikat o niepoprawnej liczbie graczy
             } else {
-
                 createPlansza();
-                graRozpoczeta = true;
+                graUtworzona = true;
                 ++liczbaPolaczonychGraczy;
-                cout << "gra rozpoczeta dla " << liczbaGraczy << " graczy" << endl;
+                zespolZolty[liczbaZoltychGraczy] = lastDescriptor;
+                ++liczbaZoltychGraczy;
+                cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
                 //TODO
-                //wyslij komunikat ze gra sie rozpoczela
+                //wysyla komuniat ze dolaczyl do zoltego
+                //TODO
+                //przydziel pierwszego gracza do zoltych
+                cout << "gra utworzona dla " << liczbaGraczy << " graczy" << endl;
+                //TODO
+                //wyslij komunikat ze gra zostala utworzona
                 //wyslij komunikat z zespolem
             }
         } else {
-            cout << "gra sie juz rozpoczela, nie mozna utworzyc kolejnej" << endl;
+            cout << "gra jest juz utworzona, nie mozna utworzyc kolejnej" << endl;
             //TODO
             //zdzojnuj jesli sie da
         }
     } else if(strArray[0] == "join") {
-        if(graRozpoczeta) {
+        if(graUtworzona) {
             if(liczbaPolaczonychGraczy < 2 * liczbaGraczy) {
-                cout << "gra sie rozpoczela, dolaczyles do zespolu" << endl;
-                //TODO
-                //wysyla komuniat ze dolaczyl
+                if(liczbaZoltychGraczy < liczbaGraczy) {
+                    ++liczbaZoltychGraczy;
+                    zespolZolty[liczbaZoltychGraczy] = lastDescriptor;
+                    cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
+                    //TODO
+                    //wysyla komuniat ze dolaczyl do zoltego
+                    //dolacz do zespolu zoltego
+                }
+                else{
+                    ++liczbaNiebieskichGraczy;
+                    zespolNiebieski[liczbaNiebieskichGraczy] = lastDescriptor;
+                    cout << "gra jest utworzona, gracz dolaczyl do zespolu niebieskiego" << endl;
+                    //TODO
+                    //wysyla komuniat ze dolaczyl do niebieskiego
+                    //dolacz do zespolu niebieskiego
+                }
                 ++liczbaPolaczonychGraczy;
+                if(liczbaPolaczonychGraczy == 2 * liczbaGraczy){
+                    //TODO
+                    //wyslac komunikat o rozpoczeciu gry
+                    cout << "rozpoczynamy gre" << endl;
+                    graRozpoczeta = true;
+                }
             } else {
-                cout << "gra sie rozpoczela, ale nie ma miejsc w zespolach" << endl;
+                cout << "gra trwa, nie ma miejsc w zespolach" << endl;
                 //TODO
                 //wysylamy komunikat ze nie miejsce w zespole
             }
+
         } else {
             //TODO
             //wyslac komunikat ze gra sie jeszcze nie rozpoczela
@@ -248,6 +283,9 @@ int main (int argc, char *argv[]) {
 
                     in_len = sizeof in_addr;
                     infd = accept (sfd, &in_addr, &in_len);
+                    if(infd != -1) {
+                        lastDescriptor = infd;
+                    }
                     if (infd == -1) {
                         if ((errno == EAGAIN) ||
                                 (errno == EWOULDBLOCK)) {
@@ -314,11 +352,11 @@ int main (int argc, char *argv[]) {
 
                     /* Write the buffer to standard output */
                     handleMessage(buf);
-                    /*s = write (1, buf, count);
+                    s = write (1, buf, count);
                     if (s == -1) {
                         perror ("write");
                         abort ();
-                    }*/
+                    }
                 }
 
                 if (done) {
