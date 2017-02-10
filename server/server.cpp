@@ -144,30 +144,45 @@ void handleMessage(char message[]) {
         if(!graUtworzona) {
             liczbaGraczy = stringToInt(strArray[1]);
             if(liczbaGraczy == -1) {
-                cout << "niepoprawna liczba graczy" << endl;
-                char a[100] = "error niepoprawna liczba graczy";
-                int errorCode = write(lastDescriptor, a, 100);
-                perror("errorCode");
-                //TODO
-                //wyslac komunikat o niepoprawnej liczbie graczy
+                {
+                    cout << "niepoprawna liczba graczy" << endl;
+                    char a[100] = "error create invalid_count";
+                    if (write(lastDescriptor, a, 100) == -1) {
+                        perror("errorCode");
+                    }
+                }
             } else {
                 createPlansza();
                 graUtworzona = true;
                 ++liczbaPolaczonychGraczy;
                 zespolZolty[liczbaZoltychGraczy] = lastDescriptor;
                 ++liczbaZoltychGraczy;
-                cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
-                //TODO
-                //wysyla komuniat ze dolaczyl do zoltego
+                {
+                    cout << "gra utworzona dla " << liczbaGraczy << " graczy" << endl;
+                    char a[100] = "success create";
+                    if (write(lastDescriptor, a, 100) == -1) {
+                        perror("errorCode");
+                    }
+                }
+                {
+                    cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
+                    char a[100] = "success join yellow";
+                    if (write(lastDescriptor, a, 100) == -1) {
+                        perror("errorCode");
+                    }
+                }
                 //TODO
                 //przydziel pierwszego gracza do zoltych
-                cout << "gra utworzona dla " << liczbaGraczy << " graczy" << endl;
-                //TODO
-                //wyslij komunikat ze gra zostala utworzona
-                //wyslij komunikat z zespolem
+
             }
         } else {
-            cout << "gra jest juz utworzona, nie mozna utworzyc kolejnej" << endl;
+            {
+                cout << "gra jest juz utworzona, nie mozna utworzyc kolejnej" << endl;
+                char a[100] = "error create exists";
+                if (write(lastDescriptor, a, 100) == -1) {
+                    perror("errorCode");
+                }
+            }
             //TODO
             //zdzojnuj jesli sie da
         }
@@ -177,18 +192,28 @@ void handleMessage(char message[]) {
                 if(liczbaZoltychGraczy < liczbaGraczy) {
                     ++liczbaZoltychGraczy;
                     zespolZolty[liczbaZoltychGraczy] = lastDescriptor;
-                    cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
-                    //TODO
-                    //wysyla komuniat ze dolaczyl do zoltego
-                    //dolacz do zespolu zoltego
+                    {
+                        cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
+                        char a[100] = "success join yellow";
+                        if (write(lastDescriptor, a, 100) == -1) {
+                            perror("errorCode");
+                        }
+                        //TODO
+                        //dolacz do zespolu zoltego
+                    }
                 }
                 else{
                     ++liczbaNiebieskichGraczy;
                     zespolNiebieski[liczbaNiebieskichGraczy] = lastDescriptor;
-                    cout << "gra jest utworzona, gracz dolaczyl do zespolu niebieskiego" << endl;
-                    //TODO
-                    //wysyla komuniat ze dolaczyl do niebieskiego
-                    //dolacz do zespolu niebieskiego
+                    {
+                        cout << "gra jest utworzona, gracz dolaczyl do zespolu niebieskiego" << endl;
+                        char a[100] = "success join blue";
+                        if (write(lastDescriptor, a, 100) == -1) {
+                            perror("errorCode");
+                        }
+                        //TODO
+                        //wysyla komuniat ze dolaczyl do niebieskiego
+                    }
                 }
                 ++liczbaPolaczonychGraczy;
                 if(liczbaPolaczonychGraczy == 2 * liczbaGraczy){
@@ -198,15 +223,23 @@ void handleMessage(char message[]) {
                     graRozpoczeta = true;
                 }
             } else {
-                cout << "gra trwa, nie ma miejsc w zespolach" << endl;
-                //TODO
-                //wysylamy komunikat ze nie miejsce w zespole
+                {
+                    cout << "gra trwa, nie ma miejsc w zespolach" << endl;
+                    char a[100] = "error join full";
+                    if (write(lastDescriptor, a, 100) == -1) {
+                        perror("errorCode");
+                    }
+                }
             }
 
         } else {
-            //TODO
-            //wyslac komunikat ze gra sie jeszcze nie rozpoczela
-            cout << "gra sie jeszcze nie rozpoczela" << endl;
+            {
+                cout << "gra sie jeszcze nie rozpoczela" << endl;
+                char a[100] = "error join not_started";
+                if (write(lastDescriptor, a, 100) == -1) {
+                    perror("errorCode");
+                }
+            }
         }
     } else {
         throw "error";
