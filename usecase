@@ -1,4 +1,4 @@
-​​​​​> W takim razie, serwer po wysłaniu wyniku rzutu kostką, zaczyna odmierzać
+> W takim razie, serwer po wysłaniu wyniku rzutu kostką, zaczyna odmierzać
 > czas. Serwer liczy głosy po upływie czasu lub gdy wszyscy klienci oddadzą
 > głos.
 
