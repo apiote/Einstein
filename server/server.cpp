@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <unistd.h>
@@ -9,10 +8,8 @@
 #include <sys/epoll.h>
 #include <errno.h>
 #include <algorithm>
-#include <ctime>
 #include <sstream>
 #include <iostream>
-#include <arpa/inet.h>
 
 #define MAXEVENTS 64
 
@@ -27,7 +24,6 @@ int numberOfYellowPlayers = 0;
 int numberOfBluePlayers = 0;
 int yellowTeam[10];
 int blueTeam[10];
-int lastDescriptor = 0;
 
 string strArray[100];
 static int make_socket_non_blocking (int sfd) {
@@ -163,7 +159,7 @@ string boardToString(){
     return b;
 }
 
-void handleMessage(char message[]) {
+void handleMessage(char message[], int sender) {
     messageToStringArray(message);
 
     if(strArray[0] == "create") {
@@ -172,64 +168,67 @@ void handleMessage(char message[]) {
             if(numberOfPlayers == -1) {
                 {
                     cout << "niepoprawna liczba graczy" << endl;
-                    char a[100] = "error create invalid_count";
-                    if (write(lastDescriptor, a, 100) == -1) {
+                    char a[100] = "error create invalid_count\n";
+                    if (write(sender, a, 100) == -1) {
                         perror("errorCode");
                     }
                 }
-            } else {
+            }
+            else {
                 createPlansza();
                 gameCreated = true;
                 ++numberOfConnectedPlayers;
-                yellowTeam[numberOfYellowPlayers] = lastDescriptor;
+                yellowTeam[numberOfYellowPlayers] = sender;
                 ++numberOfYellowPlayers;
                 {
                     cout << "gra utworzona dla " << numberOfPlayers << " graczy" << endl;
-                    char a[100] = "success create";
-                    if (write(lastDescriptor, a, 100) == -1) {
+                    char a[100] = "success create\n";
+                    if (write(sender, a, 100) == -1) {
                         perror("errorCode");
                     }
                 }
                 {
                     cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
-                    char a[100] = "success join yellow";
-                    if (write(lastDescriptor, a, 100) == -1) {
+                    char a[100] = "success join yellow\n";
+                    if (write(sender, a, 100) == -1) {
                         perror("errorCode");
                     }
                 }
             }
-        } else {
+        }
+        else {
             {
                 cout << "gra jest juz utworzona, nie mozna utworzyc kolejnej" << endl;
-                char a[100] = "error create exists";
-                if (write(lastDescriptor, a, 100) == -1) {
+                char a[100] = "error create exists\n";
+                if (write(sender, a, 100) == -1) {
                     perror("errorCode");
                 }
             }
             //TODO
             //zdzojnuj jesli sie da
         }
-    } else if(strArray[0] == "join") {
+    }
+    else if(strArray[0] == "join") {
         if(gameCreated) {
             if(numberOfConnectedPlayers < 2 * numberOfPlayers) {
                 if(numberOfYellowPlayers < numberOfPlayers) {
-                    yellowTeam[numberOfYellowPlayers] = lastDescriptor;
+                    yellowTeam[numberOfYellowPlayers] = sender;
                     ++numberOfYellowPlayers;
                     {
                         cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
-                        char a[100] = "success join yellow";
-                        if (write(lastDescriptor, a, 100) == -1) {
+                        char a[100] = "success join yellow\n";
+                        if (write(sender, a, 100) == -1) {
                             perror("errorCode");
                         }
                     }
                 }
                 else{
-                    blueTeam[numberOfBluePlayers] = lastDescriptor;
+                    blueTeam[numberOfBluePlayers] = sender;
                     ++numberOfBluePlayers;
                     {
                         cout << "gra jest utworzona, gracz dolaczyl do zespolu niebieskiego" << endl;
-                        char a[100] = "success join blue";
-                        if (write(lastDescriptor, a, 100) == -1) {
+                        char a[100] = "success join blue\n";
+                        if (write(sender, a, 100) == -1) {
                             perror("errorCode");
                         }
                     }
@@ -240,40 +239,43 @@ void handleMessage(char message[]) {
                     cout << "rozpoczynamy gre" << endl;
                     for(int i = 0; i < numberOfPlayers; ++i){
                         {
-                            char a[100] = "success game started";
+                            char a[100] = "success game started\n";
                             if (write(yellowTeam[i], a, 100) == -1) {
                                 perror("errorCode");
                             }
                         }
                         {
+                            string s = boardToString();
+                            s += '\n';
                             char a[100];
-                            strcpy(a, boardToString().c_str());
+                            strcpy(a, s.c_str());
                             if (write(yellowTeam[i], a, 100) == -1) {
                                 perror("errorCode");
                             }
                         }
                         {
-                            char a[100] = "success game started";
+                            char a[100] = "success game started\n";
                             if (write(blueTeam[i], a, 100) == -1) {
                                 perror("errorCode");
                             }
                         }
                         {
+                            string s = boardToString();
+                            s += '\n';
                             char a[100];
-                            strcpy(a, boardToString().c_str());
+                            strcpy(a, s.c_str());
                             if (write(blueTeam[i], a, 100) == -1) {
                                 perror("errorCode");
                             }
                         }
-
-
                     }
                 }
-            } else {
+            }
+            else {
                 {
                     cout << "gra trwa, nie ma miejsc w zespolach" << endl;
-                    char a[100] = "error join full";
-                    if (write(lastDescriptor, a, 100) == -1) {
+                    char a[100] = "error join full\n";
+                    if (write(sender, a, 100) == -1) {
                         perror("errorCode");
                     }
                 }
@@ -282,14 +284,15 @@ void handleMessage(char message[]) {
         } else {
             {
                 cout << "gra sie jeszcze nie rozpoczela" << endl;
-                char a[100] = "error join not_started";
-                if (write(lastDescriptor, a, 100) == -1) {
+                char a[100] = "error join not_started\n";
+                if (write(sender, a, 100) == -1) {
                     perror("errorCode");
                 }
             }
         }
-    } else {
-        throw "error";
+    }
+    else {
+        cout << "niepoprawne polecenie" << endl;
     }
 }
 
@@ -363,9 +366,7 @@ int main (int argc, char *argv[]) {
 
                     in_len = sizeof in_addr;
                     infd = accept (sfd, &in_addr, &in_len);
-                    if(infd != -1) {
-                        lastDescriptor = infd;
-                    }
+
                     if (infd == -1) {
                         if ((errno == EAGAIN) ||
                                 (errno == EWOULDBLOCK)) {
@@ -429,9 +430,8 @@ int main (int argc, char *argv[]) {
                         done = 1;
                         break;
                     }
-
+                    handleMessage(buf, events[i].data.fd);
                     /* Write the buffer to standard output */
-                    handleMessage(buf);
                     s = write (1, buf, count);
                     if (s == -1) {
                         perror ("write");
