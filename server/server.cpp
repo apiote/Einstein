@@ -31,17 +31,20 @@ int blueTeam[10];
 string strArray[100];
 string activeGroup = "none";
 int numberRolled = 0;
-vector<int> movable;
+vector<int> possibleStones;
 int selectedStone = 0;
 pair<int, int> selectedStonePosition;
 vector<pair<int, int>> possibleMoves;
+pair<int, int> votes;
+bool voteStoneNeeded = false;
+bool voteMoveNeeded = false;
 
 int roll() {
     srand(time(0));
     return rand() % 6 + 1;
 }
 
-vector<int> getCandidates() {
+vector<int> getPossibleMoves() {
     bool myNumbers[6];
     for (int i = 0; i < 6; ++i) {
         myNumbers[i] = 0;
@@ -331,7 +334,14 @@ void doMove(pair<int, int> destination) {
         board[destination.first][destination.second] = selectedStone + 10;
     }
     cout << "moved " << selectedStonePosition.first << " " << selectedStonePosition.second
-    << " to " << possibleMoves[0].first << " " << possibleMoves[0].second << endl;
+    << " to " << destination.first << " " << destination.second << endl;
+    //TODO send move moved info
+    //TODO end turn
+}
+
+void startStoneVote(){
+    votes.first = 0;
+    votes.second = 0;
 }
 
 void startTurn(string color) {
@@ -342,24 +352,24 @@ void startTurn(string color) {
     numberRolled = roll();
     cout << "rolled " << numberRolled << endl;
     sendRolled();
-    movable = getCandidates();
-    bool voteStoneNeeded = false;
-    if (movable.size() > 1) {
+    possibleStones = getPossibleMoves();
+    voteStoneNeeded = false;
+    if (possibleStones.size() > 1) {
         voteStoneNeeded = true;
     }
     if (voteStoneNeeded) {
         cout << "vote stone needed" << endl;
         sendStoneVote(true);
-        //TODO vote
+        startStoneVote();
     }
     else {
         cout << "vote stone not needed" << endl;
         sendStoneVote(false);
-        selectedStone = movable[0];
+        selectedStone = possibleStones[0];
         setSelectedStonePosition();
         cout << "selected stone " << selectedStonePosition.first << " " << selectedStonePosition.second << endl;
         sendStoneSelected(true);
-        bool voteMoveNeeded = false;
+        voteMoveNeeded = false;
         setPossibleMoves();
         for (int i = 0; i < possibleMoves.size(); ++i) {
             cout << possibleMoves[i].first << " " << possibleMoves[i].second << endl;
@@ -443,6 +453,7 @@ void joinIfPossible(int sender) {
 
 void createGame(int sender) {
     numberOfPlayers = stringToInt(strArray[1]);
+    //TODO check if strArray has [1]
     if (numberOfPlayers < 1) {
         cout << "invalid player count" << endl;
         writeN(sender, "error create invalid_count\n");
@@ -456,6 +467,71 @@ void createGame(int sender) {
 
         joinIfPossible(sender);
     }
+}
+
+bool isHisTurn(int sender){
+    if(activeGroup == "yellow"){
+        for (int i = 0; i < numberOfPlayers; ++i) {
+            if(sender == yellowTeam[i]){
+                return true;
+            }
+        }
+    }
+    else{
+        for (int i = 0; i < numberOfPlayers; ++i) {
+            if(sender == blueTeam[i]){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void checkIfVoteCanEnd(){
+    if (votes.first + votes.second == numberOfPlayers) {
+        cout << "voting finished" << endl;
+        if (votes.first > votes.second) {
+            doMove(possibleMoves[0]);
+        }
+        else if (votes.first < votes.second) {
+            doMove(possibleMoves[1]);
+        }
+        else {
+            //TODO tie
+        }
+    }
+}
+
+void voteForMove(int sender, pair<int, int> move){
+    string msg = "vote move ";
+    msg += intToString(selectedStonePosition.first);
+    msg += " ";
+    msg += intToString(selectedStonePosition.second);
+    msg += " to ";
+    msg += intToString(move.first);
+    msg += " ";
+    msg += intToString(move.second);
+    if (possibleMoves[0].first == move.first && possibleMoves[0].second == move.second) {
+        ++votes.first;
+        cout << "voted for move " << move.first << " " << move.second << endl;
+        string message = "success ";
+        message += msg;
+        writeN(sender, message);
+    }
+    else if (possibleMoves[1].first == move.first && possibleMoves[1].second == move.second) {
+        ++votes.second;
+        cout << "voted for move " << move.first << " " << move.second << endl;
+        string message = "success ";
+        message += msg;
+        writeN(sender, message);
+    }
+    else {
+        cout << "failed to vote for move " << move.first << " " << move.second << endl;
+        string message = "error ";
+        message += msg;
+        writeN(sender, message);
+    }
+    checkIfVoteCanEnd();
 }
 
 void handleMessage(char message[], int sender) {
@@ -478,6 +554,39 @@ void handleMessage(char message[], int sender) {
         else {
             cout << "game hasn't started yet" << endl;
             writeN(sender, "error join not_started\n");
+        }
+    }
+    else if(strArray[0] == "vote"){
+        if(!gameStarted){
+            cout << "game hasn't started yet" << endl;
+            writeN(sender, "error join not_started\n");
+        }//else if not your turn
+        else{
+            if(isHisTurn(sender)) {
+                if (strArray[1] == "stone") {
+                    //TODO vote for stone
+                }
+                else if (strArray[1] == "move") {
+                    if (voteMoveNeeded) {
+                        int x = stringToInt(strArray[2]);
+                        int y = stringToInt(strArray[3]);
+                        //TODO errors
+                        pair<int, int> move = make_pair(x, y);
+                        voteForMove(sender, move);
+                    }
+                    else{
+                        //TODO vote move not needed
+                    }
+                }
+                else {
+                    //TODO correct info
+                    cout << "unknown request" << endl;
+                    writeN(sender, "error request_unknown\n");
+                }
+            }
+            else{
+                //TODO not his turn
+            }
         }
     }
     else {
