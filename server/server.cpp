@@ -11,6 +11,8 @@
 #include <sstream>
 #include <iostream>
 #include <cstdlib>
+#include <vector>
+#include <set>
 
 #define MAXEVENTS 64
 
@@ -92,6 +94,50 @@ int roll(){
     return rand()%6 + 1;
 }
 
+vector<int> candidates(int numberRolled){
+    bool myNumbers[6];
+    for(int i = 0; i < 6 ; ++i){
+        myNumbers[i] = 0;
+    }
+    for(int i = 0; i < 5; ++i){
+        for (int j = 0; j < 5; ++j) {
+            if(activeGroup == "yellow"){
+                if (board[i][j] > 0 && board[i][j] < 7){
+                    myNumbers[board[i][j]] = true;
+                }
+            }
+            else{
+                if (board[i][j] > 10 && board[i][j] < 17){
+                    myNumbers[board[i][j] - 10] = true;
+                }
+            }
+        }
+    }
+    vector <int> c;
+    if(myNumbers[numberRolled]){
+        c.push_back(numberRolled);
+    }
+    else{
+        int i = numberRolled + 1;
+        while(i < 7){
+            if(myNumbers[i]){
+                c.push_back(i);
+                break;
+            }
+            ++i;
+        }
+        i = numberRolled - 1;
+        while(i > 0){
+            if(myNumbers[i]){
+                c.push_back(i);
+                break;
+            }
+            --i;
+        }
+    }
+    return c;
+}
+
 void writeN(int sender, string msg) {
     char a[100];
     int i;
@@ -103,7 +149,7 @@ void writeN(int sender, string msg) {
     }
 }
 
-void createPlansza() {
+void createBoard() {
     srand(time(0));
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
@@ -139,8 +185,7 @@ string intToString(int i) {
     ss >> s;
     if (ss.fail()) {
         return "e";
-        //TODO
-        //e - error
+        //TODO e - error
     } else {
         return s;
     }
@@ -178,29 +223,10 @@ string boardToString() {
     return b;
 }
 
-void createGame(int sender) {
-    numberOfPlayers = stringToInt(strArray[1]);
-    if (numberOfPlayers < 1) {
-        cout << "niepoprawna liczba graczy" << endl;
-        writeN(sender, "error create invalid_count\n");
-    }
-    else {
-        createPlansza();
-        gameCreated = true;
-        ++numberOfConnectedPlayers;
-        yellowTeam[numberOfYellowPlayers] = sender;
-        ++numberOfYellowPlayers;
-        cout << "gra utworzona dla " << numberOfPlayers << " graczy" << endl;
-        writeN(sender, "success create\n");
 
-        cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
-        writeN(sender, "success join yellow\n");
-    }
-}
-
-void sendRolled(int i){
+void sendRolled(int numberRolled){
     string msg = "success rolled ";
-    msg += intToString(i);
+    msg += intToString(numberRolled);
     msg += '\n';
     if(activeGroup == "yellow"){
         for (int i = 0; i < numberOfPlayers; ++i) {
@@ -230,7 +256,7 @@ void sendActiveGroup(){
 
 void startGame(){
     gameStarted = true;
-    cout << "rozpoczynamy gre" << endl;
+    cout << "game starts" << endl;
     for (int i = 0; i < numberOfPlayers; ++i) {
         writeN(yellowTeam[i], "success game started\n");
         writeN(blueTeam[i], "success game started\n");
@@ -239,38 +265,85 @@ void startGame(){
         writeN(yellowTeam[i], s);
         writeN(blueTeam[i], s);
     }
-    cout << "graja zolci" << endl;
+
+    cout << "yellow turn" << endl;
     activeGroup = "yellow";
     sendActiveGroup();
 
     int i = roll();
-    cout << "wyrzucono " << i << endl;
+    cout << "rolled " << i << endl;
     sendRolled(i);
+    vector<int> can = candidates(i);
+    if(can.size() > 1){
+        cout << "vote needed" << endl;
+        //TODO vote
+    }
+    else{
+        cout << "vote not needed" << endl;
+        //TODO check if can move
+    }
+
+}
+
+bool alreadyJoined(int sender){
+    for(int i = 0; i < numberOfYellowPlayers; ++i){
+        if(sender == yellowTeam[i]){
+            return true;
+        }
+    }
+    for(int i = 0; i < numberOfBluePlayers; ++i){
+        if(sender == blueTeam[i]){
+            return true;
+        }
+    }
+    return false;
 }
 
 void joinIfPossible(int sender) {
-    if (numberOfConnectedPlayers < 2 * numberOfPlayers) {
-        if (numberOfYellowPlayers < numberOfPlayers) {
-            yellowTeam[numberOfYellowPlayers] = sender;
-            ++numberOfYellowPlayers;
-            cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
-            writeN(sender, "success join yellow\n");
-        }
-        else {
-            blueTeam[numberOfBluePlayers] = sender;
-            ++numberOfBluePlayers;
-            cout << "gra jest utworzona, gracz dolaczyl do zespolu niebieskiego" << endl;
-            writeN(sender, "success join blue\n");
-        }
-        ++numberOfConnectedPlayers;
-        if (numberOfConnectedPlayers == 2 * numberOfPlayers) {
-            startGame();
-        }
+    if(alreadyJoined(sender)){
+        cout << "player already joined" << endl;
+        writeN(sender, "error join already_joined\n");
     }
     else {
+        if (numberOfConnectedPlayers < 2 * numberOfPlayers) {
+            if (numberOfYellowPlayers < numberOfPlayers) {
+                yellowTeam[numberOfYellowPlayers] = sender;
+                ++numberOfYellowPlayers;
+                cout << "player joined yellow team" << endl;
+                writeN(sender, "success join yellow\n");
+            }
+            else {
+                blueTeam[numberOfBluePlayers] = sender;
+                ++numberOfBluePlayers;
+                cout << "player joined blue team" << endl;
+                writeN(sender, "success join blue\n");
+            }
+            ++numberOfConnectedPlayers;
+            if (numberOfConnectedPlayers == 2 * numberOfPlayers) {
+                startGame();
+            }
+        }
+        else {
+            cout << "nie ma miejsc w zespolach" << endl;
+            writeN(sender, "error join full\n");
+        }
+    }
+}
 
-        cout << "gra trwa, nie ma miejsc w zespolach" << endl;
-        writeN(sender, "error join full\n");
+void createGame(int sender) {
+    numberOfPlayers = stringToInt(strArray[1]);
+    if (numberOfPlayers < 1) {
+        cout << "invalid player count" << endl;
+        writeN(sender, "error create invalid_count\n");
+    }
+    else {
+        createBoard();
+        gameCreated = true;
+
+        cout << "game created for " << numberOfPlayers << " players" << endl;
+        writeN(sender, "success create\n");
+
+        joinIfPossible(sender);
     }
 }
 
@@ -282,7 +355,7 @@ void handleMessage(char message[], int sender) {
             createGame(sender);
         }
         else {
-            cout << "gra jest juz utworzona, nie mozna utworzyc kolejnej" << endl;
+            cout << "game already exists" << endl;
             writeN(sender, "error create exists\n");
             joinIfPossible(sender);
         }
@@ -291,18 +364,16 @@ void handleMessage(char message[], int sender) {
         if (gameCreated) {
             joinIfPossible(sender);
         }
-
         else {
-            cout << "gra sie jeszcze nie rozpoczela" << endl;
+            cout << "game hasn't started yet" << endl;
             writeN(sender, "error join not_started\n");
         }
     }
     else {
-        cout << "niepoprawne polecenie" << endl;
+        cout << "unknown request" << endl;
         writeN(sender, "error request_unknown\n");
     }
 }
-
 
 int main(int argc, char *argv[]) {
     int sfd, s;
