@@ -29,11 +29,10 @@ int numberOfBluePlayers = 0;
 int yellowTeam[10];
 int blueTeam[10];
 string strArray[100];
-string activeGroup = "none";
+string activeTeam = "none";
 int numberRolled = 0;
-vector<int> possibleStones;
-int selectedStone = 0;
-pair<int, int> selectedStonePosition;
+vector<pair<int, int>> possibleStones;
+pair<int, int> selectedStone;
 vector<pair<int, int>> possibleMoves;
 pair<int, int> votes;
 bool voteStoneNeeded = false;
@@ -44,14 +43,14 @@ int roll() {
     return rand() % 6 + 1;
 }
 
-vector<int> getPossibleMoves() {
+void setPossibleStones() {
     bool myNumbers[6];
     for (int i = 0; i < 6; ++i) {
         myNumbers[i] = 0;
     }
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
-            if (activeGroup == "yellow") {
+            if (activeTeam == "yellow") {
                 if (board[i][j] > 0 && board[i][j] < 7) {
                     myNumbers[board[i][j]] = true;
                 }
@@ -63,29 +62,73 @@ vector<int> getPossibleMoves() {
             }
         }
     }
-    vector<int> c;
+    possibleStones.clear();
     if (myNumbers[numberRolled]) {
-        c.push_back(numberRolled);
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                if (activeTeam == "yellow") {
+                    if (board[i][j] == numberRolled) {
+                        pair<int, int> stone = make_pair(i, j);
+                        possibleStones.push_back(stone);
+                    }
+                }
+                else {
+                    if (board[i][j] - 10 == numberRolled) {
+                        pair<int, int> stone = make_pair(i, j);
+                        possibleStones.push_back(stone);
+                    }
+                }
+            }
+        }
     }
     else {
-        int i = numberRolled + 1;
-        while (i < 7) {
-            if (myNumbers[i]) {
-                c.push_back(i);
+        int n = numberRolled + 1;
+        while (n < 7) {
+            if (myNumbers[n]) {
+                for (int i = 0; i < 5; ++i) {
+                    for (int j = 0; j < 5; ++j) {
+                        if (activeTeam == "yellow") {
+                            if (board[i][j] == n) {
+                                pair<int, int> stone = make_pair(i, j);
+                                possibleStones.push_back(stone);
+                            }
+                        }
+                        else {
+                            if (board[i][j] - 10 == n) {
+                                pair<int, int> stone = make_pair(i, j);
+                                possibleStones.push_back(stone);
+                            }
+                        }
+                    }
+                }
                 break;
             }
-            ++i;
+            ++n;
         }
-        i = numberRolled - 1;
-        while (i > 0) {
-            if (myNumbers[i]) {
-                c.push_back(i);
+        n = numberRolled - 1;
+        while (n > 0) {
+            if (myNumbers[n]) {
+                for (int i = 0; i < 5; ++i) {
+                    for (int j = 0; j < 5; ++j) {
+                        if (activeTeam == "yellow") {
+                            if (board[i][j] == n) {
+                                pair<int, int> stone = make_pair(i, j);
+                                possibleStones.push_back(stone);
+                            }
+                        }
+                        else {
+                            if (board[i][j] - 10 == n) {
+                                pair<int, int> stone = make_pair(i, j);
+                                possibleStones.push_back(stone);
+                            }
+                        }
+                    }
+                }
                 break;
             }
-            --i;
+            --n;
         }
     }
-    return c;
 }
 
 void writeN(int sender, string msg) {
@@ -177,7 +220,7 @@ void sendRolled() {
     string msg = "success rolled ";
     msg += intToString(numberRolled);
     msg += '\n';
-    if (activeGroup == "yellow") {
+    if (activeTeam == "yellow") {
         for (int i = 0; i < numberOfPlayers; ++i) {
             writeN(yellowTeam[i], msg);
         }
@@ -189,9 +232,9 @@ void sendRolled() {
     }
 }
 
-void sendActiveGroup() {
+void sendActiveTeam() {
     string s;
-    if (activeGroup == "yellow") {
+    if (activeTeam == "yellow") {
         s = "success active yellow\n";
     }
     else {
@@ -211,7 +254,7 @@ void sendStoneVote(bool needed) {
     else {
         msg += "not_needed\n";
     }
-    if (activeGroup == "yellow") {
+    if (activeTeam == "yellow") {
         for (int i = 0; i < numberOfPlayers; ++i) {
             writeN(yellowTeam[i], msg);
         }
@@ -231,7 +274,7 @@ void sendMoveVote(bool needed) {
     else {
         msg += "not_needed\n";
     }
-    if (activeGroup == "yellow") {
+    if (activeTeam == "yellow") {
         for (int i = 0; i < numberOfPlayers; ++i) {
             writeN(yellowTeam[i], msg);
         }
@@ -246,15 +289,15 @@ void sendMoveVote(bool needed) {
 void sendStoneSelected(bool selected) {
     string msg = "success stone ";
     if (selected) {
-        msg += intToString(selectedStonePosition.first);
+        msg += intToString(selectedStone.first);
         msg += " ";
-        msg += intToString(selectedStonePosition.second);
+        msg += intToString(selectedStone.second);
         msg += " selected\n";
     }
     else {
         msg += "not_selected";
     }
-    if (activeGroup == "yellow") {
+    if (activeTeam == "yellow") {
         for (int i = 0; i < numberOfPlayers; ++i) {
             writeN(yellowTeam[i], msg);
         }
@@ -268,13 +311,15 @@ void sendStoneSelected(bool selected) {
 
 void sendMoveDone(pair<int, int> destination) {
     string msg = "success stone ";
-    msg += intToString(selectedStonePosition.first);
+    msg += intToString(selectedStone.first);
     msg += " ";
-    msg += intToString(selectedStonePosition.second);
+    msg += intToString(selectedStone.second);
     msg += " moved to ";
     msg += intToString(destination.first);
     msg += " ";
     msg += intToString(destination.second);
+    msg += " by ";
+    msg += activeTeam;
     msg += '\n';
     for (int i = 0; i < numberOfPlayers; ++i) {
         writeN(yellowTeam[i], msg);
@@ -282,112 +327,117 @@ void sendMoveDone(pair<int, int> destination) {
     }
 }
 
-void setSelectedStonePosition() {
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
-            if (activeGroup == "yellow") {
-                if (board[i][j] == selectedStone) {
-                    selectedStonePosition.first = i;
-                    selectedStonePosition.second = j;
-                }
-            }
-            else {
-                if (board[i][j] - 10 == selectedStone) {
-                    selectedStonePosition.first = i;
-                    selectedStonePosition.second = j;
-                }
-            }
-        }
-    }
-}
-
 void setPossibleMoves() {
     possibleMoves.clear();
-    if (activeGroup == "yellow") {
-        if (selectedStonePosition.first < 4) {
-            pair<int, int> p = make_pair(selectedStonePosition.first + 1, selectedStonePosition.second);
+    if (activeTeam == "yellow") {
+        if (selectedStone.first < 4) {
+            pair<int, int> p = make_pair(selectedStone.first + 1, selectedStone.second);
             possibleMoves.push_back(p);
         }
-        if (selectedStonePosition.second < 4) {
-            pair<int, int> p = make_pair(selectedStonePosition.first, selectedStonePosition.second + 1);
+        if (selectedStone.second < 4) {
+            pair<int, int> p = make_pair(selectedStone.first, selectedStone.second + 1);
             possibleMoves.push_back(p);
         }
     }
     else {
-        if (selectedStonePosition.first > 0) {
-            pair<int, int> p = make_pair(selectedStonePosition.first - 1, selectedStonePosition.second);
+        if (selectedStone.first > 0) {
+            pair<int, int> p = make_pair(selectedStone.first - 1, selectedStone.second);
             possibleMoves.push_back(p);
         }
-        if (selectedStonePosition.second > 0) {
-            pair<int, int> p = make_pair(selectedStonePosition.first, selectedStonePosition.second - 1);
+        if (selectedStone.second > 0) {
+            pair<int, int> p = make_pair(selectedStone.first, selectedStone.second - 1);
             possibleMoves.push_back(p);
         }
+    }
+}
+
+void checkIfEndGame(){
+    //TODO check corner
+    //TODO check no moves
+    //TODO check disconnected?
+}
+
+void startTurn(string color);
+
+void changeTurn(){
+    if(activeTeam == "yellow"){
+        startTurn("blue");
+    }
+    else{
+        startTurn("yellow");
     }
 }
 
 void doMove(pair<int, int> destination) {
-    board[selectedStonePosition.first][selectedStonePosition.second] = 0;
-    if (activeGroup == "yellow") {
-        board[destination.first][destination.second] = selectedStone;
-    }
-    else {
-        board[destination.first][destination.second] = selectedStone + 10;
-    }
-    cout << "moved " << selectedStonePosition.first << " " << selectedStonePosition.second
-    << " to " << destination.first << " " << destination.second << endl;
-    //TODO send move moved info
-    //TODO end turn
+    int selectedStoneNumber = board[selectedStone.first][selectedStone.second];
+    board[destination.first][destination.second] = selectedStoneNumber;
+    cout << "moved " << selectedStone.first << " " << selectedStone.second
+    << " to " << destination.first << " " << destination.second << " by " << activeTeam << endl;
+    sendMoveDone(destination);
+    checkIfEndGame();
+    changeTurn();
 }
 
-void startStoneVote(){
+void startVote(){
     votes.first = 0;
     votes.second = 0;
 }
 
-void startTurn(string color) {
-    activeGroup = color;
-    cout << color << " turn" << endl;
-    sendActiveGroup();
+void selectStone(pair<int, int> stone){
+    selectedStone.first = stone.first;
+    selectedStone.second = stone.second;
+    cout << "selected stone " << selectedStone.first << " " << selectedStone.second << endl;
+    sendStoneSelected(true);
 
+    voteMoveNeeded = false;
+    setPossibleMoves();
+    cout << "possible moves: " << endl;
+    for (int i = 0; i < possibleMoves.size(); ++i) {
+        cout << possibleMoves[i].first << " " << possibleMoves[i].second << endl;
+    }
+    if (possibleMoves.size() > 1) {
+        voteMoveNeeded = true;
+    }
+    if (voteMoveNeeded) {
+        cout << "vote move needed" << endl;
+        sendMoveVote(true);
+        startVote();
+    }
+    else {
+        cout << "vote move not needed" << endl;
+        sendMoveVote(false);
+        doMove(possibleMoves[0]);
+        sendMoveDone(possibleMoves[0]);
+    }
+}
+
+void startTurn(string color) {
+    activeTeam = color;
+    cout << color << " turn" << endl;
+    sendActiveTeam();
     numberRolled = roll();
     cout << "rolled " << numberRolled << endl;
     sendRolled();
-    possibleStones = getPossibleMoves();
+    setPossibleStones();
     voteStoneNeeded = false;
+    voteMoveNeeded = false;
     if (possibleStones.size() > 1) {
         voteStoneNeeded = true;
     }
     if (voteStoneNeeded) {
         cout << "vote stone needed" << endl;
         sendStoneVote(true);
-        startStoneVote();
+        cout << "possible stones: " << endl;
+        for (int i = 0; i < possibleStones.size(); ++i) {
+            cout << possibleStones[i].first << " " << possibleStones[i].second << endl;
+        }
+        startVote();
     }
     else {
         cout << "vote stone not needed" << endl;
         sendStoneVote(false);
-        selectedStone = possibleStones[0];
-        setSelectedStonePosition();
-        cout << "selected stone " << selectedStonePosition.first << " " << selectedStonePosition.second << endl;
-        sendStoneSelected(true);
-        voteMoveNeeded = false;
-        setPossibleMoves();
-        for (int i = 0; i < possibleMoves.size(); ++i) {
-            cout << possibleMoves[i].first << " " << possibleMoves[i].second << endl;
-        }
-        if (possibleMoves.size() > 1) {
-            voteMoveNeeded = true;
-        }
-        if (voteMoveNeeded) {
-            cout << "vote move needed" << endl;
-            sendMoveVote(true);
-            //TODO vote
-        }
-        else {
-            cout << "vote move not needed" << endl;
-            sendMoveVote(false);
-            doMove(possibleMoves[0]);
-            sendMoveDone(possibleMoves[0]);
-        }
+        selectStone(possibleStones[0]);
+
     }
 }
 
@@ -445,7 +495,7 @@ void joinIfPossible(int sender) {
             }
         }
         else {
-            cout << "nie ma miejsc w zespolach" << endl;
+            cout << "both teams are full" << endl;
             writeN(sender, "error join full\n");
         }
     }
@@ -470,7 +520,7 @@ void createGame(int sender) {
 }
 
 bool isHisTurn(int sender){
-    if(activeGroup == "yellow"){
+    if(activeTeam == "yellow"){
         for (int i = 0; i < numberOfPlayers; ++i) {
             if(sender == yellowTeam[i]){
                 return true;
@@ -487,7 +537,7 @@ bool isHisTurn(int sender){
     return false;
 }
 
-void checkIfVoteCanEnd(){
+void checkIfVoteForMoveCanEnd(){
     if (votes.first + votes.second == numberOfPlayers) {
         cout << "voting finished" << endl;
         if (votes.first > votes.second) {
@@ -497,6 +547,7 @@ void checkIfVoteCanEnd(){
             doMove(possibleMoves[1]);
         }
         else {
+            cout << "tie" << endl;
             //TODO tie
         }
     }
@@ -504,13 +555,14 @@ void checkIfVoteCanEnd(){
 
 void voteForMove(int sender, pair<int, int> move){
     string msg = "vote move ";
-    msg += intToString(selectedStonePosition.first);
+    msg += intToString(selectedStone.first);
     msg += " ";
-    msg += intToString(selectedStonePosition.second);
+    msg += intToString(selectedStone.second);
     msg += " to ";
     msg += intToString(move.first);
     msg += " ";
     msg += intToString(move.second);
+    msg += '\n';
     if (possibleMoves[0].first == move.first && possibleMoves[0].second == move.second) {
         ++votes.first;
         cout << "voted for move " << move.first << " " << move.second << endl;
@@ -527,11 +579,54 @@ void voteForMove(int sender, pair<int, int> move){
     }
     else {
         cout << "failed to vote for move " << move.first << " " << move.second << endl;
-        string message = "error ";
+        writeN(sender, "error vote move invalid\n");
+    }
+    checkIfVoteForMoveCanEnd();
+    cout << "current votes: " << votes.first << " " << votes.second << endl;
+}
+
+void checkIfVoteForStoneCanEnd(){
+    if (votes.first + votes.second == numberOfPlayers) {
+        cout << "voting finished" << endl;
+        if (votes.first > votes.second) {
+            selectStone(possibleStones[0]);
+        }
+        else if (votes.first < votes.second) {
+            selectStone(possibleStones[1]);
+        }
+        else {
+            cout << "tie" << endl;
+            //TODO tie
+        }
+    }
+}
+
+void voteForStone(int sender, pair<int, int> stone){
+    string msg = "vote stone ";
+    msg += intToString(stone.first);
+    msg += " ";
+    msg += intToString(stone.second);
+    msg += '\n';
+    if (possibleStones[0].first == stone.first && possibleStones[0].second == stone.second) {
+        ++votes.first;
+        cout << "voted for stone " << stone.first << " " << stone.second << endl;
+        string message = "success ";
         message += msg;
         writeN(sender, message);
     }
-    checkIfVoteCanEnd();
+    else if (possibleStones[1].first == stone.first && possibleStones[1].second == stone.second) {
+        ++votes.second;
+        cout << "voted for stone " << stone.first << " " << stone.second << endl;
+        string message = "success ";
+        message += msg;
+        writeN(sender, message);
+    }
+    else {
+        cout << "failed to vote for stone " << stone.first << " " << stone.second << endl;
+        writeN(sender, "error vote stone invalid\n");
+    }
+    checkIfVoteForStoneCanEnd();
+    cout << "current votes: " << votes.first << " " << votes.second << endl;
 }
 
 void handleMessage(char message[], int sender) {
@@ -565,6 +660,18 @@ void handleMessage(char message[], int sender) {
             if(isHisTurn(sender)) {
                 if (strArray[1] == "stone") {
                     //TODO vote for stone
+                    if (voteStoneNeeded) {
+                        int x = stringToInt(strArray[2]);
+                        int y = stringToInt(strArray[3]);
+                        //TODO errors
+                        pair<int, int> stone = make_pair(x, y);
+                        //TODO check if already voted
+                        voteForStone(sender, stone);
+                    }
+                    else{
+                        cout << "vote for stone is not needed at this moment" << endl;
+                        writeN(sender, "error vote stone not_needed\n");
+                    }
                 }
                 else if (strArray[1] == "move") {
                     if (voteMoveNeeded) {
@@ -572,20 +679,22 @@ void handleMessage(char message[], int sender) {
                         int y = stringToInt(strArray[3]);
                         //TODO errors
                         pair<int, int> move = make_pair(x, y);
+                        //TODO check if already voted
                         voteForMove(sender, move);
                     }
                     else{
-                        //TODO vote move not needed
+                        cout << "vote for move is not needed at this moment" << endl;
+                        writeN(sender, "error vote move not_needed\n");
                     }
                 }
                 else {
-                    //TODO correct info
                     cout << "unknown request" << endl;
                     writeN(sender, "error request_unknown\n");
                 }
             }
             else{
-                //TODO not his turn
+                cout << "it is not player turn" << endl;
+                writeN(sender, "error vote move not_your_turn\n");
             }
         }
     }
