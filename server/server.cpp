@@ -19,7 +19,7 @@
 using namespace std;
 
 int board[5][5];
-int numberOfPlayers;
+int numberOfPlayers = 0;
 int numberOfConnectedPlayers = 0;
 bool gameCreated = false;
 bool gameStarted = false;
@@ -29,72 +29,19 @@ int yellowTeam[10];
 int blueTeam[10];
 string strArray[100];
 string activeGroup = "none";
-
-static int make_socket_non_blocking(int sfd) {
-    int flags, s;
-
-    flags = fcntl(sfd, F_GETFL, 0);
-    if (flags == -1) {
-        perror("fcntl");
-        return -1;
-    }
-
-    flags |= O_NONBLOCK;
-    s = fcntl(sfd, F_SETFL, flags);
-    if (s == -1) {
-        perror("fcntl");
-        return -1;
-    }
-
-    return 0;
-}
-
-static int create_and_bind(char *port) {
-    struct addrinfo hints;
-    struct addrinfo *result, *rp;
-    int s, sfd;
-
-    memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_family = AF_UNSPEC;     /* Return IPv4 and IPv6 choices */
-    hints.ai_socktype = SOCK_STREAM; /* We want a TCP socket */
-    hints.ai_flags = AI_PASSIVE;     /* All interfaces */
-
-    s = getaddrinfo(NULL, port, &hints, &result);
-    if (s != 0) {
-        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
-        return -1;
-    }
-
-    for (rp = result; rp != NULL; rp = rp->ai_next) {
-        sfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-        if (sfd == -1)
-            continue;
-
-        s = bind(sfd, rp->ai_addr, rp->ai_addrlen);
-        if (s == 0) {
-            /* We managed to bind successfully! */
-            break;
-        }
-
-        close(sfd);
-    }
-
-    if (rp == NULL) {
-        fprintf(stderr, "Could not bind\n");
-        return -1;
-    }
-
-    freeaddrinfo(result);
-
-    return sfd;
-}
+int numberRolled = 0;
+vector<int> movable;
+int selectedStone = 0;
+int selectedStone_x = 0;
+int selectedStone_y;
+vector<string> possibleMoves;
 
 int roll(){
     srand(time(0));
     return rand()%6 + 1;
 }
 
-vector<int> candidates(int numberRolled){
+vector<int> getCandidates(){
     bool myNumbers[6];
     for(int i = 0; i < 6 ; ++i){
         myNumbers[i] = 0;
@@ -136,6 +83,10 @@ vector<int> candidates(int numberRolled){
         }
     }
     return c;
+}
+
+void getMoves(){
+
 }
 
 void writeN(int sender, string msg) {
@@ -223,8 +174,7 @@ string boardToString() {
     return b;
 }
 
-
-void sendRolled(int numberRolled){
+void sendRolled(){
     string msg = "success rolled ";
     msg += intToString(numberRolled);
     msg += '\n';
@@ -254,6 +204,143 @@ void sendActiveGroup(){
     }
 }
 
+void sendStoneVote(bool needed){
+    string msg = "success vote stone ";
+    if(needed){
+        msg += "needed\n";
+    }
+    else{
+        msg += "not_needed\n";
+    }
+    if(activeGroup == "yellow"){
+        for (int i = 0; i < numberOfPlayers; ++i) {
+            writeN(yellowTeam[i], msg);
+        }
+    }
+    else{
+        for (int i = 0; i < numberOfPlayers; ++i) {
+            writeN(blueTeam[i], msg);
+        }
+    }
+}
+
+void sendMoveVote(bool needed){
+    string msg = "success vote move ";
+    if(needed){
+        msg += "needed\n";
+    }
+    else{
+        msg += "not_needed\n";
+    }
+    if(activeGroup == "yellow"){
+        for (int i = 0; i < numberOfPlayers; ++i) {
+            writeN(yellowTeam[i], msg);
+        }
+    }
+    else{
+        for (int i = 0; i < numberOfPlayers; ++i) {
+            writeN(blueTeam[i], msg);
+        }
+    }
+}
+
+void sendStoneSelected(bool selected){
+    string msg = "success stone ";
+    if(selected){
+        msg += intToString(selectedStone_x);
+        msg += " ";
+        msg += intToString(selectedStone_y);
+        msg += " selected\n";
+    }
+    else{
+        msg += "not_selected";
+    }
+    if(activeGroup == "yellow"){
+        for (int i = 0; i < numberOfPlayers; ++i) {
+            writeN(yellowTeam[i], msg);
+        }
+    }
+    else{
+        for (int i = 0; i < numberOfPlayers; ++i) {
+            writeN(blueTeam[i], msg);
+        }
+    }
+}
+
+void setSelectedStonePosition(){
+    for (int i = 0; i < 5; ++i) {
+        for (int j = 0; j < 5; ++j) {
+            if(activeGroup == "yellow") {
+                if (board[i][j] == selectedStone){
+                    selectedStone_x = i;
+                    selectedStone_y = j;
+                }
+            }
+            else{
+                if (board[i][j] - 10 == selectedStone){
+                    selectedStone_x = i;
+                    selectedStone_y = j;
+                }
+            }
+        }
+    }
+}
+
+void startTurn(string color){
+    activeGroup = color;
+    cout << color << " turn" << endl;
+    sendActiveGroup();
+
+    numberRolled = roll();
+    cout << "rolled " << numberRolled << endl;
+    sendRolled();
+    movable = getCandidates();
+    bool voteStoneNeeded = false;
+    if(movable.size() > 1){
+        voteStoneNeeded = true;
+    }
+    if(voteStoneNeeded){
+        cout << "vote stone needed" << endl;
+        sendStoneVote(true);
+        //TODO vote
+    }
+    else{
+        cout << "vote stone not needed" << endl;
+        sendStoneVote(false);
+        selectedStone = movable[0];
+        cout << "selected stone " << selectedStone << endl;
+        setSelectedStonePosition();
+        sendStoneSelected(true);
+        bool voteMoveNeeded = true;
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                if(board[i][j] == selectedStone){
+                    if(activeGroup == "yellow"){
+                        if(i == 4 || j == 4){
+                            voteMoveNeeded = false;
+                        }
+                    }
+                    else{
+                        if(i == 0 || j == 0){
+                            voteMoveNeeded = false;
+                        }
+                    }
+                }
+            }
+        }
+        if(voteMoveNeeded){
+            cout << "vote move needed" << endl;
+            sendMoveVote(true);
+            //TODO vote
+        }
+        else{
+            cout << "vote move not needed" << endl;
+            sendMoveVote(false);
+            //TODO move
+        }
+    }
+}
+
 void startGame(){
     gameStarted = true;
     cout << "game starts" << endl;
@@ -261,28 +348,13 @@ void startGame(){
         writeN(yellowTeam[i], "success game started\n");
         writeN(blueTeam[i], "success game started\n");
         string s = boardToString();
+        s = "success " + s;
         s += '\n';
         writeN(yellowTeam[i], s);
         writeN(blueTeam[i], s);
     }
 
-    cout << "yellow turn" << endl;
-    activeGroup = "yellow";
-    sendActiveGroup();
-
-    int i = roll();
-    cout << "rolled " << i << endl;
-    sendRolled(i);
-    vector<int> can = candidates(i);
-    if(can.size() > 1){
-        cout << "vote needed" << endl;
-        //TODO vote
-    }
-    else{
-        cout << "vote not needed" << endl;
-        //TODO check if can move
-    }
-
+    startTurn("yellow");
 }
 
 bool alreadyJoined(int sender){
@@ -356,7 +428,7 @@ void handleMessage(char message[], int sender) {
         }
         else {
             cout << "game already exists" << endl;
-            writeN(sender, "error create exists\n");
+            writeN(sender, "error create already_exists\n");
             joinIfPossible(sender);
         }
     }
@@ -373,6 +445,65 @@ void handleMessage(char message[], int sender) {
         cout << "unknown request" << endl;
         writeN(sender, "error request_unknown\n");
     }
+}
+
+static int make_socket_non_blocking(int sfd) {
+    int flags, s;
+
+    flags = fcntl(sfd, F_GETFL, 0);
+    if (flags == -1) {
+        perror("fcntl");
+        return -1;
+    }
+
+    flags |= O_NONBLOCK;
+    s = fcntl(sfd, F_SETFL, flags);
+    if (s == -1) {
+        perror("fcntl");
+        return -1;
+    }
+
+    return 0;
+}
+
+static int create_and_bind(char *port) {
+    struct addrinfo hints;
+    struct addrinfo *result, *rp;
+    int s, sfd;
+
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_family = AF_UNSPEC;     /* Return IPv4 and IPv6 choices */
+    hints.ai_socktype = SOCK_STREAM; /* We want a TCP socket */
+    hints.ai_flags = AI_PASSIVE;     /* All interfaces */
+
+    s = getaddrinfo(NULL, port, &hints, &result);
+    if (s != 0) {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
+        return -1;
+    }
+
+    for (rp = result; rp != NULL; rp = rp->ai_next) {
+        sfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        if (sfd == -1)
+            continue;
+
+        s = bind(sfd, rp->ai_addr, rp->ai_addrlen);
+        if (s == 0) {
+            /* We managed to bind successfully! */
+            break;
+        }
+
+        close(sfd);
+    }
+
+    if (rp == NULL) {
+        fprintf(stderr, "Could not bind\n");
+        return -1;
+    }
+
+    freeaddrinfo(result);
+
+    return sfd;
 }
 
 int main(int argc, char *argv[]) {
