@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iostream>
+#include <cstdlib>
 
 #define MAXEVENTS 64
 
@@ -26,76 +27,88 @@ int yellowTeam[10];
 int blueTeam[10];
 
 string strArray[100];
-static int make_socket_non_blocking (int sfd) {
+
+static int make_socket_non_blocking(int sfd) {
     int flags, s;
 
-    flags = fcntl (sfd, F_GETFL, 0);
+    flags = fcntl(sfd, F_GETFL, 0);
     if (flags == -1) {
-        perror ("fcntl");
+        perror("fcntl");
         return -1;
     }
 
     flags |= O_NONBLOCK;
-    s = fcntl (sfd, F_SETFL, flags);
+    s = fcntl(sfd, F_SETFL, flags);
     if (s == -1) {
-        perror ("fcntl");
+        perror("fcntl");
         return -1;
     }
 
     return 0;
 }
 
-static int create_and_bind (char *port) {
+static int create_and_bind(char *port) {
     struct addrinfo hints;
     struct addrinfo *result, *rp;
     int s, sfd;
 
-    memset (&hints, 0, sizeof (struct addrinfo));
+    memset(&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_UNSPEC;     /* Return IPv4 and IPv6 choices */
     hints.ai_socktype = SOCK_STREAM; /* We want a TCP socket */
     hints.ai_flags = AI_PASSIVE;     /* All interfaces */
 
-    s = getaddrinfo (NULL, port, &hints, &result);
+    s = getaddrinfo(NULL, port, &hints, &result);
     if (s != 0) {
-        fprintf (stderr, "getaddrinfo: %s\n", gai_strerror (s));
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
         return -1;
     }
 
     for (rp = result; rp != NULL; rp = rp->ai_next) {
-        sfd = socket (rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        sfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
         if (sfd == -1)
             continue;
 
-        s = bind (sfd, rp->ai_addr, rp->ai_addrlen);
+        s = bind(sfd, rp->ai_addr, rp->ai_addrlen);
         if (s == 0) {
             /* We managed to bind successfully! */
             break;
         }
 
-        close (sfd);
+        close(sfd);
     }
 
     if (rp == NULL) {
-        fprintf (stderr, "Could not bind\n");
+        fprintf(stderr, "Could not bind\n");
         return -1;
     }
 
-    freeaddrinfo (result);
+    freeaddrinfo(result);
 
     return sfd;
 }
 
+void writeN(int sender, string msg) {
+    char a[100];
+    int i;
+    for (i = 0; i < msg.size(); ++i) {
+        a[i] = msg[i];
+    }
+    if (write(sender, a, msg.size()) == -1) {
+        perror("errorCode");
+    }
+}
 
 void createPlansza() {
-    for(int i = 0; i < 5; ++i) {
-        for(int j = 0; j < 5; ++j) {
+    srand(time(0));
+    for (int i = 0; i < 5; ++i) {
+        for (int j = 0; j < 5; ++j) {
             board[i][j] = 0;
         }
     }
     {
-        int tab[6] = {1,2,3,4,5,6};
-        random_shuffle(tab, tab+5);
-        board[0][0]= tab[0];
+        int tab[6] = {1, 2, 3, 4, 5, 6};
+        random_shuffle(tab, tab + 5);
+        board[0][0] = tab[0];
         board[0][1] = tab[1];
         board[0][2] = tab[2];
         board[1][0] = tab[3];
@@ -103,9 +116,9 @@ void createPlansza() {
         board[2][0] = tab[5];
     }
     {
-        int tab[6] = {11,12,13,14,15,16};
-        random_shuffle(tab, tab+5);
-        board[4][4]= tab[0];
+        int tab[6] = {11, 12, 13, 14, 15, 16};
+        random_shuffle(tab, tab + 5);
+        board[4][4] = tab[0];
         board[4][3] = tab[1];
         board[4][2] = tab[2];
         board[3][4] = tab[3];
@@ -114,7 +127,7 @@ void createPlansza() {
     }
 }
 
-string intToString(int i){
+string intToString(int i) {
     stringstream ss;
     string s;
     ss << i;
@@ -127,6 +140,7 @@ string intToString(int i){
         return s;
     }
 }
+
 int stringToInt(string s) {
     stringstream ss(s);
     int i;
@@ -142,15 +156,15 @@ void messageToStringArray(char message[]) {
     stringstream ss(message);
     int i = 0;
     string tmp;
-    while(ss >> tmp) {
+    while (ss >> tmp) {
         strArray[i] = tmp;
         i++;
     }
 }
 
-string boardToString(){
+string boardToString() {
     string b = "board";
-    for(int i = 0; i < 5; ++i){
+    for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
             b += " ";
             b += intToString(board[i][j]);
@@ -159,199 +173,146 @@ string boardToString(){
     return b;
 }
 
-void handleMessage(char message[], int sender) {
-    messageToStringArray(message);
+void createGame(int sender) {
+    numberOfPlayers = stringToInt(strArray[1]);
+    if (numberOfPlayers < 1) {
+        cout << "niepoprawna liczba graczy" << endl;
+        writeN(sender, "error create invalid_count\n");
+    }
+    else {
+        createPlansza();
+        gameCreated = true;
+        ++numberOfConnectedPlayers;
+        yellowTeam[numberOfYellowPlayers] = sender;
+        ++numberOfYellowPlayers;
+        cout << "gra utworzona dla " << numberOfPlayers << " graczy" << endl;
+        writeN(sender, "success create\n");
 
-    if(strArray[0] == "create") {
-        if(!gameCreated) {
-            numberOfPlayers = stringToInt(strArray[1]);
-            if(numberOfPlayers == -1) {
-                {
-                    cout << "niepoprawna liczba graczy" << endl;
-                    char a[100] = "error create invalid_count\n";
-                    if (write(sender, a, 100) == -1) {
-                        perror("errorCode");
-                    }
-                }
-            }
-            else {
-                createPlansza();
-                gameCreated = true;
-                ++numberOfConnectedPlayers;
-                yellowTeam[numberOfYellowPlayers] = sender;
-                ++numberOfYellowPlayers;
-                {
-                    cout << "gra utworzona dla " << numberOfPlayers << " graczy" << endl;
-                    char a[100] = "success create\n";
-                    if (write(sender, a, 100) == -1) {
-                        perror("errorCode");
-                    }
-                }
-                {
-                    cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
-                    char a[100] = "success join yellow\n";
-                    if (write(sender, a, 100) == -1) {
-                        perror("errorCode");
-                    }
-                }
-            }
+        cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
+        writeN(sender, "success join yellow\n");
+    }
+}
+
+void joinIfPossible(int sender) {
+    if (numberOfConnectedPlayers < 2 * numberOfPlayers) {
+        if (numberOfYellowPlayers < numberOfPlayers) {
+            yellowTeam[numberOfYellowPlayers] = sender;
+            ++numberOfYellowPlayers;
+            cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
+            writeN(sender, "success join yellow\n");
         }
         else {
-            {
-                cout << "gra jest juz utworzona, nie mozna utworzyc kolejnej" << endl;
-                char a[100] = "error create exists\n";
-                if (write(sender, a, 100) == -1) {
-                    perror("errorCode");
-                }
-            }
-            //TODO
-            //zdzojnuj jesli sie da
+            blueTeam[numberOfBluePlayers] = sender;
+            ++numberOfBluePlayers;
+            cout << "gra jest utworzona, gracz dolaczyl do zespolu niebieskiego" << endl;
+            writeN(sender, "success join blue\n");
         }
-    }
-    else if(strArray[0] == "join") {
-        if(gameCreated) {
-            if(numberOfConnectedPlayers < 2 * numberOfPlayers) {
-                if(numberOfYellowPlayers < numberOfPlayers) {
-                    yellowTeam[numberOfYellowPlayers] = sender;
-                    ++numberOfYellowPlayers;
-                    {
-                        cout << "gra jest utworzona, gracz dolaczyl do zespolu zoltego" << endl;
-                        char a[100] = "success join yellow\n";
-                        if (write(sender, a, 100) == -1) {
-                            perror("errorCode");
-                        }
-                    }
-                }
-                else{
-                    blueTeam[numberOfBluePlayers] = sender;
-                    ++numberOfBluePlayers;
-                    {
-                        cout << "gra jest utworzona, gracz dolaczyl do zespolu niebieskiego" << endl;
-                        char a[100] = "success join blue\n";
-                        if (write(sender, a, 100) == -1) {
-                            perror("errorCode");
-                        }
-                    }
-                }
-                ++numberOfConnectedPlayers;
-                if(numberOfConnectedPlayers == 2 * numberOfPlayers){
-                    gameStarted = true;
-                    cout << "rozpoczynamy gre" << endl;
-                    for(int i = 0; i < numberOfPlayers; ++i){
-                        {
-                            char a[100] = "success game started\n";
-                            if (write(yellowTeam[i], a, 100) == -1) {
-                                perror("errorCode");
-                            }
-                        }
-                        {
-                            string s = boardToString();
-                            s += '\n';
-                            char a[100];
-                            strcpy(a, s.c_str());
-                            if (write(yellowTeam[i], a, 100) == -1) {
-                                perror("errorCode");
-                            }
-                        }
-                        {
-                            char a[100] = "success game started\n";
-                            if (write(blueTeam[i], a, 100) == -1) {
-                                perror("errorCode");
-                            }
-                        }
-                        {
-                            string s = boardToString();
-                            s += '\n';
-                            char a[100];
-                            strcpy(a, s.c_str());
-                            if (write(blueTeam[i], a, 100) == -1) {
-                                perror("errorCode");
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                {
-                    cout << "gra trwa, nie ma miejsc w zespolach" << endl;
-                    char a[100] = "error join full\n";
-                    if (write(sender, a, 100) == -1) {
-                        perror("errorCode");
-                    }
-                }
-            }
-
-        } else {
-            {
-                cout << "gra sie jeszcze nie rozpoczela" << endl;
-                char a[100] = "error join not_started\n";
-                if (write(sender, a, 100) == -1) {
-                    perror("errorCode");
-                }
+        ++numberOfConnectedPlayers;
+        if (numberOfConnectedPlayers == 2 * numberOfPlayers) {
+            gameStarted = true;
+            cout << "rozpoczynamy gre" << endl;
+            for (int i = 0; i < numberOfPlayers; ++i) {
+                writeN(yellowTeam[i], "success game started\n");
+                writeN(blueTeam[i], "success game started\n");
+                string s = boardToString();
+                s += '\n';
+                writeN(yellowTeam[i], s);
+                writeN(blueTeam[i], s);
             }
         }
     }
     else {
+
+        cout << "gra trwa, nie ma miejsc w zespolach" << endl;
+        writeN(sender, "error join full\n");
+    }
+}
+
+void handleMessage(char message[], int sender) {
+    messageToStringArray(message);
+
+    if (strArray[0] == "create") {
+        if (!gameCreated) {
+            createGame(sender);
+        }
+        else {
+            cout << "gra jest juz utworzona, nie mozna utworzyc kolejnej" << endl;
+            writeN(sender, "error create exists\n");
+            joinIfPossible(sender);
+        }
+    }
+    else if (strArray[0] == "join") {
+        if (gameCreated) {
+            joinIfPossible(sender);
+        }
+
+        else {
+            cout << "gra sie jeszcze nie rozpoczela" << endl;
+            writeN(sender, "error join not_started\n");
+        }
+    }
+    else {
         cout << "niepoprawne polecenie" << endl;
+        writeN(sender, "error request_unknown\n");
     }
 }
 
 
-int main (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
     int sfd, s;
     int efd;
     struct epoll_event event;
     struct epoll_event *events;
 
     if (argc != 2) {
-        fprintf (stderr, "Usage: %s [port]\n", argv[0]);
-        exit (EXIT_FAILURE);
+        fprintf(stderr, "Usage: %s [port]\n", argv[0]);
+        exit(EXIT_FAILURE);
     }
 
-    sfd = create_and_bind (argv[1]);
+    sfd = create_and_bind(argv[1]);
     if (sfd == -1)
-        abort ();
+        abort();
 
-    s = make_socket_non_blocking (sfd);
+    s = make_socket_non_blocking(sfd);
     if (s == -1)
-        abort ();
+        abort();
 
-    s = listen (sfd, SOMAXCONN);
+    s = listen(sfd, SOMAXCONN);
     if (s == -1) {
-        perror ("listen");
-        abort ();
+        perror("listen");
+        abort();
     }
 
-    efd = epoll_create1 (0);
+    efd = epoll_create1(0);
     if (efd == -1) {
-        perror ("epoll_create");
-        abort ();
+        perror("epoll_create");
+        abort();
     }
 
     event.data.fd = sfd;
     event.events = EPOLLIN | EPOLLET;
-    s = epoll_ctl (efd, EPOLL_CTL_ADD, sfd, &event);
+    s = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
     if (s == -1) {
-        perror ("epoll_ctl");
-        abort ();
+        perror("epoll_ctl");
+        abort();
     }
 
     /* Buffer where events are returned */
-    events = (epoll_event*) calloc(MAXEVENTS, sizeof event);
+    events = (epoll_event *) calloc(MAXEVENTS, sizeof event);
 
     /* The event loop */
     while (1) {
         int n, i;
 
-        n = epoll_wait (efd, events, MAXEVENTS, -1);
+        n = epoll_wait(efd, events, MAXEVENTS, -1);
         for (i = 0; i < n; i++) {
             if ((events[i].events & EPOLLERR) ||
-                    (events[i].events & EPOLLHUP) ||
-                    (!(events[i].events & EPOLLIN))) {
+                (events[i].events & EPOLLHUP) ||
+                (!(events[i].events & EPOLLIN))) {
                 /* An error has occured on this fd, or the socket is not
                    ready for reading (why were we notified then?) */
-                fprintf (stderr, "epoll error\n");
-                close (events[i].data.fd);
+                fprintf(stderr, "epoll error\n");
+                close(events[i].data.fd);
                 continue;
             }
 
@@ -365,41 +326,41 @@ int main (int argc, char *argv[]) {
                     char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
 
                     in_len = sizeof in_addr;
-                    infd = accept (sfd, &in_addr, &in_len);
+                    infd = accept(sfd, &in_addr, &in_len);
 
                     if (infd == -1) {
                         if ((errno == EAGAIN) ||
-                                (errno == EWOULDBLOCK)) {
+                            (errno == EWOULDBLOCK)) {
                             /* We have processed all incoming
                                connections. */
                             break;
                         } else {
-                            perror ("accept");
+                            perror("accept");
                             break;
                         }
                     }
 
-                    s = getnameinfo (&in_addr, in_len,
-                                     hbuf, sizeof hbuf,
-                                     sbuf, sizeof sbuf,
-                                     NI_NUMERICHOST | NI_NUMERICSERV);
+                    s = getnameinfo(&in_addr, in_len,
+                                    hbuf, sizeof hbuf,
+                                    sbuf, sizeof sbuf,
+                                    NI_NUMERICHOST | NI_NUMERICSERV);
                     if (s == 0) {
                         printf("Accepted connection on descriptor %d "
-                               "(host=%s, port=%s)\n", infd, hbuf, sbuf);
+                                       "(host=%s, port=%s)\n", infd, hbuf, sbuf);
                     }
 
                     /* Make the incoming socket non-blocking and add it to the
                        list of fds to monitor. */
-                    s = make_socket_non_blocking (infd);
+                    s = make_socket_non_blocking(infd);
                     if (s == -1)
-                        abort ();
+                        abort();
 
                     event.data.fd = infd;
                     event.events = EPOLLIN | EPOLLET;
-                    s = epoll_ctl (efd, EPOLL_CTL_ADD, infd, &event);
+                    s = epoll_ctl(efd, EPOLL_CTL_ADD, infd, &event);
                     if (s == -1) {
-                        perror ("epoll_ctl");
-                        abort ();
+                        perror("epoll_ctl");
+                        abort();
                     }
                 }
                 continue;
@@ -415,12 +376,12 @@ int main (int argc, char *argv[]) {
                     ssize_t count;
                     char buf[512];
 
-                    count = read (events[i].data.fd, buf, sizeof buf);
+                    count = read(events[i].data.fd, buf, sizeof buf);
                     if (count == -1) {
                         /* If errno == EAGAIN, that means we have read all
                            data. So go back to the main loop. */
                         if (errno != EAGAIN) {
-                            perror ("read");
+                            perror("read");
                             done = 1;
                         }
                         break;
@@ -432,28 +393,28 @@ int main (int argc, char *argv[]) {
                     }
                     handleMessage(buf, events[i].data.fd);
                     /* Write the buffer to standard output */
-                    s = write (1, buf, count);
+                    s = write(1, buf, count);
                     if (s == -1) {
-                        perror ("write");
-                        abort ();
+                        perror("write");
+                        abort();
                     }
                 }
 
                 if (done) {
-                    printf ("Closed connection on descriptor %d\n",
-                            events[i].data.fd);
+                    printf("Closed connection on descriptor %d\n",
+                           events[i].data.fd);
 
                     /* Closing the descriptor will make epoll remove it
                        from the set of descriptors which are monitored. */
-                    close (events[i].data.fd);
+                    close(events[i].data.fd);
                 }
             }
         }
     }
 
-    free (events);
+    free(events);
 
-    close (sfd);
+    close(sfd);
 
     return EXIT_SUCCESS;
 }
