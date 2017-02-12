@@ -25,8 +25,8 @@ int numberOfYellowPlayers = 0;
 int numberOfBluePlayers = 0;
 int yellowTeam[10];
 int blueTeam[10];
-
 string strArray[100];
+string activeGroup = "none";
 
 static int make_socket_non_blocking(int sfd) {
     int flags, s;
@@ -85,6 +85,11 @@ static int create_and_bind(char *port) {
     freeaddrinfo(result);
 
     return sfd;
+}
+
+int roll(){
+    srand(time(0));
+    return rand()%6 + 1;
 }
 
 void writeN(int sender, string msg) {
@@ -193,6 +198,56 @@ void createGame(int sender) {
     }
 }
 
+void sendRolled(int i){
+    string msg = "success rolled ";
+    msg += intToString(i);
+    msg += '\n';
+    if(activeGroup == "yellow"){
+        for (int i = 0; i < numberOfPlayers; ++i) {
+            writeN(yellowTeam[i], msg);
+        }
+    }
+    else{
+        for (int i = 0; i < numberOfPlayers; ++i) {
+            writeN(blueTeam[i], msg);
+        }
+    }
+}
+
+void sendActiveGroup(){
+    string s;
+    if(activeGroup == "yellow") {
+        s = "success active yellow\n";
+    }
+    else{
+        s = "success active blue\n";
+    }
+    for (int i = 0; i < numberOfPlayers; ++i) {
+        writeN(yellowTeam[i], s);
+        writeN(blueTeam[i], s);
+    }
+}
+
+void startGame(){
+    gameStarted = true;
+    cout << "rozpoczynamy gre" << endl;
+    for (int i = 0; i < numberOfPlayers; ++i) {
+        writeN(yellowTeam[i], "success game started\n");
+        writeN(blueTeam[i], "success game started\n");
+        string s = boardToString();
+        s += '\n';
+        writeN(yellowTeam[i], s);
+        writeN(blueTeam[i], s);
+    }
+    cout << "graja zolci" << endl;
+    activeGroup = "yellow";
+    sendActiveGroup();
+
+    int i = roll();
+    cout << "wyrzucono " << i << endl;
+    sendRolled(i);
+}
+
 void joinIfPossible(int sender) {
     if (numberOfConnectedPlayers < 2 * numberOfPlayers) {
         if (numberOfYellowPlayers < numberOfPlayers) {
@@ -209,16 +264,7 @@ void joinIfPossible(int sender) {
         }
         ++numberOfConnectedPlayers;
         if (numberOfConnectedPlayers == 2 * numberOfPlayers) {
-            gameStarted = true;
-            cout << "rozpoczynamy gre" << endl;
-            for (int i = 0; i < numberOfPlayers; ++i) {
-                writeN(yellowTeam[i], "success game started\n");
-                writeN(blueTeam[i], "success game started\n");
-                string s = boardToString();
-                s += '\n';
-                writeN(yellowTeam[i], s);
-                writeN(blueTeam[i], s);
-            }
+            startGame();
         }
     }
     else {
@@ -391,9 +437,9 @@ int main(int argc, char *argv[]) {
                         done = 1;
                         break;
                     }
-                    handleMessage(buf, events[i].data.fd);
                     /* Write the buffer to standard output */
                     s = write(1, buf, count);
+                    handleMessage(buf, events[i].data.fd);
                     if (s == -1) {
                         perror("write");
                         abort();
