@@ -34,7 +34,8 @@ int numberRolled = 0;
 vector<pair<int, int>> possibleStones;
 pair<int, int> selectedStone;
 vector<pair<int, int>> possibleMoves;
-pair<int, int> votes;
+pair<int, int> votesForStone;
+int votesForMove[3];
 bool voteStoneNeeded = false;
 bool voteMoveNeeded = false;
 
@@ -338,6 +339,10 @@ void setPossibleMoves() {
             pair<int, int> p = make_pair(selectedStone.first, selectedStone.second + 1);
             possibleMoves.push_back(p);
         }
+        if(possibleMoves.size() == 2){
+            pair<int, int> p = make_pair(selectedStone.first + 1, selectedStone.second + 1);
+            possibleMoves.push_back(p);
+        }
     }
     else {
         if (selectedStone.first > 0) {
@@ -346,6 +351,10 @@ void setPossibleMoves() {
         }
         if (selectedStone.second > 0) {
             pair<int, int> p = make_pair(selectedStone.first, selectedStone.second - 1);
+            possibleMoves.push_back(p);
+        }
+        if(possibleMoves.size() == 2){
+            pair<int, int> p = make_pair(selectedStone.first - 1, selectedStone.second - 1);
             possibleMoves.push_back(p);
         }
     }
@@ -418,8 +427,11 @@ void doMove(pair<int, int> destination) {
 }
 
 void startVote(){
-    votes.first = 0;
-    votes.second = 0;
+    votesForStone.first = 0;
+    votesForStone.second = 0;
+    for (int i = 0; i < 3; ++i) {
+        votesForMove[i] = 0;
+    }
 }
 
 void selectStone(pair<int, int> stone){
@@ -577,13 +589,16 @@ bool isHisTurn(int sender){
 }
 
 void checkIfVoteForMoveCanEnd(){
-    if (votes.first + votes.second == numberOfPlayers) {
+    if (votesForMove[0] + votesForMove[1] + votesForMove[2] == numberOfPlayers) {
         cout << "voting finished" << endl;
-        if (votes.first > votes.second) {
+        if (votesForMove[0] > votesForMove[1] && votesForMove[0] > votesForMove[2]) {
             doMove(possibleMoves[0]);
         }
-        else if (votes.first < votes.second) {
+        else if (votesForMove[1] > votesForMove[0] && votesForMove[1] > votesForMove[2]) {
             doMove(possibleMoves[1]);
+        }
+        else if(votesForMove[2] > votesForMove[0] && votesForMove[2] > votesForMove[1]){
+            doMove(possibleMoves[2]);
         }
         else {
             cout << "tie" << endl;
@@ -608,29 +623,34 @@ void voteForMove(int sender, pair<int, int> move){
             writeN(blueTeam[i], msg);
         }
     }
-    if (possibleMoves[0].first == move.first && possibleMoves[0].second == move.second) {
-        ++votes.first;
-        cout << "voted for move " << move.first << " " << move.second << endl;
+    bool correctMove = false;
+    for (int j = 0; j < 3; ++j) {
+        if (possibleMoves[j].first == move.first && possibleMoves[j].second == move.second) {
+            ++votesForMove[j];
+            cout << "voted for move " << move.first << " " << move.second << endl;
+            correctMove = true;
+            break;
+        }
     }
-    else if (possibleMoves[1].first == move.first && possibleMoves[1].second == move.second) {
-        ++votes.second;
-        cout << "voted for move " << move.first << " " << move.second << endl;
-    }
-    else {
+    if(!correctMove){
         cout << "failed to vote for move " << move.first << " " << move.second << endl;
         writeN(sender, "error vote move invalid\n");
     }
     checkIfVoteForMoveCanEnd();
-    cout << "current votes: " << votes.first << " " << votes.second << endl;
+    cout << "current votes: ";
+    for (int k = 0; k < 3; ++k) {
+        cout << votesForMove[k] << " ";
+    }
+    cout << endl;
 }
 
 void checkIfVoteForStoneCanEnd(){
-    if (votes.first + votes.second == numberOfPlayers) {
+    if (votesForStone.first + votesForStone.second == numberOfPlayers) {
         cout << "voting finished" << endl;
-        if (votes.first > votes.second) {
+        if (votesForStone.first > votesForStone.second) {
             selectStone(possibleStones[0]);
         }
-        else if (votes.first < votes.second) {
+        else if (votesForStone.first < votesForStone.second) {
             selectStone(possibleStones[1]);
         }
         else {
@@ -657,11 +677,11 @@ void voteForStone(int sender, pair<int, int> stone){
         }
     }
     if (possibleStones[0].first == stone.first && possibleStones[0].second == stone.second) {
-        ++votes.first;
+        ++votesForStone.first;
         cout << "voted for stone " << stone.first << " " << stone.second << endl;
     }
     else if (possibleStones[1].first == stone.first && possibleStones[1].second == stone.second) {
-        ++votes.second;
+        ++votesForStone.second;
         cout << "voted for stone " << stone.first << " " << stone.second << endl;
     }
     else {
@@ -669,7 +689,7 @@ void voteForStone(int sender, pair<int, int> stone){
         writeN(sender, "error vote stone not_selectable\n");
     }
     checkIfVoteForStoneCanEnd();
-    cout << "current votes: " << votes.first << " " << votes.second << endl;
+    cout << "current votes: " << votesForStone.first << " " << votesForStone.second << endl;
 }
 
 void handleMessage(char message[], int sender) {
