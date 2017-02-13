@@ -17,11 +17,11 @@ public class Utils {
         }
     }
 
-    public static String positionToString(Point p) {
+    public static String pointToString(Point p) {
         return p.x + "_" + p.y;
     }
 
-    public static Point pointToString(String s) {
+    public static Point stringToPoint(String s) {
         String[] split = s.split("_");
         return new Point(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
     }

@@ -15,7 +15,7 @@ import ml.adamsprogs.einstein.R;
 import ml.adamsprogs.einstein.mobile.games.MobileGame;
 import org.jetbrains.annotations.NotNull;
 
-import static ml.adamsprogs.einstein.engine.utils.Utils.positionToString;
+import static ml.adamsprogs.einstein.engine.utils.Utils.pointToString;
 import static ml.adamsprogs.einstein.engine.utils.Utils.shuffleArray;
 import static ml.adamsprogs.einstein.mobile.utilities.Utilities.*;
 
@@ -28,7 +28,7 @@ public class MobileBoard extends ml.adamsprogs.einstein.engine.components.Board 
     private Canvas canvas;
     private Paint p;
 
-    private ImageView view;
+    protected ImageView view;
 
     private int boardColour;
     private int gridColour;
@@ -180,7 +180,7 @@ public class MobileBoard extends ml.adamsprogs.einstein.engine.components.Board 
             //noinspection ConstantConditions
             for (int j : ar(i, colour)) {
                 Point position = new Point(j, i);
-                stones.put(positionToString(position), new MobileStone(context, player, stoneShuffleArray[k++], position));
+                stones.put(pointToString(position), new MobileStone(context, player, stoneShuffleArray[k++], position));
             }
     }
 

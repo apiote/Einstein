@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import static ml.adamsprogs.einstein.engine.utils.Utils.shuffleArray;
 
 abstract public class Die {
-    protected final int orientation;
+    public final int orientation;
     protected float[][] dieDots;
     protected int value;
+    public Player player;
     @NotNull
     protected int[] dieOrder = {1, 2, 3, 4, 5, 6};
 
@@ -26,15 +27,16 @@ abstract public class Die {
         setValue(7);
         initialised = false;
         setRollable(false);
+        this.player = player;
 
-        attachInterfaces(player);
+        attachInterfaces();
     }
 
     public void setRollable(boolean rollable) {
         this.rollable = rollable;
     }
 
-    private void attachInterfaces(Player player) {
+    private void attachInterfaces() {
         try {
             onRollListener = player;
             onErrorListener = player;
@@ -99,6 +101,8 @@ abstract public class Die {
     }
 
     public abstract void stopDieAnimationThread();
+
+    public abstract void waitForRoll();
 
     public interface OnRollListener {
         void onRoll(int value);

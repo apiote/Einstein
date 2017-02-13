@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static ml.adamsprogs.einstein.engine.utils.Utils.opponent;
-import static ml.adamsprogs.einstein.engine.utils.Utils.positionToString;
+import static ml.adamsprogs.einstein.engine.utils.Utils.pointToString;
 
 public abstract class Board {
     protected OnStoneMoved onStoneMoved;
@@ -22,7 +22,7 @@ public abstract class Board {
     protected boolean movable;
     protected boolean initialised;
 
-    protected AbstractGame game;
+    public AbstractGame game;
 
     protected boolean isMovable() {
         return movable;
@@ -37,10 +37,10 @@ public abstract class Board {
         if (targetablePoints == null)
             return false;
         System.out.println("not null");
-        System.out.println("touched: "+positionToString(touchedPoint));
+        System.out.println("touched: "+ pointToString(touchedPoint));
         for (Point p : targetablePoints) {
-            System.out.println("checking with "+positionToString(p));
-            if (positionToString(p).equals(positionToString(touchedPoint)))
+            System.out.println("checking with "+ pointToString(p));
+            if (pointToString(p).equals(pointToString(touchedPoint)))
                 return true;
         }
         System.out.println("none");
@@ -64,20 +64,20 @@ public abstract class Board {
         selectableStones = null;
     }
 
-    private void clearHint() {
+    protected void clearHint() {
         for (Map.Entry<?, Stone> stone : stones.entrySet())
             stone.getValue().setSelectable(false);
     }
 
     protected void moveStone(Point target) {
-        stones.remove(positionToString(selectedStone.getPosition()));
+        stones.remove(pointToString(selectedStone.getPosition()));
         selectedStone.moveTo(target);
-        stones.remove(positionToString(target));
-        stones.put(positionToString(target), selectedStone);
+        stones.remove(pointToString(target));
+        stones.put(pointToString(target), selectedStone);
     }
 
     protected boolean isValidSelectTouch(Point touchedPoint) {
-        Stone tempSelectedStone = stones.get(positionToString(touchedPoint));
+        Stone tempSelectedStone = stones.get(pointToString(touchedPoint));
         System.out.println("Touched " + touchedPoint.x + "x" + touchedPoint.y);
         for (Map.Entry<String, Stone> e : stones.entrySet()) {
             System.out.println("stone at " + e.getKey());
@@ -86,7 +86,7 @@ public abstract class Board {
     }
 
     public void processSelectTouch(@NotNull Point touchedPoint) {
-        selectedStone = stones.get(positionToString(touchedPoint));
+        selectedStone = stones.get(pointToString(touchedPoint));
         selectedStone.setSelectable(false);
         hintMove(touchedPoint);
     }
@@ -96,13 +96,13 @@ public abstract class Board {
         createTargetablePoints(point);
         draw();
         drawSelectableStones();
-        Stone stone = stones.get(positionToString(point));
+        Stone stone = stones.get(pointToString(point));
 
         drawLiftedStone(stone);
 
         for (Point targetPoint : targetablePoints) {
             drawMoveHintHighlight(targetPoint.x, targetPoint.y);
-            stone = stones.get(positionToString(targetPoint));
+            stone = stones.get(pointToString(targetPoint));
             if (stone != null) {
                 drawStone(stone);
             }
@@ -167,7 +167,7 @@ public abstract class Board {
 
     protected boolean isInCorner(int id) {
         Point point = new Point(id * 4, id * 4);
-        Stone stone = stones.get(positionToString(point));
+        Stone stone = stones.get(pointToString(point));
         return stone != null && stone.getOrientation() / 180 == id;
     }
 
@@ -278,6 +278,10 @@ public abstract class Board {
     protected abstract void drawSelectableStone(@NotNull Stone s);
 
     protected abstract void drawMoveHintHighlight(int x, int y);
+
+    public void fill(String socketBoard) {
+        //todo
+    }
 
     public interface OnStoneMoved {
         void onStoneMoved();

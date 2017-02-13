@@ -3,13 +3,12 @@ package ml.adamsprogs.einstein.engine.games;
 import ml.adamsprogs.einstein.engine.components.Board;
 import ml.adamsprogs.einstein.engine.components.Player;
 import ml.adamsprogs.einstein.engine.components.Stone;
-import ml.adamsprogs.einstein.engine.utils.Point;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import static ml.adamsprogs.einstein.engine.utils.Utils.pointToString;
+import static ml.adamsprogs.einstein.engine.utils.Utils.stringToPoint;
 
 public abstract class AbstractGame implements Player.OnRollListener, Board.OnStoneMoved {
     protected boolean einStein = false;
@@ -22,10 +21,10 @@ public abstract class AbstractGame implements Player.OnRollListener, Board.OnSto
     protected OnWinListener onWinListener;
     protected OnErrorExit onErrorExit;
 
-    protected Object androidContext;
+    protected Object context;
 
-    protected AbstractGame(Object androidContext) {
-        this.androidContext = androidContext;
+    protected AbstractGame(Object context) {
+        this.context = context;
         createBoard();
         attachInterfaces();
     }
@@ -65,7 +64,7 @@ public abstract class AbstractGame implements Player.OnRollListener, Board.OnSto
 
     private void hintAsEinStein() {
         String p = getEinSteinPoint();
-        board.processSelectTouch(pointToString(p));
+        board.processSelectTouch(stringToPoint(p));
         einStein = false;
     }
 

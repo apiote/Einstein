@@ -8,8 +8,8 @@ abstract public class Player implements Die.OnRollListener, Die.OnErrorListener 
 
     public static final int COLOUR_LIGHT = 1;
     public static final int COLOUR_DARK = 0;
-    protected static final int ORIENTATION_NORTH = 180;
-    protected static final int ORIENTATION_SOUTH = 0;
+    public static final int ORIENTATION_NORTH = 180;
+    public static final int ORIENTATION_SOUTH = 0;
 
     protected int orientation;
     protected final int id;
@@ -76,7 +76,15 @@ abstract public class Player implements Die.OnRollListener, Die.OnErrorListener 
         game.exceptionExit(e);
     }
 
+    public abstract Die getDie();
+
+    public abstract void setDie(Die die);
+
+    public abstract void waitForRoll();
+
     public interface OnRollListener {
         void onRoll();
     }
+
+
 }

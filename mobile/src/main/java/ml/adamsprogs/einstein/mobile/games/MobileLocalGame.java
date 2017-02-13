@@ -6,7 +6,7 @@ import ml.adamsprogs.einstein.mobile.components.*;
 
 public class MobileLocalGame extends MobileGame {
     public MobileLocalGame(BoardActivity context, int startPlayer) {
-        super(context, startPlayer);
+        super(context, startPlayer, true);
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 import ml.adamsprogs.einstein.R;
 
 public class ConnectActivity extends AppCompatActivity {
@@ -16,12 +17,16 @@ public class ConnectActivity extends AppCompatActivity {
     private EditText serverPortEdit;
     private EditText numberOfPlayersEdit;
     private Switch newGameSwitch;
+    private TextView errorTextView;
     private Context context;
+    private Einstein application;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
+
+        application = (Einstein) getApplication();
 
         context = this;
 
@@ -30,20 +35,39 @@ public class ConnectActivity extends AppCompatActivity {
         serverPortEdit = (EditText) findViewById(R.id.serverPort);
         numberOfPlayersEdit = (EditText) findViewById(R.id.numberOfPlayers);
         newGameSwitch = (Switch) findViewById(R.id.newGameSwitch);
+        errorTextView = (TextView) findViewById(R.id.errorText);
 
         startButton.setOnClickListener(v -> {
-            String response = ((Einstein) getApplication()).connectToGame(
-                    String.valueOf(serverAddressEdit.getText()), String.valueOf(serverPortEdit.getText()),
-                    newGameSwitch.isChecked() ? String.valueOf(numberOfPlayersEdit.getText()) : null);
-            if (response.split(" ")[0].equals("error")) {
-                //todo show
-            } else {
-                //todo wait for `game started`
+            try {
+                String team = application.connectToGame(
+                        String.valueOf(serverAddressEdit.getText()), String.valueOf(serverPortEdit.getText()),
+                        newGameSwitch.isChecked() ? String.valueOf(numberOfPlayersEdit.getText()) : null);
+                application.waitForGameBegin();
                 Intent intent = new Intent(context, BoardActivity.class);
-                //todo add networking options to intent
+                intent.putExtra("online", true);
+                intent.putExtra("team", team);
                 startActivity(intent);
+            } catch (IllegalStateException e) {
+                switch (e.getMessage()){
+                    case "already_exists":
+                        errorTextView.setText(R.string.create_already_exists);
+                        break;
+                    case "invalid_count":
+                        errorTextView.setText(R.string.create_invalid_count);
+                        break;
+                    case "full":
+                        errorTextView.setText(R.string.join_full);
+                        break;
+                    case "not_started":
+                        errorTextView.setText(R.string.join_not_started);
+                        break;
+                    case "already_joined":
+                        errorTextView.setText(R.string.join_already_joined);
+                        break;
+                }
             }
         });
+
         newGameSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 numberOfPlayersEdit.setVisibility(isChecked ? View.VISIBLE : View.INVISIBLE));
     }

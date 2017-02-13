@@ -38,4 +38,17 @@
     <string name="illegalStateCaught">Nie można zainicjalizować gry ze względu na niewyobrażalny błąd</string>
     <string name="resultsReadingError">Einstein nie mógł odczytać wyników</string>
     <string name="dieDrawError">Nie można narysować planszy</string>
+    <string name="create_already_exists">Gra na serwerze już trwa</string>
+    <string name="create_invalid_count">Nieprawidłowa liczba graczy</string>
+    <string name="join_already_joined">Już dołączyłeś do gry</string>
+    <string name="join_full">Brak miejsc w grze</string>
+    <string name="join_not_started">Gra jeszcze się nie zaczęła</string>
+    <string name="local_game">Lokalna</string>
+    <string name="new_game">Nowa gra</string>
+    <string name="no_internet_connection">Brak połączenia z Internetem</string>
+    <string name="number_of_players">Liczba graczy</string>
+    <string name="server_address">Adres serwera</string>
+    <string name="server_port">Port</string>
+    <string name="start">Start</string>
+    <string name="team_online">Drużynowa online</string>
 </resources>

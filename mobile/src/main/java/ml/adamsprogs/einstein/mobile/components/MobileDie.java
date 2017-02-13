@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import static ml.adamsprogs.einstein.mobile.utilities.Utilities.getColour;
 
 public class MobileDie extends ml.adamsprogs.einstein.engine.components.Die{
-    private ImageView view;
+    protected ImageView view;
 
     private Bitmap bitmap;
     private Canvas canvas;
@@ -30,7 +30,7 @@ public class MobileDie extends ml.adamsprogs.einstein.engine.components.Die{
     private int onColour, offColour, dotColour;
 
     @NonNull
-    private final BoardActivity context;
+    protected final BoardActivity context;
 
     private Thread dieAnimationThread;
 
@@ -43,7 +43,7 @@ public class MobileDie extends ml.adamsprogs.einstein.engine.components.Die{
         setUpColours();
     }
 
-    private void attachOnClickListener() {
+    protected void attachOnClickListener() {
         this.view.setOnTouchListener(
                 (v, m) -> {
                     diePressed(m);
@@ -184,4 +184,7 @@ public class MobileDie extends ml.adamsprogs.einstein.engine.components.Die{
         if (dieAnimationThread != null && dieAnimationThread.isAlive())
             dieAnimationThread.interrupt();
     }
+
+    @Override
+    public void waitForRoll() {}
 }

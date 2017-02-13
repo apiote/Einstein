@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.widget.*;
 
 import ml.adamsprogs.einstein.R;
+import ml.adamsprogs.einstein.engine.components.Die;
 import ml.adamsprogs.einstein.mobile.games.MobileGame;
 import ml.adamsprogs.einstein.mobile.utilities.Utilities;
 
@@ -55,10 +56,24 @@ public class MobilePlayer extends ml.adamsprogs.einstein.engine.components.Playe
     }
 
     public void setDieWidth(int dieWidth) {
-        if (die != null) ((MobileDie)die).setWidth(dieWidth);
+        if (die != null) ((MobileDie) die).setWidth(dieWidth);
     }
 
     public void setDieHeight(int dieHeight) {
-        if (die != null) ((MobileDie)die).setHeight(dieHeight);
+        if (die != null) ((MobileDie) die).setHeight(dieHeight);
+    }
+
+    public void setDie(Die die) {
+        this.die = die;
+    }
+
+    @Override
+    public void waitForRoll() {
+        die.waitForRoll();
+    }
+
+    @Override
+    public Die getDie() {
+        return die;
     }
 }

@@ -14,7 +14,7 @@
         android:inputType="text|textUri"
         android:ems="10"
         android:id="@+id/serverAddress"
-        android:hint="Server address"
+        android:hint="@string/server_address"
         app:layout_constraintRight_toLeftOf="@+id/serverPort"
         tools:layout_constraintRight_creator="1"
         android:layout_marginStart="16dp"
@@ -32,7 +32,7 @@
         android:ems="10"
         android:id="@+id/serverPort"
         android:layout_width="64dp"
-        android:hint="Port"
+        android:hint="@string/server_port"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
         app:layout_constraintBottom_toTopOf="@+id/numberOfPlayers"
@@ -42,7 +42,7 @@
         android:layout_marginRight="24dp"/>
 
     <Switch
-        android:text="New game"
+        android:text="@string/new_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/newGameSwitch"
@@ -60,7 +60,7 @@
         android:inputType="number"
         android:ems="10"
         android:id="@+id/numberOfPlayers"
-        android:hint="Number of players"
+        android:hint="@string/number_of_players"
         android:visibility="invisible"
         android:layout_marginStart="16dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/newGameSwitch"
@@ -70,7 +70,7 @@
         android:layout_marginLeft="16dp"/>
 
     <Button
-        android:text="Start"
+        android:text="@string/start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/startButton"
@@ -78,11 +78,26 @@
         tools:layout_constraintBottom_creator="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp"/>
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintLeft_creator="1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/errorText"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/serverAddress"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="48dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="49dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textColor="@color/dice_off"/>
 
 </android.support.constraint.ConstraintLayout>
