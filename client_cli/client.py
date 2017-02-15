@@ -40,11 +40,11 @@ board = [[0, 0, 0, 0, 0],
 
 curses.init_pair(2, -1, -1)
 curses.init_pair(1, 208, -1)
-curses.init_pair(3, 21, -1)
-curses.init_pair(5, 208, 231)
-curses.init_pair(7, 21, 231)
-curses.init_pair(9, 208, 87)
-curses.init_pair(11, 21, 87)
+curses.init_pair(11, 21, -1)
+curses.init_pair(101, 208, 231)
+curses.init_pair(111, 21, 231)
+curses.init_pair(1001, 208, 87)
+curses.init_pair(1011, 21, 87)
 
 
 def socketPrintLine(sock, message):
@@ -77,20 +77,22 @@ def waitForBoard():
 def drawBoard():
     print('#drawing board', file=sys.stderr)
     boardBox.move(0, 0)
-    boardBox.addstr('╭───┬───┬───┬───┬───╮\n')
+    boardBox.addstr('   A   B   C   D   E\n')
+    boardBox.addstr(' ╭───┬───┬───┬───┬───╮\n')
     i=0
     for row in board:
+        boardBox.addstr(str(i+1))
         for box in row:
             boardBox.addstr('│ ')
             boardBox.addstr(str(box % 10), curses.color_pair(
-                2 * int(box / 10) + 1) if box != 0 else curses.color_pair(2))
+                10 * int(box / 10) + 1) if box != 0 else curses.color_pair(2)) 
             boardBox.addstr(' ')
         boardBox.addstr('│\n')
         print
         if(i < 4):
-            boardBox.addstr('├───┼───┼───┼───┼───┤\n')
+            boardBox.addstr(' ├───┼───┼───┼───┼───┤\n')
         i += 1
-    boardBox.addstr('╰───┴───┴───┴───┴───╯\n')
+    boardBox.addstr(' ╰───┴───┴───┴───┴───╯\n')
     boardBox.refresh()
 
 
@@ -164,7 +166,33 @@ def runGame():
 
 
 def highlightSelectables(rolledValue):
-    pass
+    teamModifier = 0 if myTeam == 'yellow' else 10
+    rolledValue += teamModifier
+    stones = [0, 0, 0, 0, 0, 0]
+    i = 0
+    for row in board:
+        j = 0
+        for field in row:
+            if int(field / 10) * 10 == teamModifier:
+                stones[field % 10] = (i, j)
+            j+=1
+        i+=1
+
+    lower = ''
+    for stone in stones[:rolledValue]:
+        if stone != 0:
+            lower = stone
+    upper = ''
+    for stone in stones[rolledValue+1:]:
+        if stone != 0:
+            upper = stone
+            break
+    
+    i,j = lower
+    board[i][j] += 100
+    i,j = upper
+    board[i][j] += 100
+    drawBoard()
 
 
 def highlightMoveTargets(selected):
@@ -172,7 +200,27 @@ def highlightMoveTargets(selected):
 
 
 def moveStone(source, target):
-    pass
+    source = source.split(' ')
+    target = target.split(' ')
+    board[target[0]][target[1]] = board[source[0]][source[1]]
+    board[source[0]][source[1]] = 0
+    drawBoard()
+
+
+def parseVotes():
+    votesString = ''
+    for pos, vote in votes.items():
+        votesString += translateToChessNotation(pos) + ': ' + vote + ', '
+    return votesString[:-2]
+
+
+def translateToChessNotation(position):
+    row = int(position.split(' ')[0])
+    column = int(position.split(' ')[1])
+    row += 1
+    column += ord('A')
+    column = chr(column)
+    return '{}{}'.format(row, column)
 
 
 def do(command):
@@ -248,6 +296,33 @@ def do(command):
         errorText='No such command {}'.format(command)
 
 
+def findStonePosition(stoneNumber):
+    teamModifier = 0 if myTeam == 'yellow' else 10
+    stoneNumber = stoneNumber + teamModifier
+    i, j = 0, 0
+    for row in board:
+        j = 0
+        for field in row:
+            if field % 100 == stoneNumber:
+                return '{} {}'.format(i, j)
+            j += 1
+        i += 1
+    return None
+
+
+def translateChessNotation(chessField):
+    chessField = chessField.upper()
+    if(chessField[0] >= 'A' and chessField <= 'E'):
+        column = chessField[0]
+        row = chessField[1]
+    else:
+        column = chessField[1]
+        row = chessField[0]
+    row = int(row)-1
+    column = ord(column) - ord('A')
+    return '{} {}'.format(row, column)
+
+
 def inputFunction():
     global command
     global gameEnded
@@ -281,7 +356,7 @@ def statusFunction():
         statusBox.addstr('Connected to ' + server if server !=
                          '' else 'Not connected')
         statusBox.addstr('; Team ' + myTeam if myTeam != '' else '')
-        statusBox.addstr('; Rolled ' + roll if roll != -1 else '')
+        statusBox.addstr('; Rolled {}'.format(roll) if roll != -1 else '')
         statusBox.addstr('; Votes: ' + parseVotes() if votes != {} else '')
         textBox.move(0, len(command))
         statusBox.refresh()
