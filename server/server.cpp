@@ -31,13 +31,14 @@ int blueTeam[10];
 string strArray[100];
 string activeTeam = "none";
 int numberRolled = 0;
-vector<pair<int, int>> possibleStones;
+vector <pair<int, int>> possibleStones;
 pair<int, int> selectedStone;
-vector<pair<int, int>> possibleMoves;
+vector <pair<int, int>> possibleMoves;
 pair<int, int> votesForStone;
 int votesForMove[3];
 bool voteStoneNeeded = false;
 bool voteMoveNeeded = false;
+bool gameEnded = false;
 
 int roll() {
     srand(time(0));
@@ -392,12 +393,18 @@ void sendEndGame(string winner, string reason) {
     }
 }
 
+void setGameEnded() {
+    gameEnded = true;
+}
+
 void checkIfEndGame() {
     if (board[0][0] > 10) {
         sendEndGame("blue", "corner");
+        setGameEnded();
     }
     if (board[4][4] > 0 && board[4][4] < 7) {
         sendEndGame("blue", "corner");
+        setGameEnded();
     }
     bool yellowStonesOnTheBoard = false;
     bool blueStonesOnTheBoard = false;
@@ -415,12 +422,13 @@ void checkIfEndGame() {
     }
     if (!blueStonesOnTheBoard) {
         sendEndGame("yellow", "no_stones");
+        setGameEnded();
     }
     if (!yellowStonesOnTheBoard) {
         sendEndGame("blue", "no_stones");
+        setGameEnded();
     }
     //TODO check no vote?
-    //TODO end game if needed
 }
 
 void startTurn(string color);
@@ -833,6 +841,10 @@ static int create_and_bind(char *port) {
         if (sfd == -1)
             continue;
 
+        //setting SO_REUSEADDR so that immediate restart of a server is possible
+        int option = 1;
+        setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+
         s = bind(sfd, rp->ai_addr, rp->ai_addrlen);
         if (s == 0) {
             /* We managed to bind successfully! */
@@ -1003,6 +1015,9 @@ int main(int argc, char *argv[]) {
                     close(events[i].data.fd);
                 }
             }
+        }
+        if(gameEnded){
+            break;
         }
     }
 
