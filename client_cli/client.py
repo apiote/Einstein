@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import curses
 import socket
@@ -8,11 +8,18 @@ import sys
 
 stdscr = curses.initscr()
 
-errorMessages = {'already_exists': 'Game already exists on server',
-                 'invalid_count': 'Wrong number of players'}
+errorMessages = {'already_exists': 'Game already exists on server', 'invalid_count': 'Wrong number of players',
+                 'full': 'All players are already in game', 'not_started': 'Game has not started yet', 'already_joined': 'You have already joined the game'}
 
-statusText = ''
+errorText = ''
+hintText = ''
 command = ''
+myTeam = ''
+server = ''
+roll = -1
+
+allowedVerbs = {}
+votes = {}
 gameEnded = False
 
 curses.noecho()
@@ -54,14 +61,15 @@ def socketReadLine(sock):
         else:
             print('\n', file=sys.stderr)
             return response
+# todo what if (when `exit`) i close a socket while recv’ing and (throw and) catch an exception
 
 
 def waitForBoard():
     socketReadLine(client)
-    response = socketReadLine(client)
-    i = 0
+    response=socketReadLine(client)
+    i=0
     for point in response.split(' ')[2:]:
-        board[int(i / 5)][int(i % 5)] = int(point)
+        board[int(i / 5)][int(i % 5)]=int(point)
         i += 1
     drawBoard()
 
@@ -70,7 +78,7 @@ def drawBoard():
     print('#drawing board', file=sys.stderr)
     boardBox.move(0, 0)
     boardBox.addstr('╭───┬───┬───┬───┬───╮\n')
-    i = 0
+    i=0
     for row in board:
         for box in row:
             boardBox.addstr('│ ')
@@ -86,73 +94,174 @@ def drawBoard():
     boardBox.refresh()
 
 
+def startGame():
+   threading.Thread(target=runGame).start()
+
+
+def runGame():
+    global allowedVerbs
+    global votes
+    global hintText
+    global errorText
+    global roll
+    won=None
+    while won == None:
+        response=socketReadLine(client)
+        allowedVerbs={'exit'}
+        if response.split(' ')[1] == 'active' and response.split(' ')[2] == myTeam:
+            errorText='Your move'
+            response=socketReadLine(client)
+            roll=int(response.split(' ')[2])
+            response=socketReadLine(client)
+            if response.split(' ')[3] == 'needed':
+                highlightSelectables(roll)
+                allowedVerbs = {'exit', 'select'}
+                hintText='Type `select {n}` to vote for Your stone with number n'
+            votes={}
+            votingFinished=False
+            while not votingFinished:
+                response=socketReadLine(client)
+                response=response.split(' ')
+                if response[-1] == 'selected':
+                    votingFinished=True
+                    selected=response[-3] + ' ' + response[-2]
+                elif response[0] == 'success' and response[1] == 'vote':
+                    votes[response[3] + ' ' + response[4]] += 1
+                elif response[-1] == 'not_selected':
+                    votes={}
+                elif response[0] == 'error':
+                    errorText='You didn’t send a vote for selection'
+
+            response=socketReadLine(client)
+            if response.split(' ')[3] == 'needed':
+                highlightMoveTargets(selected)
+                allowedVerbs = {'exit', 'move'}
+                hintText='Type `move {target}` (e.g. move A2) to move vote for the move'
+            votes={}
+            votingFinished=False
+            while not votingFinished:
+                response=socketReadLine(client)
+                response=response.split(' ')
+                if response[3] == 'moved':
+                    votingFinished=True
+                    target=response[5] + ' ' + response[6]
+                elif response[0] == 'success' and response[1] == 'vote':
+                    votes[response[3] + ' ' + response[4]] += 1
+                elif response[-1] == 'not_moved':
+                    votes={}
+                elif response[0] == 'error':
+                    errorText='You didn’t send a vote for move'
+            moveStone(selected, target)
+        elif response.split(' ')[1] == 'active':
+            errorText='Waiting for opponent’s move'
+            # todo receive move result or gameEnded
+            # todo move stone
+        elif response.split(' ')[1] == 'game':
+            errorText='{} team won by {}.'.format(response.split(' ')[3].capitalize(), {'corner': 'corner reaching',
+                        'no_stones': 'opponent capturing', 'no_vote': 'opponent disconnection'}[response.split(' ')[4]])
+            allowedVerbs = {'exit', 'create', 'join'}
+            hintText='Type `exit` to quit, `create {n}` to create a game for n players per team  or `join` to join an existing game'
+
+
+def highlightSelectables(rolledValue):
+    pass
+
+
+def highlightMoveTargets(selected):
+    pass
+
+
+def moveStone(source, target):
+    pass
+
+
 def do(command):
-    global statusText
-    verb = command.split(' ')[0]
+    global errorText
+    global allowedVerbs
+    global server
+    global myTeam
+    verb=command.split(' ')[0]
+    if verb not in allowedVerbs:
+        errorText = verb + ' not allowed now'
+        return
     if verb == 'exit':
         curses.endwin()
+        #todo interrupt runGame thread
         return True
     elif verb == 'connect':
         try:
-            address = command.split(' ')[1]
-            port = command.split(' ')[2]
+            address=command.split(' ')[1]
+            port=command.split(' ')[2]
         except IndexError:
-            statusText = 'Syntax error in {}'.format(command)
+            errorText='Syntax error in {}'.format(command)
             return
         try:
             client.connect((address, int(port)))
         except Exception as e:
-            statusText = str(e)
+            errorText=str(e)
         else:
-            statusText = 'Connected to game. Type `create {n}` to create a game for n players per team, or `join` to join an existing game'
+            errorText='Connected to game. Type `create {n}` to create a game for n players per team, or `join` to join an existing game'
+            server=address + ':' + port
+            allowedVerbs = {'exit', 'create', 'join'}
     elif verb == 'create':
         try:
-            number = command.split(' ')[1]
+            number=command.split(' ')[1]
         except IndexError:
-            statusText = 'Syntax error in {}'.format(command)
+            errorText='Syntax error in {}'.format(command)
             return
         socketPrintLine(client, command)
-        response = socketReadLine(client)
+        response=socketReadLine(client)
         if response.split(' ')[0] == 'error':
-            statusText = errorMessages[response.split(' ')[2]]
+            errorText=errorMessages[response.split(' ')[2]]
         else:
-            statusText = 'Successfully created game for {}'.format(number)
-            response = socketReadLine(client)
-            statusText = 'Succesfully joined {} team. Waiting for all players'.format(
+            errorText='Successfully created game for {}'.format(number)
+            response=socketReadLine(client)
+            errorText='Successfully joined {} team. Waiting for all players'.format(
                 response.split(' ')[2])
+            myTeam=response.split(' ')[2]
 
             waitForBoard()
+            startGame()
 
     elif verb == 'join':
         socketPrintLine(client, command)
-        response = socketReadLine(client)
+        response=socketReadLine(client)
         if response.split(' ')[0] == 'error':
-            statusText = errorMessages[response.split(' ')[2]]
+            errorText=errorMessages[response.split(' ')[2]]
         else:
-            statusText = 'Successfully joined {} team'.format(
+            errorText='Successfully joined {} team'.format(
                 response.split(' ')[2])
+            myTeam=response.split(' ')[2]
 
             waitForBoard()
+            startGame()
 
+    elif verb == 'select':
+        socketPrintLine(client, 'vote stone ' + \
+                        findStonePosition(command.split(' ')[1]))
+
+    elif verb == 'move':
+        socketPrintLine(client, 'vote move' + \
+                        translateChessNotation(command.split(' ')[1]))
 
     else:
-        statusText = 'No such command {}'.format(command)
+        errorText='No such command {}'.format(command)
 
 
 def inputFunction():
     global command
     global gameEnded
     while not gameEnded:
-        c = stdscr.getch()
+        c=stdscr.getch()
         if c == 10:
             textBox.clear()
-            gameEnded = do(command)
-            command = ''
+            gameEnded=do(command)
+            command=''
             textBox.move(0, 0)
             textBox.refresh()
         elif c == 127 or c == 8:
             textBox.clear()
-            command = command[:-1]
+            command=command[:-1]
             textBox.move(0, 0)
             textBox.addstr(command)
             textBox.refresh()
@@ -166,16 +275,24 @@ def statusFunction():
     global gameEnded
     while not gameEnded:
         statusBox.clear()
-        statusBox.move(1, 0)
-        statusBox.addstr(statusText)
+        statusBox.move(0, 0)
+        statusBox.addstr(hintText + '\n')
+        statusBox.addstr(errorText + '\n')
+        statusBox.addstr('Connected to ' + server if server !=
+                         '' else 'Not connected')
+        statusBox.addstr('; Team ' + myTeam if myTeam != '' else '')
+        statusBox.addstr('; Rolled ' + roll if roll != -1 else '')
+        statusBox.addstr('; Votes: ' + parseVotes() if votes != {} else '')
         textBox.move(0, len(command))
         statusBox.refresh()
         textBox.refresh()
         time.sleep(.5)
 
-statusText = 'Not connected. Type `connect {address} {port}` to connect'
+allowedVerbs = {'connect', 'exit'}
+statusText='Not connected.'
+hintText='Type `connect {address} {port}` to connect'
 
-inputThread = threading.Thread(target=inputFunction)
+inputThread=threading.Thread(target=inputFunction)
 inputThread.start()
-statusThread = threading.Thread(target=statusFunction)
+statusThread=threading.Thread(target=statusFunction)
 statusThread.start()
