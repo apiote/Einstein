@@ -736,7 +736,7 @@ void voteForMove(int sender, pair<int, int> move){
     }
     if(!correctMove){
         cout << "failed to vote for move " << move.first << " " << move.second << endl;
-        writeN(sender, "error vote move_invalid\n");
+        writeN(sender, "error vote move invalid\n");
     }
     cout << "current votes: ";
     for(int k = 0; k < 3; ++k){
