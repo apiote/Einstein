@@ -14,6 +14,8 @@
 #include <vector>
 #include <set>
 #include <utility>
+#include <thread>
+#include <chrono>
 
 #define MAXEVENTS 64
 
@@ -39,43 +41,52 @@ int votesForMove[3];
 bool voteStoneNeeded = false;
 bool voteMoveNeeded = false;
 bool gameEnded = false;
+int voteNumber = 0;
+const int maxNumberOfPlayers = 10;
+bool playerVotes[10];//TODO switch 10 -> maxNumberOfPlayers
+int numberOfTies = 0;
+const int voteTimeLimit = 15;
 
-int roll() {
+void endVoteForMove();
+void endVoteForStone();
+void startTurn(string color);
+
+int roll(){
     srand(time(0));
     return rand() % 6 + 1;
 }
 
-void setPossibleStones() {
+void setPossibleStones(){
     bool myNumbers[6];
-    for (int i = 0; i < 6; ++i) {
+    for(int i = 0; i < 6; ++i){
         myNumbers[i] = 0;
     }
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
-            if (activeTeam == "yellow") {
-                if (board[i][j] > 0 && board[i][j] < 7) {
+    for(int i = 0; i < 5; ++i){
+        for(int j = 0; j < 5; ++j){
+            if(activeTeam == "yellow"){
+                if(board[i][j] > 0 && board[i][j] < 7){
                     myNumbers[board[i][j]] = true;
                 }
             }
-            else {
-                if (board[i][j] > 10 && board[i][j] < 17) {
+            else{
+                if(board[i][j] > 10 && board[i][j] < 17){
                     myNumbers[board[i][j] - 10] = true;
                 }
             }
         }
     }
     possibleStones.clear();
-    if (myNumbers[numberRolled]) {
-        for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 5; ++j) {
-                if (activeTeam == "yellow") {
-                    if (board[i][j] == numberRolled) {
+    if(myNumbers[numberRolled]){
+        for(int i = 0; i < 5; ++i){
+            for(int j = 0; j < 5; ++j){
+                if(activeTeam == "yellow"){
+                    if(board[i][j] == numberRolled){
                         pair<int, int> stone = make_pair(i, j);
                         possibleStones.push_back(stone);
                     }
                 }
-                else {
-                    if (board[i][j] - 10 == numberRolled) {
+                else{
+                    if(board[i][j] - 10 == numberRolled){
                         pair<int, int> stone = make_pair(i, j);
                         possibleStones.push_back(stone);
                     }
@@ -83,20 +94,20 @@ void setPossibleStones() {
             }
         }
     }
-    else {
+    else{
         int n = numberRolled + 1;
-        while (n < 7) {
-            if (myNumbers[n]) {
-                for (int i = 0; i < 5; ++i) {
-                    for (int j = 0; j < 5; ++j) {
-                        if (activeTeam == "yellow") {
-                            if (board[i][j] == n) {
+        while(n < 7){
+            if(myNumbers[n]){
+                for(int i = 0; i < 5; ++i){
+                    for(int j = 0; j < 5; ++j){
+                        if(activeTeam == "yellow"){
+                            if(board[i][j] == n){
                                 pair<int, int> stone = make_pair(i, j);
                                 possibleStones.push_back(stone);
                             }
                         }
-                        else {
-                            if (board[i][j] - 10 == n) {
+                        else{
+                            if(board[i][j] - 10 == n){
                                 pair<int, int> stone = make_pair(i, j);
                                 possibleStones.push_back(stone);
                             }
@@ -108,18 +119,18 @@ void setPossibleStones() {
             ++n;
         }
         n = numberRolled - 1;
-        while (n > 0) {
-            if (myNumbers[n]) {
-                for (int i = 0; i < 5; ++i) {
-                    for (int j = 0; j < 5; ++j) {
-                        if (activeTeam == "yellow") {
-                            if (board[i][j] == n) {
+        while(n > 0){
+            if(myNumbers[n]){
+                for(int i = 0; i < 5; ++i){
+                    for(int j = 0; j < 5; ++j){
+                        if(activeTeam == "yellow"){
+                            if(board[i][j] == n){
                                 pair<int, int> stone = make_pair(i, j);
                                 possibleStones.push_back(stone);
                             }
                         }
-                        else {
-                            if (board[i][j] - 10 == n) {
+                        else{
+                            if(board[i][j] - 10 == n){
                                 pair<int, int> stone = make_pair(i, j);
                                 possibleStones.push_back(stone);
                             }
@@ -133,21 +144,21 @@ void setPossibleStones() {
     }
 }
 
-void writeN(int sender, string msg) {
+void writeN(int sender, string msg){
     char a[100];
     int i;
-    for (i = 0; i < msg.size(); ++i) {
+    for(i = 0; i < msg.size(); ++i){
         a[i] = msg[i];
     }
-    if (write(sender, a, msg.size()) == -1) {
+    if(write(sender, a, msg.size()) == -1){
         perror("errorCode");
     }
 }
 
-void createBoard() {
+void createBoard(){
     srand(time(0));
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
+    for(int i = 0; i < 5; ++i){
+        for(int j = 0; j < 5; ++j){
             board[i][j] = 0;
         }
     }
@@ -173,53 +184,53 @@ void createBoard() {
     }
 }
 
-void printBoard() {
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
+void printBoard(){
+    for(int i = 0; i < 5; ++i){
+        for(int j = 0; j < 5; ++j){
             cout << board[i][j] << " ";
         }
         cout << endl;
     }
 }
 
-string intToString(int i) {
+string intToString(int i){
     stringstream ss;
     string s;
     ss << i;
     ss >> s;
-    if (ss.fail()) {
+    if(ss.fail()){
         return "e";
         //TODO e - error
-    } else {
+    } else{
         return s;
     }
 }
 
-int stringToInt(string s) {
+int stringToInt(string s){
     stringstream ss(s);
     int i;
     ss >> i;
-    if (ss.fail()) {
+    if(ss.fail()){
         return -1;
-    } else {
+    } else{
         return i;
     }
 }
 
-void messageToStringArray(char message[]) {
+void messageToStringArray(char message[]){
     stringstream ss(message);
     int i = 0;
     string tmp;
-    while (ss >> tmp) {
+    while(ss >> tmp){
         strArray[i] = tmp;
         i++;
     }
 }
 
-string boardToString() {
+string boardToString(){
     string b = "board";
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
+    for(int i = 0; i < 5; ++i){
+        for(int j = 0; j < 5; ++j){
             b += " ";
             b += intToString(board[i][j]);
         }
@@ -227,99 +238,99 @@ string boardToString() {
     return b;
 }
 
-void sendRolled() {
+void sendRolled(){
     string msg = "success rolled ";
     msg += intToString(numberRolled);
     msg += '\n';
-    if (activeTeam == "yellow") {
-        for (int i = 0; i < numberOfPlayers; ++i) {
+    if(activeTeam == "yellow"){
+        for(int i = 0; i < numberOfPlayers; ++i){
             writeN(yellowTeam[i], msg);
         }
     }
-    else {
-        for (int i = 0; i < numberOfPlayers; ++i) {
+    else{
+        for(int i = 0; i < numberOfPlayers; ++i){
             writeN(blueTeam[i], msg);
         }
     }
 }
 
-void sendActiveTeam() {
+void sendActiveTeam(){
     string s;
-    if (activeTeam == "yellow") {
+    if(activeTeam == "yellow"){
         s = "success active yellow\n";
     }
-    else {
+    else{
         s = "success active blue\n";
     }
-    for (int i = 0; i < numberOfPlayers; ++i) {
+    for(int i = 0; i < numberOfPlayers; ++i){
         writeN(yellowTeam[i], s);
         writeN(blueTeam[i], s);
     }
 }
 
-void sendStoneVote(bool needed) {
+void sendStoneVote(bool needed){
     string msg = "success vote stone ";
-    if (needed) {
+    if(needed){
         msg += "needed\n";
     }
-    else {
+    else{
         msg += "not_needed\n";
     }
-    if (activeTeam == "yellow") {
-        for (int i = 0; i < numberOfPlayers; ++i) {
+    if(activeTeam == "yellow"){
+        for(int i = 0; i < numberOfPlayers; ++i){
             writeN(yellowTeam[i], msg);
         }
     }
-    else {
-        for (int i = 0; i < numberOfPlayers; ++i) {
+    else{
+        for(int i = 0; i < numberOfPlayers; ++i){
             writeN(blueTeam[i], msg);
         }
     }
 }
 
-void sendMoveVote(bool needed) {
+void sendMoveVote(bool needed){
     string msg = "success vote move ";
-    if (needed) {
+    if(needed){
         msg += "needed\n";
     }
-    else {
+    else{
         msg += "not_needed\n";
     }
-    for (int i = 0; i < numberOfPlayers; ++i) {
-        if (activeTeam == "yellow") {
+    for(int i = 0; i < numberOfPlayers; ++i){
+        if(activeTeam == "yellow"){
             writeN(yellowTeam[i], msg);
         }
-        else {
+        else{
             writeN(blueTeam[i], msg);
         }
     }
 
 }
 
-void sendStoneSelected(bool selected) {
+void sendStoneSelected(bool selected){
     string msg = "success stone ";
-    if (selected) {
+    if(selected){
         msg += intToString(selectedStone.first);
         msg += " ";
         msg += intToString(selectedStone.second);
         msg += " selected\n";
     }
-    else {
+    else{
         msg += "not_selected\n";
     }
-    if (activeTeam == "yellow") {
-        for (int i = 0; i < numberOfPlayers; ++i) {
+    if(activeTeam == "yellow"){
+        for(int i = 0; i < numberOfPlayers; ++i){
             writeN(yellowTeam[i], msg);
         }
     }
-    else {
-        for (int i = 0; i < numberOfPlayers; ++i) {
+    else{
+        for(int i = 0; i < numberOfPlayers; ++i){
             writeN(blueTeam[i], msg);
         }
     }
 }
 
-void sendMoveDone(pair<int, int> destination) {
+void sendMoveDone(pair<int, int> destination){
     string msg = "success stone ";
     msg += intToString(selectedStone.first);
     msg += " ";
@@ -331,118 +342,115 @@ void sendMoveDone(pair<int, int> destination) {
     msg += " by ";
     msg += activeTeam;
     msg += '\n';
-    for (int i = 0; i < numberOfPlayers; ++i) {
+    for(int i = 0; i < numberOfPlayers; ++i){
         writeN(yellowTeam[i], msg);
         writeN(blueTeam[i], msg);
     }
 }
 
-void sendMoveNotDone() {
-    for (int i = 0; i < numberOfPlayers; ++i) {
-        if (activeTeam == "yellow") {
+void sendMoveNotDone(){
+    for(int i = 0; i < numberOfPlayers; ++i){
+        if(activeTeam == "yellow"){
             writeN(yellowTeam[i], "success stone not_moved\n");
         }
-        else {
+        else{
             writeN(blueTeam[i], "success stone not_moved\n");
         }
     }
 }
 
-void setPossibleMoves() {
+void setPossibleMoves(){
     possibleMoves.clear();
-    if (activeTeam == "yellow") {
-        if (selectedStone.first < 4) {
+    if(activeTeam == "yellow"){
+        if(selectedStone.first < 4){
             pair<int, int> p = make_pair(selectedStone.first + 1, selectedStone.second);
             possibleMoves.push_back(p);
         }
-        if (selectedStone.second < 4) {
+        if(selectedStone.second < 4){
             pair<int, int> p = make_pair(selectedStone.first, selectedStone.second + 1);
             possibleMoves.push_back(p);
         }
-        if (possibleMoves.size() == 2) {
+        if(possibleMoves.size() == 2){
             pair<int, int> p = make_pair(selectedStone.first + 1, selectedStone.second + 1);
             possibleMoves.push_back(p);
         }
     }
-    else {
-        if (selectedStone.first > 0) {
+    else{
+        if(selectedStone.first > 0){
             pair<int, int> p = make_pair(selectedStone.first - 1, selectedStone.second);
             possibleMoves.push_back(p);
         }
-        if (selectedStone.second > 0) {
+        if(selectedStone.second > 0){
             pair<int, int> p = make_pair(selectedStone.first, selectedStone.second - 1);
             possibleMoves.push_back(p);
         }
-        if (possibleMoves.size() == 2) {
+        if(possibleMoves.size() == 2){
             pair<int, int> p = make_pair(selectedStone.first - 1, selectedStone.second - 1);
             possibleMoves.push_back(p);
         }
     }
 }
 
-void sendEndGame(string winner, string reason) {
+void sendEndGame(string winner, string reason){
     cout << winner << " won " << "because of " << reason << endl;
     string msg = "success game ended ";
     msg += winner;
     msg += " ";
     msg += reason;
     msg += '\n';
-    for (int i = 0; i < numberOfPlayers; ++i) {
+    for(int i = 0; i < numberOfPlayers; ++i){
         writeN(yellowTeam[i], msg);
         writeN(blueTeam[i], msg);
     }
 }
 
-void setGameEnded() {
+void setGameEnded(){
     gameEnded = true;
 }
 
-void checkIfEndGame() {
-    if (board[0][0] > 10) {
+void checkIfEndGame(){
+    if(board[0][0] > 10){
         sendEndGame("blue", "corner");
         setGameEnded();
     }
-    if (board[4][4] > 0 && board[4][4] < 7) {
+    if(board[4][4] > 0 && board[4][4] < 7){
         sendEndGame("blue", "corner");
         setGameEnded();
     }
     bool yellowStonesOnTheBoard = false;
     bool blueStonesOnTheBoard = false;
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
-            if (board[i][j] > 0) {
-                if (board[i][j] > 10) {
+    for(int i = 0; i < 5; ++i){
+        for(int j = 0; j < 5; ++j){
+            if(board[i][j] > 0){
+                if(board[i][j] > 10){
                     blueStonesOnTheBoard = true;
                 }
-                else {
+                else{
                     yellowStonesOnTheBoard = true;
                 }
             }
         }
     }
-    if (!blueStonesOnTheBoard) {
+    if(!blueStonesOnTheBoard){
         sendEndGame("yellow", "no_stones");
         setGameEnded();
     }
-    if (!yellowStonesOnTheBoard) {
+    if(!yellowStonesOnTheBoard){
         sendEndGame("blue", "no_stones");
         setGameEnded();
     }
-    //TODO check no vote?
 }
 
-void startTurn(string color);
-
-void changeTurn() {
-    if (activeTeam == "yellow") {
+void changeTurn(){
+    if(activeTeam == "yellow"){
         startTurn("blue");
     }
-    else {
+    else{
         startTurn("yellow");
     }
 }
 
-void doMove(pair<int, int> destination) {
+void doMove(pair<int, int> destination){
     int selectedStoneNumber = board[selectedStone.first][selectedStone.second];
     board[selectedStone.first][selectedStone.second] = 0;
     board[destination.first][destination.second] = selectedStoneNumber;
@@ -453,26 +461,85 @@ void doMove(pair<int, int> destination) {
     changeTurn();
 }
 
-void startMoveVote() {
-    for (int i = 0; i < 3; ++i) {
+void sendErrorNoVote(){
+    if(voteMoveNeeded){
+        for(int i = 0; i < numberOfPlayers; ++i){
+            if(activeTeam == "yellow"){
+                if(playerVotes[i] == false){
+                    writeN(yellowTeam[i], "error vote move no_vote\n");
+                }
+            }
+            else{
+                if(playerVotes[i] == false){
+                    writeN(blueTeam[i], "error vote move no_vote\n");
+                }
+            }
+        }
+    }
+    else{//vote stone needed
+        for(int i = 0; i < numberOfPlayers; ++i){
+            if(activeTeam == "yellow"){
+                if(playerVotes[i] == false){
+                    writeN(yellowTeam[i], "error vote stone no_vote\n");
+                }
+            }
+            else{
+                if(playerVotes[i] == false){
+                    writeN(blueTeam[i], "error vote stone no_vote\n");
+                }
+            }
+        }
+    }
+}
+
+void delay(int seconds, int currentVoteNumber){
+    this_thread::sleep_for(chrono::seconds(seconds));
+    if(currentVoteNumber == voteNumber){
+        cout << "time is up" << endl;
+        sendErrorNoVote();
+        if(voteMoveNeeded){
+            endVoteForMove();
+        }
+        else{
+            endVoteForStone();
+        }
+    }
+}
+
+void delayAndCheckIfVoted(int seconds = voteTimeLimit){
+    ++voteNumber;
+    cout << "vote number: " << voteNumber << endl;
+    thread(delay, seconds, voteNumber).detach();
+}
+
+void startMoveVote(){
+    for(int i = 0; i < 3; ++i){
         votesForMove[i] = 0;
+    }
+    for(int j = 0; j < numberOfPlayers; ++j){
+        playerVotes[j] = false;
     }
     cout << "vote move needed" << endl;
     sendMoveVote(true);
+    delayAndCheckIfVoted();
 }
 
-void startStoneVote() {
+void startStoneVote(){
     votesForStone.first = 0;
     votesForStone.second = 0;
+    for(int j = 0; j < numberOfPlayers; ++j){
+        playerVotes[j] = false;
+    }
     cout << "vote stone needed" << endl;
     sendStoneVote(true);
     cout << "possible stones: " << endl;
-    for (int i = 0; i < possibleStones.size(); ++i) {
+    for(int i = 0; i < possibleStones.size(); ++i){
         cout << possibleStones[i].first << " " << possibleStones[i].second << endl;
     }
+    delayAndCheckIfVoted();
 }
 
-void selectStone(pair<int, int> stone) {
+void selectStone(pair<int, int> stone){
     selectedStone.first = stone.first;
     selectedStone.second = stone.second;
     cout << "selected stone " << selectedStone.first << " " << selectedStone.second << endl;
@@ -481,16 +548,16 @@ void selectStone(pair<int, int> stone) {
     voteMoveNeeded = false;
     setPossibleMoves();
     cout << "possible moves: " << endl;
-    for (int i = 0; i < possibleMoves.size(); ++i) {
+    for(int i = 0; i < possibleMoves.size(); ++i){
         cout << possibleMoves[i].first << " " << possibleMoves[i].second << endl;
     }
-    if (possibleMoves.size() > 1) {
+    if(possibleMoves.size() > 1){
         voteMoveNeeded = true;
     }
-    if (voteMoveNeeded) {
+    if(voteMoveNeeded){
         startMoveVote();
     }
-    else {
+    else{
         cout << "vote move not needed" << endl;
         sendMoveVote(false);
         doMove(possibleMoves[0]);
@@ -498,7 +565,7 @@ void selectStone(pair<int, int> stone) {
     }
 }
 
-void startTurn(string color) {
+void startTurn(string color){
     activeTeam = color;
     cout << color << " turn" << endl;
     printBoard();
@@ -509,13 +576,13 @@ void startTurn(string color) {
     setPossibleStones();
     voteStoneNeeded = false;
     voteMoveNeeded = false;
-    if (possibleStones.size() > 1) {
+    if(possibleStones.size() > 1){
         voteStoneNeeded = true;
     }
-    if (voteStoneNeeded) {
+    if(voteStoneNeeded){
         startStoneVote();
     }
-    else {
+    else{
         cout << "vote stone not needed" << endl;
         sendStoneVote(false);
         selectStone(possibleStones[0]);
@@ -523,10 +590,10 @@ void startTurn(string color) {
     }
 }
 
-void startGame() {
+void startGame(){
     gameStarted = true;
     cout << "game starts" << endl;
-    for (int i = 0; i < numberOfPlayers; ++i) {
+    for(int i = 0; i < numberOfPlayers; ++i){
         writeN(yellowTeam[i], "success game started\n");
         writeN(blueTeam[i], "success game started\n");
         string s = "success ";
@@ -538,59 +605,59 @@ void startGame() {
     startTurn("yellow");
 }
 
-bool alreadyJoined(int sender) {
-    for (int i = 0; i < numberOfYellowPlayers; ++i) {
-        if (sender == yellowTeam[i]) {
+bool alreadyJoined(int sender){
+    for(int i = 0; i < numberOfYellowPlayers; ++i){
+        if(sender == yellowTeam[i]){
             return true;
         }
     }
-    for (int i = 0; i < numberOfBluePlayers; ++i) {
-        if (sender == blueTeam[i]) {
+    for(int i = 0; i < numberOfBluePlayers; ++i){
+        if(sender == blueTeam[i]){
             return true;
         }
     }
     return false;
 }
 
-void joinIfPossible(int sender) {
-    if (alreadyJoined(sender)) {
+void joinIfPossible(int sender){
+    if(alreadyJoined(sender)){
         cout << "player already joined" << endl;
         writeN(sender, "error join already_joined\n");
     }
-    else {
-        if (numberOfConnectedPlayers < 2 * numberOfPlayers) {
-            if (numberOfYellowPlayers < numberOfPlayers) {
+    else{
+        if(numberOfConnectedPlayers < 2 * numberOfPlayers){
+            if(numberOfYellowPlayers < numberOfPlayers){
                 yellowTeam[numberOfYellowPlayers] = sender;
                 ++numberOfYellowPlayers;
                 cout << "player joined yellow team" << endl;
                 writeN(sender, "success join yellow\n");
             }
-            else {
+            else{
                 blueTeam[numberOfBluePlayers] = sender;
                 ++numberOfBluePlayers;
                 cout << "player joined blue team" << endl;
                 writeN(sender, "success join blue\n");
             }
             ++numberOfConnectedPlayers;
-            if (numberOfConnectedPlayers == 2 * numberOfPlayers) {
+            if(numberOfConnectedPlayers == 2 * numberOfPlayers){
                 startGame();
             }
         }
-        else {
+        else{
             cout << "both teams are full" << endl;
             writeN(sender, "error join full\n");
         }
     }
 }
 
-void createGame(int sender) {
+void createGame(int sender){
     numberOfPlayers = stringToInt(strArray[1]);
     //TODO check if strArray has [1]
-    if (numberOfPlayers < 1) {
+    if(numberOfPlayers < 1 || numberOfPlayers > maxNumberOfPlayers){
         cout << "invalid player count" << endl;
         writeN(sender, "error create invalid_count\n");
     }
-    else {
+    else{
         createBoard();
         gameCreated = true;
 
@@ -601,17 +668,17 @@ void createGame(int sender) {
     }
 }
 
-bool isHisTurn(int sender) {
-    if (activeTeam == "yellow") {
-        for (int i = 0; i < numberOfPlayers; ++i) {
-            if (sender == yellowTeam[i]) {
+bool isHisTurn(int sender){
+    if(activeTeam == "yellow"){
+        for(int i = 0; i < numberOfPlayers; ++i){
+            if(sender == yellowTeam[i]){
                 return true;
             }
         }
     }
-    else {
-        for (int i = 0; i < numberOfPlayers; ++i) {
-            if (sender == blueTeam[i]) {
+    else{
+        for(int i = 0; i < numberOfPlayers; ++i){
+            if(sender == blueTeam[i]){
                 return true;
             }
         }
@@ -619,107 +686,151 @@ bool isHisTurn(int sender) {
     return false;
 }
 
-void checkIfVoteForMoveCanEnd() {
-    if (votesForMove[0] + votesForMove[1] + votesForMove[2] == numberOfPlayers) {
-        cout << "voting finished" << endl;
-        if (votesForMove[0] > votesForMove[1] && votesForMove[0] > votesForMove[2]) {
-            doMove(possibleMoves[0]);
-            //voteMoveNeeded = false;
+void setPlayerVote(int sender){
+    bool error = true;
+    for(int i = 0; i < numberOfPlayers; ++i){
+        if(activeTeam == "yellow"){
+            if(yellowTeam[i] == sender){
+                playerVotes[i] = true;
+                error = false;
+                break;
+            }
         }
-        else if (votesForMove[1] > votesForMove[0] && votesForMove[1] > votesForMove[2]) {
-            doMove(possibleMoves[1]);
-            //voteMoveNeeded = false;
+        else{
+            if(blueTeam[i] == sender){
+                playerVotes[i] = true;
+                error = false;
+                break;
+            }
         }
-        else if (votesForMove[2] > votesForMove[0] && votesForMove[2] > votesForMove[1]) {
-            doMove(possibleMoves[2]);
-            //voteMoveNeeded = false;
-        }
-        else {
-            cout << "tie" << endl;
-            sendMoveNotDone();
-            startMoveVote();
-        }
+    }
+    if(error){
+        cout << "cannot set player vote" << endl;
     }
 }
 
-void voteForMove(int sender, pair<int, int> move) {
+void endVoteForMove(){
+    cout << "voting finished" << endl;
+    if(votesForMove[0] + votesForMove[1] + votesForMove[2] == 0){
+        cout << "there was no votes for move" << endl;
+        //TODO sendMoveNotDone()?
+        startMoveVote();
+    }
+    else if(votesForMove[0] > votesForMove[1] && votesForMove[0] > votesForMove[2]){
+        doMove(possibleMoves[0]);
+        //TODO voteMoveNeeded = false;
+    }
+    else if(votesForMove[1] > votesForMove[0] && votesForMove[1] > votesForMove[2]){
+        doMove(possibleMoves[1]);
+        //TODO voteMoveNeeded = false;
+    }
+    else if(votesForMove[2] > votesForMove[0] && votesForMove[2] > votesForMove[1]){
+        doMove(possibleMoves[2]);
+        //TODO voteMoveNeeded = false;
+    }
+    else{
+        cout << "tie" << endl;
+        ++numberOfTies;
+        sendMoveNotDone();
+        startMoveVote();
+    }
+}
+
+void checkIfVoteForMoveCanEnd(){
+    if(votesForMove[0] + votesForMove[1] + votesForMove[2] == numberOfPlayers){
+        endVoteForMove();
+    }
+}
+
+void voteForMove(int sender, pair<int, int> move){
     string msg = "success vote move ";
     msg += intToString(move.first);
     msg += " ";
     msg += intToString(move.second);
     msg += '\n';
-    for (int i = 0; i < numberOfPlayers; ++i) {
-        if (activeTeam == "yellow") {
+    for(int i = 0; i < numberOfPlayers; ++i){
+        if(activeTeam == "yellow"){
             writeN(yellowTeam[i], msg);
         }
-        else {
+        else{
             writeN(blueTeam[i], msg);
         }
     }
     bool correctMove = false;
-    for (int j = 0; j < 3; ++j) {
-        if (possibleMoves[j].first == move.first && possibleMoves[j].second == move.second) {
+    for(int j = 0; j < 3; ++j){
+        if(possibleMoves[j].first == move.first && possibleMoves[j].second == move.second){
             ++votesForMove[j];
             cout << "voted for move " << move.first << " " << move.second << endl;
             correctMove = true;
             break;
         }
     }
-    if (!correctMove) {
+    if(!correctMove){
         cout << "failed to vote for move " << move.first << " " << move.second << endl;
         writeN(sender, "error vote move invalid\n");
     }
-    checkIfVoteForMoveCanEnd();
     cout << "current votes: ";
-    for (int k = 0; k < 3; ++k) {
+    for(int k = 0; k < 3; ++k){
         cout << votesForMove[k] << " ";
     }
     cout << endl;
+
+    checkIfVoteForMoveCanEnd();
 }
 
-void checkIfVoteForStoneCanEnd() {
-    if (votesForStone.first + votesForStone.second == numberOfPlayers) {
-        cout << "voting finished" << endl;
-        if (votesForStone.first > votesForStone.second) {
-            selectStone(possibleStones[0]);
-            //voteStoneNeeded = false;
-        }
-        else if (votesForStone.first < votesForStone.second) {
-            selectStone(possibleStones[1]);
-            //voteStoneNeeded = false;
-        }
-        else {
-            cout << "tie" << endl;
-            sendStoneSelected(false);
-            startStoneVote();
-        }
+void endVoteForStone(){
+    cout << "voting finished" << endl;
+    if(votesForStone.first + votesForStone.second == 0){
+        cout << "there was no votes for stone" << endl;
+        //TODO sendStoneSelected(false)?
+        startStoneVote();
+    }
+    else if(votesForStone.first > votesForStone.second){
+        selectStone(possibleStones[0]);
+        //TODO voteStoneNeeded = false;
+    }
+    else if(votesForStone.first < votesForStone.second){
+        selectStone(possibleStones[1]);
+        //TODO voteStoneNeeded = false;
 
+    }
+    else{
+        cout << "tie" << endl;
+        ++numberOfTies;
+        sendStoneSelected(false);
+        startStoneVote();
     }
 }
 
-void voteForStone(int sender, pair<int, int> stone) {
+void checkIfVoteForStoneCanEnd(){
+    if(votesForStone.first + votesForStone.second == numberOfPlayers){
+        endVoteForStone();
+    }
+}
+
+void voteForStone(int sender, pair<int, int> stone){
     string msg = "success vote stone ";
     msg += intToString(stone.first);
     msg += " ";
     msg += intToString(stone.second);
     msg += '\n';
-    for (int i = 0; i < numberOfPlayers; ++i) {
-        if (activeTeam == "yellow") {
+    for(int i = 0; i < numberOfPlayers; ++i){
+        if(activeTeam == "yellow"){
             writeN(yellowTeam[i], msg);
         }
-        else {
+        else{
             writeN(blueTeam[i], msg);
         }
     }
-    if (possibleStones[0].first == stone.first && possibleStones[0].second == stone.second) {
+    if(possibleStones[0].first == stone.first && possibleStones[0].second == stone.second){
         ++votesForStone.first;
         cout << "voted for stone " << stone.first << " " << stone.second << endl;
     }
-    else if (possibleStones[1].first == stone.first && possibleStones[1].second == stone.second) {
+    else if(possibleStones[1].first == stone.first && possibleStones[1].second == stone.second){
         ++votesForStone.second;
         cout << "voted for stone " << stone.first << " " << stone.second << endl;
     }
-    else {
+    else{
         cout << "failed to vote for stone " << stone.first << " " << stone.second << endl;
         writeN(sender, "error vote stone not_selectable\n");
     }
@@ -727,37 +838,36 @@ void voteForStone(int sender, pair<int, int> stone) {
     cout << "current votes: " << votesForStone.first << " " << votesForStone.second << endl;
 }
 
-void handleMessage(char message[], int sender) {
+void handleMessage(char message[], int sender){
     messageToStringArray(message);
-
-    if (strArray[0] == "create") {
-        if (!gameCreated) {
+    if(strArray[0] == "create"){
+        if(!gameCreated){
             createGame(sender);
         }
-        else {
+        else{
             cout << "game already exists" << endl;
             writeN(sender, "error create already_exists\n");
             joinIfPossible(sender);
         }
     }
-    else if (strArray[0] == "join") {
-        if (gameCreated) {
+    else if(strArray[0] == "join"){
+        if(gameCreated){
             joinIfPossible(sender);
         }
-        else {
+        else{
             cout << "game hasn't started yet" << endl;
             writeN(sender, "error join not_started\n");
         }
     }
-    else if (strArray[0] == "vote") {
-        if (!gameStarted) {
+    else if(strArray[0] == "vote"){
+        if(!gameStarted){
             cout << "game hasn't started yet" << endl;
             writeN(sender, "error game not_started\n");
         }//else if not your turn
-        else {
-            if (isHisTurn(sender)) {
-                if (strArray[1] == "stone") {
-                    if (voteStoneNeeded) {
+        else{
+            if(isHisTurn(sender)){
+                if(strArray[1] == "stone"){
+                    if(voteStoneNeeded){
                         int x = stringToInt(strArray[2]);
                         int y = stringToInt(strArray[3]);
                         //TODO errors
@@ -765,13 +875,13 @@ void handleMessage(char message[], int sender) {
                         //TODO check if already voted
                         voteForStone(sender, stone);
                     }
-                    else {
+                    else{
                         cout << "vote for stone is not needed at this moment" << endl;
                         writeN(sender, "error vote stone not_needed\n");
                     }
                 }
-                else if (strArray[1] == "move") {
-                    if (voteMoveNeeded) {
+                else if(strArray[1] == "move"){
+                    if(voteMoveNeeded){
                         int x = stringToInt(strArray[2]);
                         int y = stringToInt(strArray[3]);
                         //TODO errors
@@ -779,40 +889,40 @@ void handleMessage(char message[], int sender) {
                         //TODO check if already voted
                         voteForMove(sender, move);
                     }
-                    else {
+                    else{
                         cout << "vote for move is not needed at this moment" << endl;
                         writeN(sender, "error vote move not_needed\n");
                     }
                 }
-                else {
+                else{
                     cout << "unknown request" << endl;
                     writeN(sender, "error request_unknown\n");
                 }
             }
-            else {
+            else{
                 cout << "it is not player turn" << endl;
                 writeN(sender, "error vote move not_your_turn\n");
             }
         }
     }
-    else {
+    else{
         cout << "unknown request" << endl;
         writeN(sender, "error request_unknown\n");
     }
 }
 
-static int make_socket_non_blocking(int sfd) {
+static int make_socket_non_blocking(int sfd){
     int flags, s;
 
     flags = fcntl(sfd, F_GETFL, 0);
-    if (flags == -1) {
+    if(flags == -1){
         perror("fcntl");
         return -1;
     }
 
     flags |= O_NONBLOCK;
     s = fcntl(sfd, F_SETFL, flags);
-    if (s == -1) {
+    if(s == -1){
         perror("fcntl");
         return -1;
     }
@@ -820,7 +930,7 @@ static int make_socket_non_blocking(int sfd) {
     return 0;
 }
 
-static int create_and_bind(char *port) {
+static int create_and_bind(char *port){
     struct addrinfo hints;
     struct addrinfo *result, *rp;
     int s, sfd;
@@ -831,14 +941,14 @@ static int create_and_bind(char *port) {
     hints.ai_flags = AI_PASSIVE;     /* All interfaces */
 
     s = getaddrinfo(NULL, port, &hints, &result);
-    if (s != 0) {
+    if(s != 0){
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
         return -1;
     }
 
-    for (rp = result; rp != NULL; rp = rp->ai_next) {
+    for(rp = result; rp != NULL; rp = rp->ai_next){
         sfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-        if (sfd == -1)
+        if(sfd == -1)
             continue;
 
         //setting SO_REUSEADDR so that immediate restart of a server is possible
@@ -846,7 +956,7 @@ static int create_and_bind(char *port) {
         setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
 
         s = bind(sfd, rp->ai_addr, rp->ai_addrlen);
-        if (s == 0) {
+        if(s == 0){
             /* We managed to bind successfully! */
             break;
         }
@@ -854,7 +964,7 @@ static int create_and_bind(char *port) {
         close(sfd);
     }
 
-    if (rp == NULL) {
+    if(rp == NULL){
         fprintf(stderr, "Could not bind\n");
         return -1;
     }
@@ -864,33 +974,33 @@ static int create_and_bind(char *port) {
     return sfd;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]){
     int sfd, s;
     int efd;
     struct epoll_event event;
     struct epoll_event *events;
 
-    if (argc != 2) {
+    if(argc != 2){
         fprintf(stderr, "Usage: %s [port]\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
     sfd = create_and_bind(argv[1]);
-    if (sfd == -1)
+    if(sfd == -1)
         abort();
 
     s = make_socket_non_blocking(sfd);
-    if (s == -1)
+    if(s == -1)
         abort();
 
     s = listen(sfd, SOMAXCONN);
-    if (s == -1) {
+    if(s == -1){
         perror("listen");
         abort();
     }
 
     efd = epoll_create1(0);
-    if (efd == -1) {
+    if(efd == -1){
         perror("epoll_create");
         abort();
     }
@@ -898,23 +1008,23 @@ int main(int argc, char *argv[]) {
     event.data.fd = sfd;
     event.events = EPOLLIN | EPOLLET;
     s = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
-    if (s == -1) {
+    if(s == -1){
         perror("epoll_ctl");
         abort();
     }
 
     /* Buffer where events are returned */
-    events = (epoll_event *) calloc(MAXEVENTS, sizeof event);
+    events = (epoll_event *)calloc(MAXEVENTS, sizeof event);
 
     /* The event loop */
-    while (1) {
+    while(1){
         int n, i;
 
         n = epoll_wait(efd, events, MAXEVENTS, -1);
-        for (i = 0; i < n; i++) {
-            if ((events[i].events & EPOLLERR) ||
-                (events[i].events & EPOLLHUP) ||
-                (!(events[i].events & EPOLLIN))) {
+        for(i = 0; i < n; i++){
+            if((events[i].events & EPOLLERR) ||
+               (events[i].events & EPOLLHUP) ||
+               (!(events[i].events & EPOLLIN))){
                 /* An error has occured on this fd, or the socket is not
                    ready for reading (why were we notified then?) */
                 fprintf(stderr, "epoll error\n");
@@ -922,10 +1032,10 @@ int main(int argc, char *argv[]) {
                 continue;
             }
 
-            else if (sfd == events[i].data.fd) {
+            else if(sfd == events[i].data.fd){
                 /* We have a notification on the listening socket, which
                    means one or more incoming connections. */
-                while (1) {
+                while(1){
                     struct sockaddr in_addr;
                     socklen_t in_len;
                     int infd;
@@ -934,13 +1044,13 @@ int main(int argc, char *argv[]) {
                     in_len = sizeof in_addr;
                     infd = accept(sfd, &in_addr, &in_len);
 
-                    if (infd == -1) {
-                        if ((errno == EAGAIN) ||
-                            (errno == EWOULDBLOCK)) {
+                    if(infd == -1){
+                        if((errno == EAGAIN) ||
+                           (errno == EWOULDBLOCK)){
                             /* We have processed all incoming
                                connections. */
                             break;
-                        } else {
+                        } else{
                             perror("accept");
                             break;
                         }
@@ -950,7 +1060,7 @@ int main(int argc, char *argv[]) {
                                     hbuf, sizeof hbuf,
                                     sbuf, sizeof sbuf,
                                     NI_NUMERICHOST | NI_NUMERICSERV);
-                    if (s == 0) {
+                    if(s == 0){
                         printf("Accepted connection on descriptor %d "
                                        "(host=%s, port=%s)\n", infd, hbuf, sbuf);
                     }
@@ -958,19 +1068,19 @@ int main(int argc, char *argv[]) {
                     /* Make the incoming socket non-blocking and add it to the
                        list of fds to monitor. */
                     s = make_socket_non_blocking(infd);
-                    if (s == -1)
+                    if(s == -1)
                         abort();
 
                     event.data.fd = infd;
                     event.events = EPOLLIN | EPOLLET;
                     s = epoll_ctl(efd, EPOLL_CTL_ADD, infd, &event);
-                    if (s == -1) {
+                    if(s == -1){
                         perror("epoll_ctl");
                         abort();
                     }
                 }
                 continue;
-            } else {
+            } else{
                 /* We have data on the fd waiting to be read. Read and
                    display it. We must read whatever data is available
                    completely, as we are running in edge-triggered mode
@@ -978,20 +1088,20 @@ int main(int argc, char *argv[]) {
                    data. */
                 int done = 0;
 
-                while (1) {
+                while(1){
                     ssize_t count;
                     char buf[512];
 
                     count = read(events[i].data.fd, buf, sizeof buf);
-                    if (count == -1) {
+                    if(count == -1){
                         /* If errno == EAGAIN, that means we have read all
                            data. So go back to the main loop. */
-                        if (errno != EAGAIN) {
+                        if(errno != EAGAIN){
                             perror("read");
                             done = 1;
                         }
                         break;
-                    } else if (count == 0) {
+                    } else if(count == 0){
                         /* End of file. The remote has closed the
                            connection. */
                         done = 1;
@@ -1000,13 +1110,13 @@ int main(int argc, char *argv[]) {
                     /* Write the buffer to standard output */
                     s = write(1, buf, count);
                     handleMessage(buf, events[i].data.fd);
-                    if (s == -1) {
+                    if(s == -1){
                         perror("write");
                         abort();
                     }
                 }
 
-                if (done) {
+                if(done){
                     printf("Closed connection on descriptor %d\n",
                            events[i].data.fd);
 
