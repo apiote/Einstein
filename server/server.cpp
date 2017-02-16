@@ -414,7 +414,7 @@ void checkIfEndGame(){
         setGameEnded();
     }
     if(board[4][4] > 0 && board[4][4] < 7){
-        sendEndGame("blue", "corner");
+        sendEndGame("yellow", "corner");
         setGameEnded();
     }
     bool yellowStonesOnTheBoard = false;
@@ -713,7 +713,7 @@ void endVoteForMove(){
     cout << "voting finished" << endl;
     if(votesForMove[0] + votesForMove[1] + votesForMove[2] == 0){
         cout << "there was no votes for move" << endl;
-        //TODO sendMoveNotDone()?
+        sendMoveNotDone();
         startMoveVote();
     }
     else if(votesForMove[0] > votesForMove[1] && votesForMove[0] > votesForMove[2]){
@@ -782,7 +782,7 @@ void endVoteForStone(){
     cout << "voting finished" << endl;
     if(votesForStone.first + votesForStone.second == 0){
         cout << "there was no votes for stone" << endl;
-        //TODO sendStoneSelected(false)?
+        sendStoneSelected(false);
         startStoneVote();
     }
     else if(votesForStone.first > votesForStone.second){
