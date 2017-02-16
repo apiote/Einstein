@@ -16,6 +16,7 @@
 #include <utility>
 #include <thread>
 #include <chrono>
+#include <future>
 
 #define MAXEVENTS 64
 
@@ -47,6 +48,7 @@ bool playerVotes[10];
 //TODO switch 10 -> maxNumberOfPlayers
 int numberOfTies = 0;
 const int voteTimeLimit = 15;
+thread::id mainThreadID;
 
 void endVoteForMove();
 
@@ -242,7 +244,7 @@ void messageToStringArray(char message[]){
     stringstream ss(message);
     int i = 0;
     string tmp;
-    while(ss >> tmp){
+    while(ss >> tmp && i < 10){
         strArray[i] = tmp;
         ++i;
     }
@@ -333,7 +335,11 @@ void sendMoveDone(pair<int, int> destination){
 }
 
 void sendMoveNotDone(){
-    string message = "success stone not_moved\n";
+    string message = "success stone ";
+    message += intToString(selectedStone.first);
+    message += " ";
+    message += intToString(selectedStone.second);
+    message += " not_moved\n";
     sendToActiveTeam(message);
 }
 
@@ -381,6 +387,13 @@ void sendEndGame(string winner, string reason){
 
 void setGameEnded(){
     gameEnded = true;
+    if(this_thread::get_id() == mainThreadID){
+        //throw 42;
+    }
+    else{
+        cout << "not main thread" << endl;
+        pthread_cancel(pthread_self());
+    }
 }
 
 void checkIfEndGame(){
@@ -433,6 +446,7 @@ void doMove(pair<int, int> destination){
     << " to " << destination.first << " " << destination.second << " by " << activeTeam << endl;
     sendMoveDone(destination);
     checkIfEndGame();
+    numberOfTies = 0;
     changeTurn();
 }
 
@@ -519,7 +533,7 @@ void selectStone(pair<int, int> stone){
     selectedStone.second = stone.second;
     cout << "selected stone " << selectedStone.first << " " << selectedStone.second << endl;
     sendStoneSelected(true);
-
+    numberOfTies = 0;
     voteMoveNeeded = false;
     setPossibleMoves();
     cout << "possible moves: " << endl;
@@ -575,6 +589,7 @@ void sendBoard(){
     message += '\n';
     sendToAll(message);
 }
+
 void startGame(){
     gameStarted = true;
     cout << "game starts" << endl;
@@ -684,14 +699,13 @@ void setPlayerVote(int sender){
     }
 }
 
+void doRandomMove(){
+    doMove(possibleMoves[rand() % 3]);
+}
+
 void endVoteForMove(){
     cout << "voting finished" << endl;
-    if(votesForMove[0] + votesForMove[1] + votesForMove[2] == 0){
-        cout << "there was no votes for move" << endl;
-        sendMoveNotDone();
-        startMoveVote();
-    }
-    else if(votesForMove[0] > votesForMove[1] && votesForMove[0] > votesForMove[2]){
+    if(votesForMove[0] > votesForMove[1] && votesForMove[0] > votesForMove[2]){
         doMove(possibleMoves[0]);
         //TODO voteMoveNeeded = false;
     }
@@ -704,10 +718,20 @@ void endVoteForMove(){
         //TODO voteMoveNeeded = false;
     }
     else{
-        cout << "tie" << endl;
+        if(votesForMove[0] + votesForMove[1] + votesForMove[2] == 0){
+            cout << "there was no votes for move" << endl;
+        }
+        else{
+            cout << "tie" << endl;
+        }
         ++numberOfTies;
         sendMoveNotDone();
-        startMoveVote();
+        if(numberOfTies == 3){
+            doRandomMove();
+        }
+        else{
+            startMoveVote();
+        }
     }
 }
 
@@ -747,14 +771,13 @@ void voteForMove(int sender, pair<int, int> move){
     checkIfVoteForMoveCanEnd();
 }
 
+void selectRandomStone(){
+    selectStone(possibleStones[rand() % 2]);
+}
+
 void endVoteForStone(){
     cout << "voting finished" << endl;
-    if(votesForStone.first + votesForStone.second == 0){
-        cout << "there was no votes for stone" << endl;
-        sendStoneSelected(false);
-        startStoneVote();
-    }
-    else if(votesForStone.first > votesForStone.second){
+    if(votesForStone.first > votesForStone.second){
         selectStone(possibleStones[0]);
         //TODO voteStoneNeeded = false;
     }
@@ -764,10 +787,20 @@ void endVoteForStone(){
 
     }
     else{
-        cout << "tie" << endl;
+        if(votesForStone.first + votesForStone.second == 0){
+            cout << "there was no votes for stone" << endl;
+        }
+        else{
+            cout << "tie" << endl;
+        }
         ++numberOfTies;
         sendStoneSelected(false);
-        startStoneVote();
+        if(numberOfTies == 3){
+            selectRandomStone();
+        }
+        else{
+            startStoneVote();
+        }
     }
 }
 
@@ -805,6 +838,9 @@ void voteForStone(int sender, pair<int, int> stone){
 
 void handleMessage(char message[], int sender){
     messageToStringArray(message);
+    if(gameEnded){
+        cout << "gameEnded" << endl;
+    }
     if(strArray[0] == "create"){
         if(!gameCreated){
             createGame(sender);
@@ -938,6 +974,8 @@ static int create_and_bind(char *port){
 }
 
 int main(int argc, char *argv[]){
+    cout << "start" << endl;
+    mainThreadID = this_thread::get_id();
     int sfd, s;
     int efd;
     struct epoll_event event;
@@ -970,6 +1008,7 @@ int main(int argc, char *argv[]){
 
     event.data.fd = sfd;
     event.events = EPOLLIN | EPOLLET;
+    //TODO epoll_ctl valgrind error
     s = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
     if(s == -1){
         perror("epoll_ctl");
@@ -980,7 +1019,7 @@ int main(int argc, char *argv[]){
     events = (epoll_event *)calloc(MAXEVENTS, sizeof event);
 
     /* The event loop */
-    while(1){
+    while(!gameEnded){
         int n, i;
 
         n = epoll_wait(efd, events, MAXEVENTS, -1);
@@ -1036,6 +1075,7 @@ int main(int argc, char *argv[]){
 
                     event.data.fd = infd;
                     event.events = EPOLLIN | EPOLLET;
+                    //TODO epoll_ctl valgrind error
                     s = epoll_ctl(efd, EPOLL_CTL_ADD, infd, &event);
                     if(s == -1){
                         perror("epoll_ctl");
@@ -1051,7 +1091,7 @@ int main(int argc, char *argv[]){
                    data. */
                 int done = 0;
 
-                while(1){
+                while(!gameEnded){
                     ssize_t count;
                     char buf[512];
 
@@ -1077,6 +1117,9 @@ int main(int argc, char *argv[]){
                         perror("write");
                         abort();
                     }
+                    if(gameEnded){
+                        break;
+                    }
                 }
 
                 if(done){
@@ -1086,6 +1129,9 @@ int main(int argc, char *argv[]){
                     /* Closing the descriptor will make epoll remove it
                        from the set of descriptors which are monitored. */
                     close(events[i].data.fd);
+                }
+                if(gameEnded){
+                    break;
                 }
             }
         }
