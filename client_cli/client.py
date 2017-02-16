@@ -59,14 +59,14 @@ def socketReadLine(sock):
     response = ''
     while True:
         c = sock.recv(1).decode('utf-8')
+        if not c:
+            raise IOError('disconnected')
         print(c, file=sys.stderr, end='')
         if c != '\n':
             response += c
         else:
             print('\n', file=sys.stderr)
             return response
-# todo what if (when `exit`) i close a socket while recv’ing and (throw
-# and) catch an exception
 
 
 def waitForBoard():
@@ -93,7 +93,8 @@ def drawBoard():
             digit = 1 if box % 10 > 0 else 0
             colour = int(str(10 * int(box / 10) + digit), 2)
             print('{} {}|'.format(box % 10, colour), file=sys.stderr, end='\t')
-            boardBox.addstr(str(box % 10) if box != 0 else ' ', curses.color_pair(colour))
+            boardBox.addstr(str(box % 10) if digit !=
+                            0 else ' ', curses.color_pair(colour))
             boardBox.addstr(' ')
         print('', file=sys.stderr)
         boardBox.addstr('│\n')
@@ -113,7 +114,17 @@ def printBoard():
 
 
 def startGame():
-    threading.Thread(target=runGame).start()
+    global runGameThread
+    runGameThread = threading.Thread(target=safeRunGame)
+    runGameThread.start()
+
+
+def safeRunGame():
+    try:
+        waitForBoard()
+        runGame()
+    except IOError:
+        pass
 
 
 def runGame():
@@ -146,9 +157,9 @@ def runGame():
                     selected = response[-3] + ' ' + response[-2]
                 elif response[0] == 'success' and response[1] == 'vote':
                     try:
-                        votes[response[3] + ' ' + response[4]] += 1
+                        votes[stoneAt(response[3] + ' ' + response[4])] += 1
                     except KeyError:
-                        votes[response[3] + ' ' + response[4]] = 1
+                        votes[stoneAt(response[3] + ' ' + response[4])] = 1
                 elif response[-1] == 'not_selected':
                     votes = {}
                 elif response[0] == 'error':
@@ -198,6 +209,13 @@ def runGame():
                                                      'no_vote': 'opponent disconnection'}[response.split(' ')[4]])
             allowedVerbs = {'exit', 'create', 'join'}
             hintText = 'Type `exit` to quit, `create {n}` to create a game for n players per team  or `join` to join an existing game'
+
+
+def stoneAt(position):
+    i = int(position.split(' ')[0])
+    j = int(position.split(' ')[1])
+
+    return board[i][j]
 
 
 def highlightSelectables(rolledValue):
@@ -263,8 +281,11 @@ def dehighlight():
 
 def parseVotes():
     votesString = ''
-    for pos, vote in votes.items():
-        votesString += translateToChessNotation(pos) + ': ' + str(vote) + ', '
+    for key, votesNumber in votes.items():
+        try:
+            votesString += translateToChessNotation(key) + ': ' + str(votesNumber) + ', '
+        except AttributeError:
+            votesString += '{}: {}, '.format(key % 10, votesNumber)
     return votesString[:-2]
 
 
@@ -289,8 +310,8 @@ def do(command):
         return
     if verb == 'exit':
         curses.endwin()
+        client.shutdown(socket.SHUT_RDWR)
         client.close()
-        # todo interrupt runGame thread
         return True
     elif verb == 'connect':
         try:
@@ -302,7 +323,12 @@ def do(command):
         try:
             client.connect((address, int(port)))
         except Exception as e:
-            errorText = str(e)
+            if str(e).split(' ')[1].strip(']') == '111':
+                errorText = 'Server is not available at {}:{}'.format(address, port)
+            elif str(e).split(' ')[1].strip(']') == '-2':
+                errorText = 'Name {} is not known'.format(address)
+            else:
+                errorText = str(e)
         else:
             errorText = 'Connected to game.'
             hintText = 'Type `create {n}` to create a game for n players per team or `join` to join an existing game'
@@ -325,7 +351,6 @@ def do(command):
                 response.split(' ')[2])
             myTeam = response.split(' ')[2]
 
-            waitForBoard()
             startGame()
 
     elif verb == 'join':
@@ -338,21 +363,31 @@ def do(command):
                 response.split(' ')[2])
             myTeam = response.split(' ')[2]
 
-            waitForBoard()
             startGame()
 
     elif verb == 'select':
+        arg = ''
         try:
-            socketPrintLine(client, 'vote stone ' +
-                        findStonePosition(command.split(' ')[1]))
-        except Exception as e:
+            arg = command.split(' ')[1]
+        except IndexError:
+            errorText = 'Syntax error in {}'.format(command)
+            return
+        try:
+            socketPrintLine(client, 'vote stone ' + findStonePosition(arg))
+        except ValueError as e:
             errorText = str(e)
+        except TypeError:
+            errorText = 'No stone {} on the board'.format(arg)
 
     elif verb == 'move':
+        arg = ''
         try:
-            socketPrintLine(client, 'vote move ' +
-                        translateChessNotation(command.split(' ')[1]))
-        except Exception as e:
+            arg = command.split(' ')[1]
+        except IndexError:
+            errorText = 'Syntax error in {}'.format(command)
+        try:
+            socketPrintLine(client, 'vote move ' + translateChessNotation(arg))
+        except ValueError as e:
             errorText = str(e)
 
     else:
@@ -364,7 +399,7 @@ def findStonePosition(stoneNumber):
     try:
         stoneNumber = int(stoneNumber) + teamModifier
     except ValueError:
-        raise Exception('Not a number ' + stoneNumber)
+        raise ValueError('Not a number ' + stoneNumber)
     i, j = 0, 0
     for row in board:
         j = 0
@@ -378,6 +413,8 @@ def findStonePosition(stoneNumber):
 
 def translateChessNotation(chessField):
     chessField = chessField.upper()
+    if len(chessField) < 2:
+        raise ValueError('Wrong chess notation ' + chessField)
     if chessField[0] >= 'A' and chessField[0] <= 'E':
         column = chessField[0]
         row = chessField[1]
@@ -385,7 +422,7 @@ def translateChessNotation(chessField):
         column = chessField[1]
         row = chessField[0]
     else:
-        raise Exception('wrong chess notation ' + chessField)
+        raise ValueError('Wrong chess notation ' + chessField)
     row = int(row) - 1
     column = ord(column) - ord('A')
     return '{} {}'.format(row, column)
@@ -396,6 +433,7 @@ def inputFunction():
     global gameEnded
     while not gameEnded:
         c = stdscr.getch()
+        print('input ' + chr(c), file=sys.stderr)
         if c == 10:
             textBox.clear()
             gameEnded = do(command)
@@ -408,7 +446,7 @@ def inputFunction():
             textBox.move(0, 0)
             textBox.addstr(command)
             textBox.refresh()
-        else:
+        elif 'z' >= chr(c) >= 'a' or 'Z' >= chr(c) >= 'A' or '9' >= chr(c) >= '0' or chr(c) == ' ':
             command += chr(c)
             textBox.addstr(chr(c))
             textBox.refresh()
