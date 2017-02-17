@@ -6,6 +6,7 @@ import threading
 import time
 import sys
 import textwrap
+import signal
 
 sys.stderr = open('einstein_cli.log', 'w')
 
@@ -127,6 +128,7 @@ def safeRunGame():
         runGame()
     except IOError:
         pass
+    print('runGame end', file=sys.stderr)
 
 
 def runGame():
@@ -153,7 +155,9 @@ def runGame():
             while not votingFinished:
                 response = socketReadLine(client)
                 response = response.split(' ')
-                if response[-1] == 'selected':
+                if response[-1] == 'needed':
+                    votes = {}
+                elif response[-1] == 'selected':
                     votingFinished = True
                     votes = {}
                     selected = response[-3] + ' ' + response[-2]
@@ -177,7 +181,9 @@ def runGame():
             while not votingFinished:
                 response = socketReadLine(client)
                 response = response.split(' ')
-                if response[0] == 'success' and response[1] == 'vote':
+                if response[3] == 'needed':
+                    votes = {}
+                elif response[0] == 'success' and response[1] == 'vote':
                     try:
                         votes[response[3] + ' ' + response[4]] += 1
                     except KeyError:
@@ -440,27 +446,32 @@ def inputFunction():
     global command
     global gameEnded
     while not gameEnded:
-        c = stdscr.get_wch()
-        print('input ' + c, file=sys.stderr)
-        if c == '\u001b':
-            stdscr.get_wch()
-            stdscr.get_wch()
-        if c == chr(10):
-            textBox.clear()
-            gameEnded = do(command)
-            command = ''
-            textBox.move(0, 0)
-            textBox.refresh()
-        elif c == chr(127) or c == chr(8):
-            textBox.clear()
-            command = command[:-1]
-            textBox.move(0, 0)
-            textBox.addstr(command)
-            textBox.refresh()
-        elif 'z' >= c >= 'a' or 'Z' >= c >= 'A' or '9' >= c >= '0' or c == ' ':
-            command += c
-            textBox.addstr(c)
-            textBox.refresh()
+        try:
+            c = stdscr.get_wch()
+        except curses.error:
+            pass
+        else:
+            print('input ' + c, file=sys.stderr)
+            if c == '\u001b':
+                stdscr.get_wch()
+                stdscr.get_wch()
+            if c == chr(10):
+                textBox.clear()
+                gameEnded = do(command)
+                command = ''
+                textBox.move(0, 0)
+                textBox.refresh()
+            elif c == chr(127) or c == chr(8):
+                textBox.clear()
+                command = command[:-1]
+                textBox.move(0, 0)
+                textBox.addstr(command)
+                textBox.refresh()
+            elif 'z' >= c >= 'a' or 'Z' >= c >= 'A' or '9' >= c >= '0' or c == ' ':
+                command += c
+                textBox.addstr(c)
+                textBox.refresh()
+    print('statueEnd', file=sys.stderr)
     curses.endwin()
 
 
@@ -481,14 +492,29 @@ def statusFunction():
         statusBox.refresh()
         textBox.refresh()
         time.sleep(.5)
+    print('statueEnd', file=sys.stderr)
     curses.endwin()
+
+
+def onErrorExit(signal, frame):
+    global gameEnded
+    gameEnded = True
+    try:
+        client.shutdown(socket.SHUT_RDWR)
+    except OSError:
+        pass
+    else:
+        client.close()
 
 
 allowedVerbs = {'connect', 'exit'}
 statusText = 'Not connected.'
 hintText = 'Type `connect {address} {port}` to connect'
 
+stdscr.timeout(2000)
 inputThread = threading.Thread(target=inputFunction)
 inputThread.start()
 statusThread = threading.Thread(target=statusFunction)
 statusThread.start()
+
+signal.signal(signal.SIGINT, onErrorExit)
