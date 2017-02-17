@@ -7,6 +7,8 @@ import time
 import sys
 import textwrap
 
+sys.stderr = open('einstein_cli.log', 'w')
+
 stdscr = curses.initscr()
 
 errorMessages = {'already_exists': 'Game already exists on server', 'invalid_count': 'Wrong number of players',
@@ -134,7 +136,7 @@ def runGame():
     global errorText
     global roll
     won = None
-    while won == None:
+    while won is None:
         response = socketReadLine(client)
         allowedVerbs = {'exit'}
         if response.split(' ')[1] == 'active' and response.split(' ')[2] == myTeam:
@@ -209,6 +211,7 @@ def runGame():
                                                      'no_vote': 'opponent disconnection'}[response.split(' ')[4]])
             allowedVerbs = {'exit', 'create', 'join'}
             hintText = 'Type `exit` to quit, `create {n}` to create a game for n players per team  or `join` to join an existing game'
+    curses.endwin()
 
 
 def stoneAt(position):
@@ -283,7 +286,8 @@ def parseVotes():
     votesString = ''
     for key, votesNumber in votes.items():
         try:
-            votesString += translateToChessNotation(key) + ': ' + str(votesNumber) + ', '
+            votesString += translateToChessNotation(
+                key) + ': ' + str(votesNumber) + ', '
         except AttributeError:
             votesString += '{}: {}, '.format(key % 10, votesNumber)
     return votesString[:-2]
@@ -309,9 +313,12 @@ def do(command):
         errorText = verb + ' not allowed now'
         return
     if verb == 'exit':
-        curses.endwin()
-        client.shutdown(socket.SHUT_RDWR)
-        client.close()
+        try:
+            client.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            pass
+        else:
+            client.close()
         return True
     elif verb == 'connect':
         try:
@@ -324,7 +331,8 @@ def do(command):
             client.connect((address, int(port)))
         except Exception as e:
             if str(e).split(' ')[1].strip(']') == '111':
-                errorText = 'Server is not available at {}:{}'.format(address, port)
+                errorText = 'Server is not available at {}:{}'.format(
+                    address, port)
             elif str(e).split(' ')[1].strip(']') == '-2':
                 errorText = 'Name {} is not known'.format(address)
             else:
@@ -432,24 +440,28 @@ def inputFunction():
     global command
     global gameEnded
     while not gameEnded:
-        c = stdscr.getch()
-        print('input ' + chr(c), file=sys.stderr)
-        if c == 10:
+        c = stdscr.get_wch()
+        print('input ' + c, file=sys.stderr)
+        if c == '\u001b':
+            stdscr.get_wch()
+            stdscr.get_wch()
+        if c == chr(10):
             textBox.clear()
             gameEnded = do(command)
             command = ''
             textBox.move(0, 0)
             textBox.refresh()
-        elif c == 127 or c == 8:
+        elif c == chr(127) or c == chr(8):
             textBox.clear()
             command = command[:-1]
             textBox.move(0, 0)
             textBox.addstr(command)
             textBox.refresh()
-        elif 'z' >= chr(c) >= 'a' or 'Z' >= chr(c) >= 'A' or '9' >= chr(c) >= '0' or chr(c) == ' ':
-            command += chr(c)
-            textBox.addstr(chr(c))
+        elif 'z' >= c >= 'a' or 'Z' >= c >= 'A' or '9' >= c >= '0' or c == ' ':
+            command += c
+            textBox.addstr(c)
             textBox.refresh()
+    curses.endwin()
 
 
 def statusFunction():
@@ -469,6 +481,8 @@ def statusFunction():
         statusBox.refresh()
         textBox.refresh()
         time.sleep(.5)
+    curses.endwin()
+
 
 allowedVerbs = {'connect', 'exit'}
 statusText = 'Not connected.'
