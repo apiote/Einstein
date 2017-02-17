@@ -12,11 +12,17 @@ sys.stderr = open('einstein_cli.log', 'w')
 
 stdscr = curses.initscr()
 
-errorMessages = {'already_exists': 'Game already exists on server', 'invalid_count': 'Wrong number of players',
-                 'full': 'All players are already in game', 'not_started': 'Game has not started yet',
-                 'already_joined': 'You have already joined the game', 'not_selectable': 'The stone You chose is not selecable',
-                 'not_your_turn': 'It’s not Your turn', 'not_needed': 'Voting is not needed', 'invalid': 'Stone cannot be moved there',
-                 'no_vote': 'You didn’t vote'}
+errorMessages = {'already_exists': 'Game already exists on server',
+                 'invalid_count': 'Wrong number of players',
+                 'full': 'All players are already in game',
+                 'not_started': 'Game has not started yet',
+                 'already_joined': 'You have already joined the game',
+                 'not_selectable': 'The stone You chose is not selecable',
+                 'not_your_turn': 'It’s not Your turn',
+                 'not_needed': 'Voting is not needed',
+                 'invalid': 'Stone cannot be moved there',
+                 'no_vote': 'You didn’t vote',
+                 'already_voted': 'You’ve already voted in this turn'}
 
 errorText = ''
 hintText = ''
@@ -141,7 +147,8 @@ def runGame():
     while won is None:
         response = socketReadLine(client)
         allowedVerbs = {'exit'}
-        if response.split(' ')[1] == 'active' and response.split(' ')[2] == myTeam:
+        if response.split(' ')[1] == 'active' and\
+                response.split(' ')[2] == myTeam:
             errorText = 'Your move'
             response = socketReadLine(client)
             roll = int(response.split(' ')[2])
@@ -149,7 +156,8 @@ def runGame():
             if response.split(' ')[3] == 'needed':
                 highlightSelectables(roll)
                 allowedVerbs = {'exit', 'select'}
-                hintText = 'Type `select {n}` to vote for Your stone with number n'
+                hintText = 'Type `select {n}` to vote for Your stone with \
+number n'
             votes = {}
             votingFinished = False
             while not votingFinished:
@@ -175,7 +183,8 @@ def runGame():
             if response.split(' ')[3] == 'needed':
                 highlightMoveTargets(selected)
                 allowedVerbs = {'exit', 'move'}
-                hintText = 'Type `move {target}` (e.g. move A2) to move vote for the move'
+                hintText = 'Type `move {target}` (e.g. move A2) to move vote \
+for the move'
             votes = {}
             votingFinished = False
             while not votingFinished:
@@ -204,20 +213,25 @@ def runGame():
                 moveStone(' '.join(response.split(' ')[2:4]), ' '.join(
                     response.split(' ')[6:8]))
             else:
-                won = response.split(' ')[3]
-                errorText = '{} team won by {}.'.format(response.split(' ')[3].capitalize(),
-                                                        {'corner': 'corner reaching', 'no_stones': 'opponent capturing',
-                                                         'no_vote': 'opponent disconnection'}[response.split(' ')[4]])
-                allowedVerbs = {'exit', 'create', 'join'}
-                hintText = 'Type `exit` to quit, `create {n}` to create a game for n players per team  or `join` to join an existing game'
+                won, errorText, allowedVerbs, hintText = onWin(response)
         elif response.split(' ')[1] == 'game':
-            won = response.split(' ')[3]
-            errorText = '{} team won by {}.'.format(response.split(' ')[3].capitalize(),
-                                                    {'corner': 'corner reaching', 'no_stones': 'opponent capturing',
-                                                     'no_vote': 'opponent disconnection'}[response.split(' ')[4]])
-            allowedVerbs = {'exit', 'create', 'join'}
-            hintText = 'Type `exit` to quit, `create {n}` to create a game for n players per team  or `join` to join an existing game'
+            won, errorText, allowedVerbs, hintText = onWin(response)
     curses.endwin()
+
+
+def onWin(response):
+    winGrounds = {'corner': 'corner reaching',
+                  'no_stones': 'opponent capturing',
+                  'no_vote': 'opponent disconnection',
+                  'diconnection': 'opponent disconnection'}
+    won = response.split(' ')[3]
+    errorText = '{} team won by {}.'.format(
+        response.split(' ')[3].capitalize(),
+        winGrounds[response.split(' ')[4]])
+    allowedVerbs = {'exit', 'create', 'join'}
+    hintText = 'Type `exit` to quit, `create {n}` to create a game for n \
+players per team  or `join` to join an existing game'
+    return won, errorText, allowedVerbs, hintText
 
 
 def stoneAt(position):
@@ -345,7 +359,8 @@ def do(command):
                 errorText = str(e)
         else:
             errorText = 'Connected to game.'
-            hintText = 'Type `create {n}` to create a game for n players per team or `join` to join an existing game'
+            hintText = 'Type `create {n}` to create a game for n players per \
+team or `join` to join an existing game'
             server = address + ':' + port
             allowedVerbs = {'exit', 'create', 'join'}
     elif verb == 'create':
@@ -361,8 +376,8 @@ def do(command):
         else:
             errorText = 'Successfully created game for {}'.format(number)
             response = socketReadLine(client)
-            errorText = 'Successfully joined {} team. Waiting for all players'.format(
-                response.split(' ')[2])
+            errorText = 'Successfully joined {} team. Waiting for all \
+players'.format(response.split(' ')[2])
             myTeam = response.split(' ')[2]
 
             startGame()
@@ -467,7 +482,8 @@ def inputFunction():
                 textBox.move(0, 0)
                 textBox.addstr(command)
                 textBox.refresh()
-            elif 'z' >= c >= 'a' or 'Z' >= c >= 'A' or '9' >= c >= '0' or c == ' ':
+            elif 'z' >= c >= 'a' or 'Z' >= c >= 'A'\
+                    or '9' >= c >= '0' or c == ' ':
                 command += c
                 textBox.addstr(c)
                 textBox.refresh()
