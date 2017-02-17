@@ -42,9 +42,7 @@ bool voteMoveNeeded = false;
 bool gameEnded = false;
 int voteNumber = 0;
 const int maxNumberOfPlayers = 10;
-//bool playerVotes[10];
 set<int> playerVotes;
-//TODO switch 10 -> maxNumberOfPlayers
 int numberOfTies = 0;
 const int voteTimeLimit = 15;
 thread::id mainThreadID;
@@ -742,33 +740,38 @@ void checkIfVoteForMoveCanEnd(){
 }
 
 void voteForMove(int sender, pair<int, int> move){
-    string message = "success vote move ";
-    message += intToString(move.first);
-    message += " ";
-    message += intToString(move.second);
-    message += '\n';
-    bool correctMove = false;
-    for(int j = 0; j < 3; ++j){
-        if(possibleMoves[j].first == move.first && possibleMoves[j].second == move.second){
-            ++votesForMove[j];
-            setPlayerVote(sender);
-            cout << "voted for move " << move.first << " " << move.second << endl;
-            correctMove = true;
-            sendToActiveTeam(message);
-            break;
+    if(playerVotes.find(sender) == playerVotes.end()){
+        string message = "success vote move ";
+        message += intToString(move.first);
+        message += " ";
+        message += intToString(move.second);
+        message += '\n';
+        bool correctMove = false;
+        for(int j = 0; j < 3; ++j){
+            if(possibleMoves[j].first == move.first && possibleMoves[j].second == move.second){
+                ++votesForMove[j];
+                setPlayerVote(sender);
+                cout << "voted for move " << move.first << " " << move.second << endl;
+                correctMove = true;
+                sendToActiveTeam(message);
+                break;
+            }
         }
+        if(!correctMove){
+            cout << "failed to vote for move " << move.first << " " << move.second << endl;
+            writeN(sender, "error vote move invalid\n");
+        }
+        cout << "current votes: ";
+        for(int k = 0; k < 3; ++k){
+            cout << votesForMove[k] << " ";
+        }
+        cout << endl;
+        checkIfVoteForMoveCanEnd();
     }
-    if(!correctMove){
-        cout << "failed to vote for move " << move.first << " " << move.second << endl;
-        writeN(sender, "error vote move invalid\n");
+    else{
+        cout << "player already voted" << endl;
+        writeN(sender, "error vote move already_voted\n");
     }
-    cout << "current votes: ";
-    for(int k = 0; k < 3; ++k){
-        cout << votesForMove[k] << " ";
-    }
-    cout << endl;
-
-    checkIfVoteForMoveCanEnd();
 }
 
 void selectRandomStone(){
@@ -818,29 +821,35 @@ void checkIfVoteForStoneCanEnd(){
 }
 
 void voteForStone(int sender, pair<int, int> stone){
-    string message = "success vote stone ";
-    message += intToString(stone.first);
-    message += " ";
-    message += intToString(stone.second);
-    message += '\n';
-    if(possibleStones[0].first == stone.first && possibleStones[0].second == stone.second){
-        ++votesForStone.first;
-        setPlayerVote(sender);
-        cout << "voted for stone " << stone.first << " " << stone.second << endl;
-        sendToActiveTeam(message);
-    }
-    else if(possibleStones[1].first == stone.first && possibleStones[1].second == stone.second){
-        ++votesForStone.second;
-        setPlayerVote(sender);
-        cout << "voted for stone " << stone.first << " " << stone.second << endl;
-        sendToActiveTeam(message);
+    if(playerVotes.find(sender) == playerVotes.end()){
+        string message = "success vote stone ";
+        message += intToString(stone.first);
+        message += " ";
+        message += intToString(stone.second);
+        message += '\n';
+        if(possibleStones[0].first == stone.first && possibleStones[0].second == stone.second){
+            ++votesForStone.first;
+            setPlayerVote(sender);
+            cout << "voted for stone " << stone.first << " " << stone.second << endl;
+            sendToActiveTeam(message);
+        }
+        else if(possibleStones[1].first == stone.first && possibleStones[1].second == stone.second){
+            ++votesForStone.second;
+            setPlayerVote(sender);
+            cout << "voted for stone " << stone.first << " " << stone.second << endl;
+            sendToActiveTeam(message);
+        }
+        else{
+            cout << "failed to vote for stone " << stone.first << " " << stone.second << endl;
+            writeN(sender, "error vote stone not_selectable\n");
+        }
+        checkIfVoteForStoneCanEnd();
+        cout << "current votes: " << votesForStone.first << " " << votesForStone.second << endl;
     }
     else{
-        cout << "failed to vote for stone " << stone.first << " " << stone.second << endl;
-        writeN(sender, "error vote stone not_selectable\n");
+        cout << "player already voted" << endl;
+        writeN(sender, "error vote stone already_voted\n");
     }
-    checkIfVoteForStoneCanEnd();
-    cout << "current votes: " << votesForStone.first << " " << votesForStone.second << endl;
 }
 
 void handleMessage(char message[], int sender){
@@ -878,7 +887,6 @@ void handleMessage(char message[], int sender){
                     int x = stringToInt(strArray[2]);
                     int y = stringToInt(strArray[3]);
                     pair<int, int> stone = make_pair(x, y);
-                    //TODO check if already voted
                     voteForStone(sender, stone);
                 }
                 else{
@@ -891,7 +899,6 @@ void handleMessage(char message[], int sender){
                     int x = stringToInt(strArray[2]);
                     int y = stringToInt(strArray[3]);
                     pair<int, int> move = make_pair(x, y);
-                    //TODO check if already voted
                     voteForMove(sender, move);
                 }
                 else{
