@@ -92,11 +92,11 @@ def drawBoard():
     print('#drawing board', file=sys.stderr)
     # printBoard()
     boardBox.move(0, 0)
-    boardBox.addstr('   A   B   C   D   E\n')
-    boardBox.addstr(' ╭───┬───┬───┬───┬───╮\n')
+    boardBox.addstr('    A   B   C   D   E\n')
+    boardBox.addstr('  ╭───┬───┬───┬───┬───╮\n')
     i = 0
     for row in board:
-        boardBox.addstr(str(i + 1))
+        boardBox.addstr(' '+str(i + 1))
         for box in row:
             boardBox.addstr('│ ')
             digit = 1 if box % 10 > 0 else 0
@@ -109,9 +109,9 @@ def drawBoard():
         boardBox.addstr('│\n')
         print
         if(i < 4):
-            boardBox.addstr(' ├───┼───┼───┼───┼───┤\n')
+            boardBox.addstr('  ├───┼───┼───┼───┼───┤\n')
         i += 1
-    boardBox.addstr(' ╰───┴───┴───┴───┴───╯\n')
+    boardBox.addstr('  ╰───┴───┴───┴───┴───╯\n')
     boardBox.refresh()
 
 
@@ -223,7 +223,7 @@ def onWin(response):
     winGrounds = {'corner': 'corner reaching',
                   'no_stones': 'opponent capturing',
                   'no_vote': 'opponent disconnection',
-                  'diconnection': 'opponent disconnection'}
+                  'disconnection': 'opponent disconnection'}
     won = response.split(' ')[3]
     errorText = '{} team won by {}.'.format(
         response.split(' ')[3].capitalize(),
