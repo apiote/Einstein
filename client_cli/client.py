@@ -354,7 +354,9 @@ def do(command):
             errorText = 'Syntax error in {}'.format(command)
             return
         try:
-            client.connect((address, int(port)))
+            client.connect((address, int(port)))  # results
+        except ValueError:
+            errorText = 'Port must be a number'
         except Exception as e:
             if str(e).split(' ')[1].strip(']') == '111':
                 errorText = 'Server is not available at {}:{}'.format(
@@ -379,7 +381,7 @@ team or `join` to join an existing game'
         response = socketReadLine(client)
         if response.split(' ')[0] == 'error':
             errorText = errorMessages[response.split(' ')[2]]
-        else:
+        elif response.split(' ')[0] == 'success':
             errorText = 'Successfully created game for {}'.format(number)
             response = socketReadLine(client)
             errorText = 'Successfully joined {} team. Waiting for all \
@@ -393,7 +395,7 @@ players'.format(response.split(' ')[2])
         response = socketReadLine(client)
         if response.split(' ')[0] == 'error':
             errorText = errorMessages[response.split(' ')[2]]
-        else:
+        elif response.split(' ')[0] == 'success':
             errorText = 'Successfully joined {} team'.format(
                 response.split(' ')[2])
             myTeam = response.split(' ')[2]
