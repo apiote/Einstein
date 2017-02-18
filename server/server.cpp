@@ -45,7 +45,7 @@ int voteNumber = 0;
 const int maxNumberOfPlayers = 10;
 set<int> playerVotes;
 int numberOfTies = 0;
-const int voteTimeLimit = 0;
+const int voteTimeLimit = 15;
 
 void endVoteForMove();
 
