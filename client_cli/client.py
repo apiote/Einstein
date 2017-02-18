@@ -485,7 +485,10 @@ def inputFunction():
                 stdscr.get_wch()
             if c == chr(10):
                 textBox.clear()
-                gameEnded = do(command)
+                try:
+                    gameEnded = do(command)
+                except (IOError, OSError):
+                    gameEnded = True
                 command = ''
                 textBox.move(0, 0)
                 textBox.refresh()
