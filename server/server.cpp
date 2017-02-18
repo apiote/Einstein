@@ -17,6 +17,7 @@
 #include <thread>
 #include <chrono>
 #include <future>
+#include <pthread.h>
 
 #define MAXEVENTS 64
 
@@ -45,7 +46,6 @@ const int maxNumberOfPlayers = 10;
 set<int> playerVotes;
 int numberOfTies = 0;
 const int voteTimeLimit = 15;
-thread::id mainThreadID;
 
 void endVoteForMove();
 
@@ -393,21 +393,16 @@ void endGame(string winner, string reason){
     sendEndGame(winner, reason);
     //gameEnded = true;
     initializeAll();
-    if(this_thread::get_id() == mainThreadID){
-        //throw 42;
-    }
-    else{
-        cout << "not main thread" << endl;
-        pthread_cancel(pthread_self());
-    }
 }
 
-void checkIfEndGame(){
+bool checkIfEndGame(){
     if(board[0][0] > 10){
         endGame("blue", "corner");
+        return true;
     }
     if(board[4][4] > 0 && board[4][4] < 7){
         endGame("yellow", "corner");
+        return true;
     }
     bool yellowStonesOnTheBoard = false;
     bool blueStonesOnTheBoard = false;
@@ -425,9 +420,11 @@ void checkIfEndGame(){
     }
     if(!blueStonesOnTheBoard){
         endGame("yellow", "no_stones");
+        return true;
     }
     if(!yellowStonesOnTheBoard){
         endGame("blue", "no_stones");
+        return true;
     }
 }
 
@@ -447,9 +444,11 @@ void doMove(pair<int, int> destination){
     cout << "moved " << selectedStone.first << " " << selectedStone.second
     << " to " << destination.first << " " << destination.second << " by " << activeTeam << endl;
     sendMoveDone(destination);
-    checkIfEndGame();
+    bool end = checkIfEndGame();
     numberOfTies = 0;
-    changeTurn();
+    if(!end){
+        changeTurn();
+    }
 }
 
 void sendErrorNoVote(){
@@ -477,8 +476,9 @@ void sendErrorNoVote(){
     }
 }
 
-void delay(int seconds, int currentVoteNumber){
-    this_thread::sleep_for(chrono::seconds(seconds));
+void* delay(void * a){
+    int currentVoteNumber = voteNumber;
+    sleep(voteTimeLimit);
     if(currentVoteNumber == voteNumber){
         cout << "time is up" << endl;
         sendErrorNoVote();
@@ -489,12 +489,14 @@ void delay(int seconds, int currentVoteNumber){
             endVoteForStone();
         }
     }
+    pthread_cancel(pthread_self());
 }
 
 void delayAndCheckIfVoted(int seconds = voteTimeLimit){
     ++voteNumber;
     cout << "vote number: " << voteNumber << endl;
-    thread(delay, seconds, voteNumber).detach();
+    pthread_t thread1;
+    pthread_create (&thread1, NULL, delay, NULL);
 }
 
 void startMoveVote(){
@@ -1014,7 +1016,6 @@ static int create_and_bind(char *port){
 
 int main(int argc, char *argv[]){
     cout << "start" << endl;
-    mainThreadID = this_thread::get_id();
     int sfd, s;
     int efd;
     struct epoll_event event;
