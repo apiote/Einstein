@@ -133,11 +133,19 @@ def startGame():
 
 
 def safeRunGame():
+    global gameEnded
+    global errorText
+    global hintText
+    global statusText
     try:
         waitForBoard()
         runGame()
     except IOError:
-        pass
+        if not gameEnded:
+            gameEnded = True
+            errorText = 'Server disconnected'
+            hintText = 'Type `connect {address} {port} to connect'
+            statusText = 'Not connected'
     print('runGame end', file=sys.stderr)
 
 
@@ -337,12 +345,6 @@ def do(command):
         errorText = verb + ' not allowed now'
         return
     if verb == 'exit':
-        try:
-            client.shutdown(socket.SHUT_RDWR)
-        except OSError:
-            pass
-        else:
-            client.close()
         return True
     elif verb == 'connect':
         try:
@@ -491,7 +493,13 @@ def inputFunction():
                 command += c
                 textBox.addstr(c)
                 textBox.refresh()
-    print('statueEnd', file=sys.stderr)
+    try:
+        client.shutdown(socket.SHUT_RDWR)
+    except OSError:
+        pass
+    else:
+        client.close()
+    print('input ended', file=sys.stderr)
     curses.endwin()
 
 
@@ -512,7 +520,7 @@ def statusFunction():
         statusBox.refresh()
         textBox.refresh()
         time.sleep(.5)
-    print('statueEnd', file=sys.stderr)
+    print('status ended', file=sys.stderr)
     curses.endwin()
 
 
