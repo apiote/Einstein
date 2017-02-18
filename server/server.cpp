@@ -18,10 +18,16 @@
 #include <chrono>
 #include <future>
 #include <pthread.h>
+#include <signal.h>
 
 #define MAXEVENTS 64
 
 using namespace std;
+
+int sfd, s;
+int efd;
+struct epoll_event event;
+struct epoll_event *events;
 
 int board[5][5];
 int numberOfPlayers = 0;
@@ -45,7 +51,7 @@ int voteNumber = 0;
 const int maxNumberOfPlayers = 10;
 set<int> playerVotes;
 int numberOfTies = 0;
-const int voteTimeLimit = 15;
+const int voteTimeLimit = 0;
 
 void endVoteForMove();
 
@@ -476,7 +482,7 @@ void sendErrorNoVote(){
     }
 }
 
-void* delay(void * a){
+void *delay(void *a){
     int currentVoteNumber = voteNumber;
     sleep(voteTimeLimit);
     if(currentVoteNumber == voteNumber){
@@ -490,13 +496,14 @@ void* delay(void * a){
         }
     }
     pthread_cancel(pthread_self());
+    //pthread_exit(0);
 }
 
 void delayAndCheckIfVoted(int seconds = voteTimeLimit){
     ++voteNumber;
     cout << "vote number: " << voteNumber << endl;
     pthread_t thread1;
-    pthread_create (&thread1, NULL, delay, NULL);
+    pthread_create(&thread1, NULL, delay, NULL);
 }
 
 void startMoveVote(){
@@ -1014,12 +1021,21 @@ static int create_and_bind(char *port){
     return sfd;
 }
 
+void signal_callback_handler(int signum){
+    if(signum == SIGINT){
+        cout << "clean all" << endl;
+        free(events);
+        close(sfd);
+        shutdown(sfd, SHUT_RDWR);
+        exit(signum);
+    }
+
+}
+
 int main(int argc, char *argv[]){
     cout << "start" << endl;
-    int sfd, s;
-    int efd;
-    struct epoll_event event;
-    struct epoll_event *events;
+    // Register signal and signal handler
+    signal(SIGINT, signal_callback_handler);
 
     if(argc != 2){
         fprintf(stderr, "Usage: %s [port]\n", argv[0]);
