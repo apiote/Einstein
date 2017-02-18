@@ -7,8 +7,9 @@ import time
 import sys
 import textwrap
 import signal
+import datetime
 
-sys.stderr = open('einstein_cli.log', 'w')
+sys.stderr = open('einstein_cli_{}.log'.format(datetime.datetime.now()), 'w')
 
 stdscr = curses.initscr()
 
