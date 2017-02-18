@@ -483,7 +483,7 @@ def inputFunction():
                 textBox.addstr(command)
                 textBox.refresh()
             elif 'z' >= c >= 'a' or 'Z' >= c >= 'A'\
-                    or '9' >= c >= '0' or c == ' ':
+                    or '9' >= c >= '0' or c == ' ' or c == '.' or c == ':':
                 command += c
                 textBox.addstr(c)
                 textBox.refresh()
