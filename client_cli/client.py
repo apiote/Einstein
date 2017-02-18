@@ -9,57 +9,6 @@ import textwrap
 import signal
 import datetime
 
-sys.stderr = open('einstein_cli_{}.log'.format(datetime.datetime.now()), 'w')
-
-stdscr = curses.initscr()
-
-errorMessages = {'already_exists': 'Game already exists on server',
-                 'invalid_count': 'Wrong number of players',
-                 'full': 'All players are already in game',
-                 'not_started': 'Game has not started yet',
-                 'already_joined': 'You have already joined the game',
-                 'not_selectable': 'The stone You chose is not selecable',
-                 'not_your_turn': 'It’s not Your turn',
-                 'not_needed': 'Voting is not needed',
-                 'invalid': 'Stone cannot be moved there',
-                 'no_vote': 'You didn’t vote',
-                 'already_voted': 'You’ve already voted in this turn'}
-
-errorText = ''
-hintText = ''
-command = ''
-myTeam = ''
-server = ''
-roll = -1
-
-allowedVerbs = {}
-votes = {}
-gameEnded = False
-
-curses.noecho()
-curses.start_color()
-curses.use_default_colors()
-
-statusBox = curses.newwin(9, curses.COLS, 0, 0)
-boardBox = curses.newwin(15, 30, 10, 0)
-textBox = curses.newwin(1, curses.COLS, curses.LINES - 1, 0)
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-board = [[0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0]]
-
-curses.init_pair(1, 3, -1)
-curses.init_pair(3, 4, -1)
-curses.init_pair(5, 3, 15)
-curses.init_pair(7, 4, 15)
-curses.init_pair(9, 3, 10)
-curses.init_pair(11, 4, 10)
-curses.init_pair(8, -1, 10)
-
 
 def socketPrintLine(sock, message):
     sock.sendall(bytes(message + '\n', 'utf-8'))
@@ -100,7 +49,7 @@ def drawBoard():
     boardBox.addstr('  ╭───┬───┬───┬───┬───╮\n')
     i = 0
     for row in board:
-        boardBox.addstr(' '+str(i + 1))
+        boardBox.addstr(' ' + str(i + 1))
         for box in row:
             boardBox.addstr('│ ')
             digit = 1 if box % 10 > 0 else 0
@@ -137,15 +86,14 @@ def safeRunGame():
     global errorText
     global hintText
     global statusText
+    global serverDisconnected
     try:
         waitForBoard()
         runGame()
     except (IOError, OSError):
         if not gameEnded:
             gameEnded = True
-            errorText = 'Server disconnected'
-            hintText = 'Type `connect {address} {port} to connect'
-            statusText = 'Not connected'
+            serverDisconnected = True
     print('runGame end', file=sys.stderr)
 
 
@@ -231,6 +179,7 @@ for the move'
         elif response.split(' ')[1] == 'game':
             won, errorText, allowedVerbs, hintText = onWin(response)
     curses.endwin()
+    print('Server disconnected')
 
 
 def onWin(response):
@@ -473,6 +422,7 @@ def translateChessNotation(chessField):
 def inputFunction():
     global command
     global gameEnded
+    global serverDisconnected
     while not gameEnded:
         try:
             c = stdscr.get_wch()
@@ -489,9 +439,11 @@ def inputFunction():
                     gameEnded = do(command)
                 except (IOError, OSError):
                     gameEnded = True
-                command = ''
-                textBox.move(0, 0)
-                textBox.refresh()
+                    serverDisconnected = True
+                finally:
+                    command = ''
+                    textBox.move(0, 0)
+                    textBox.refresh()
             elif c == chr(127) or c == chr(8):
                 textBox.clear()
                 command = command[:-1]
@@ -511,6 +463,7 @@ def inputFunction():
         client.close()
     print('input ended', file=sys.stderr)
     curses.endwin()
+    print('Server disconnected')
 
 
 def statusFunction():
@@ -532,6 +485,7 @@ def statusFunction():
         time.sleep(.5)
     print('status ended', file=sys.stderr)
     curses.endwin()
+    print('Server disconnected')
 
 
 def onErrorExit(signal, frame):
@@ -545,14 +499,91 @@ def onErrorExit(signal, frame):
         client.close()
 
 
-allowedVerbs = {'connect', 'exit'}
-statusText = 'Not connected.'
-hintText = 'Type `connect {address} {port}` to connect'
+def initialise():
+    global errorMessages
+    global allowedVerbs
+    global errorText
+    global statusText
+    global hintText
+    global board
+    global votes
 
-stdscr.timeout(500)
+    global command
+    global myTeam
+    global server
+    global roll
+    global gameEnded
+
+    global statusBox
+    global boardBox
+    global textBox
+
+    global client
+    global stdscr
+    global serverDisconnected
+
+    serverDisconnected = False
+
+    allowedVerbs = {'connect', 'exit'}
+    errorText = ''
+    statusText = 'Not connected.'
+    hintText = 'Type `connect {address} {port}` to connect'
+
+    command = ''
+    myTeam = ''
+    server = ''
+    roll = -1
+    votes = {}
+
+    gameEnded = False
+
+    stdscr = curses.initscr()
+    curses.noecho()
+    curses.start_color()
+    curses.use_default_colors()
+
+    statusBox = curses.newwin(9, curses.COLS, 0, 0)
+    boardBox = curses.newwin(15, 30, 10, 0)
+    textBox = curses.newwin(1, curses.COLS, curses.LINES - 1, 0)
+
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    board = [[0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0]]
+
+    curses.init_pair(1, 3, -1)
+    curses.init_pair(3, 4, -1)
+    curses.init_pair(5, 3, 15)
+    curses.init_pair(7, 4, 15)
+    curses.init_pair(9, 3, 10)
+    curses.init_pair(11, 4, 10)
+    curses.init_pair(8, -1, 10)
+
+    stdscr.timeout(500)
+    signal.signal(signal.SIGINT, onErrorExit)
+
+    sys.stderr = open('einstein_cli_{}.log'.format(datetime.datetime.now()),
+                      'w')
+
+    errorMessages = {'already_exists': 'Game already exists on server',
+                     'invalid_count': 'Wrong number of players',
+                     'full': 'All players are already in game',
+                     'not_started': 'Game has not started yet',
+                     'already_joined': 'You have already joined the game',
+                     'not_selectable': 'The stone You chose is not selecable',
+                     'not_your_turn': 'It’s not Your turn',
+                     'not_needed': 'Voting is not needed',
+                     'invalid': 'Stone cannot be moved there',
+                     'no_vote': 'You didn’t vote',
+                     'already_voted': 'You’ve already voted in this turn'}
+
+
+initialise()
+
 inputThread = threading.Thread(target=inputFunction)
 inputThread.start()
 statusThread = threading.Thread(target=statusFunction)
 statusThread.start()
-
-signal.signal(signal.SIGINT, onErrorExit)
