@@ -67,7 +67,10 @@ def socketPrintLine(sock, message):
 def socketReadLine(sock):
     response = ''
     while True:
-        c = sock.recv(1).decode('utf-8')
+        try:
+            c = sock.recv(1).decode('utf-8')
+        except socket.timeout:
+            pass
         if not c:
             raise IOError('disconnected')
         print(c, file=sys.stderr, end='')
@@ -527,7 +530,7 @@ allowedVerbs = {'connect', 'exit'}
 statusText = 'Not connected.'
 hintText = 'Type `connect {address} {port}` to connect'
 
-stdscr.timeout(2000)
+stdscr.timeout(500)
 inputThread = threading.Thread(target=inputFunction)
 inputThread.start()
 statusThread = threading.Thread(target=statusFunction)
