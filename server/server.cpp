@@ -51,7 +51,7 @@ int voteNumber = 0;
 const int maxNumberOfPlayers = 10;
 set<int> playerVotes;
 int numberOfTies = 0;
-const int voteTimeLimit = 0;
+const int voteTimeLimit = 15;
 
 void endVoteForMove();
 
@@ -496,7 +496,7 @@ void *delay(void *a){
         }
     }
     pthread_cancel(pthread_self());
-    //pthread_exit(0);
+    pthread_exit(0);
 }
 
 void delayAndCheckIfVoted(int seconds = voteTimeLimit){
@@ -504,6 +504,7 @@ void delayAndCheckIfVoted(int seconds = voteTimeLimit){
     cout << "vote number: " << voteNumber << endl;
     pthread_t thread1;
     pthread_create(&thread1, NULL, delay, NULL);
+    pthread_detach(thread1);
 }
 
 void startMoveVote(){
