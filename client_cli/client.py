@@ -187,6 +187,7 @@ number n'
                     except KeyError:
                         votes[stoneAt(response[3] + ' ' + response[4])] = 1
                 elif response[-1] == 'not_selected':
+                    errorText = 'There was a tie. Vote again'
                     votes = {}
                 elif response[0] == 'error':
                     errorText = errorMessages[response[3]]
@@ -210,6 +211,7 @@ for the move'
                     except KeyError:
                         votes[response[3] + ' ' + response[4]] = 1
                 elif response[-1] == 'not_moved':
+                    errorText = 'There was a tie. Vote again'
                     votes = {}
                 elif response[0] == 'error':
                     errorText = errorMessages[response[3]]
