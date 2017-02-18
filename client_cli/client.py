@@ -140,7 +140,7 @@ def safeRunGame():
     try:
         waitForBoard()
         runGame()
-    except IOError:
+    except (IOError, OSError):
         if not gameEnded:
             gameEnded = True
             errorText = 'Server disconnected'
@@ -365,6 +365,9 @@ def do(command):
                     address, port)
             elif str(e).split(' ')[1].strip(']') == '-2':
                 errorText = 'Name {} is not known'.format(address)
+            elif str(e).split(' ')[1].strip(']') == '101':
+                errorText = 'Network unreachable. Are You connected to the \
+Internet?'
             else:
                 errorText = str(e)
         else:
