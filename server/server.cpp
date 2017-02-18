@@ -10,19 +10,18 @@
 #include <algorithm>
 #include <sstream>
 #include <iostream>
-#include <cstdlib>
 #include <vector>
 #include <set>
-#include <utility>
 #include <thread>
-#include <chrono>
-#include <future>
-#include <pthread.h>
 #include <signal.h>
 
 #define MAXEVENTS 64
 
 using namespace std;
+
+//TODO includes?
+//TODO (performance) string arguments as reference
+//change ints to unsigned ints
 
 int sfd, s;
 int efd;
@@ -30,15 +29,15 @@ struct epoll_event event;
 struct epoll_event *events;
 
 int board[5][5];
-int numberOfPlayers = 0;
-int numberOfConnectedPlayers = 0;
+unsigned int numberOfPlayers = 0;
+unsigned int numberOfConnectedPlayers = 0;
 bool gameCreated = false;
 bool gameStarted = false;
 vector<int> yellowTeam;
 vector<int> blueTeam;
 string strArray[10];
 string activeTeam = "none";
-int numberRolled = 0;
+unsigned int numberRolled = 0;
 vector<pair<int, int>> possibleStones;
 pair<int, int> selectedStone;
 vector<pair<int, int>> possibleMoves;
@@ -432,6 +431,7 @@ bool checkIfEndGame(){
         endGame("blue", "no_stones");
         return true;
     }
+    return false;
 }
 
 void changeTurn(){
@@ -482,7 +482,7 @@ void sendErrorNoVote(){
     }
 }
 
-void *delay(void *a){
+void *delay(void*){
     int currentVoteNumber = voteNumber;
     sleep(voteTimeLimit);
     if(currentVoteNumber == voteNumber){
@@ -497,9 +497,10 @@ void *delay(void *a){
     }
     pthread_cancel(pthread_self());
     pthread_exit(0);
+    return (void*)0;
 }
 
-void delayAndCheckIfVoted(int seconds = voteTimeLimit){
+void delayAndCheckIfVoted(){
     ++voteNumber;
     cout << "vote number: " << voteNumber << endl;
     pthread_t thread1;
