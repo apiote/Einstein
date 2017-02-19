@@ -21,14 +21,13 @@ using namespace std;
 
 //TODO includes?
 //TODO (performance) string arguments as reference
-//change ints to unsigned ints
 
 int sfd, s;
 int efd;
 struct epoll_event event;
 struct epoll_event *events;
 
-int board[5][5];
+vector<vector<unsigned int>> board;
 unsigned int numberOfPlayers = 0;
 unsigned int numberOfConnectedPlayers = 0;
 bool gameCreated = false;
@@ -38,19 +37,19 @@ vector<int> blueTeam;
 string strArray[10];
 string activeTeam = "none";
 unsigned int numberRolled = 0;
-vector<pair<int, int>> possibleStones;
-pair<int, int> selectedStone;
-vector<pair<int, int>> possibleMoves;
-pair<int, int> votesForStone;
-int votesForMove[3];
+vector<pair<unsigned int, unsigned int>> possibleStones;
+pair<unsigned int, unsigned int> selectedStone;
+vector<pair<unsigned int, unsigned int>> possibleMoves;
+pair<unsigned int, unsigned int> votesForStone;
+unsigned int votesForMove[3];
 bool voteStoneNeeded = false;
 bool voteMoveNeeded = false;
 bool gameEnded = false;
-int voteNumber = 0;
-const int maxNumberOfPlayers = 10;
+unsigned int voteNumber = 0;
+const unsigned int maxNumberOfPlayers = 10;
 set<int> playerVotes;
-int numberOfTies = 0;
-const int voteTimeLimit = 15;
+unsigned int numberOfTies = 0;
+const unsigned int voteTimeLimit = 15;
 
 void endVoteForMove();
 
@@ -60,7 +59,7 @@ void startTurn(string color);
 
 void initializeAll();
 
-int roll(){
+unsigned int roll(){
     srand(time(0));
     return rand() % 6 + 1;
 }
@@ -68,11 +67,11 @@ int roll(){
 void setPossibleStones(){
     //TODO valgrind Conditional jump or move depends on uninitialised value(s)
     bool myNumbers[6];
-    for(int i = 0; i < 6; ++i){
+    for(unsigned int i = 0; i < 6; ++i){
         myNumbers[i] = 0;
     }
-    for(int i = 0; i < 5; ++i){
-        for(int j = 0; j < 5; ++j){
+    for(unsigned int i = 0; i < 5; ++i){
+        for(unsigned int j = 0; j < 5; ++j){
             if(activeTeam == "yellow"){
                 if(board[i][j] > 0 && board[i][j] < 7){
                     myNumbers[board[i][j]] = true;
@@ -87,17 +86,17 @@ void setPossibleStones(){
     }
     possibleStones.clear();
     if(myNumbers[numberRolled]){
-        for(int i = 0; i < 5; ++i){
-            for(int j = 0; j < 5; ++j){
+        for(unsigned int i = 0; i < 5; ++i){
+            for(unsigned int j = 0; j < 5; ++j){
                 if(activeTeam == "yellow"){
                     if(board[i][j] == numberRolled){
-                        pair<int, int> stone = make_pair(i, j);
+                        pair<unsigned int, unsigned int> stone = make_pair(i, j);
                         possibleStones.push_back(stone);
                     }
                 }
                 else{
                     if(board[i][j] - 10 == numberRolled){
-                        pair<int, int> stone = make_pair(i, j);
+                        pair<unsigned int, unsigned int> stone = make_pair(i, j);
                         possibleStones.push_back(stone);
                     }
                 }
@@ -105,20 +104,20 @@ void setPossibleStones(){
         }
     }
     else{
-        int n = numberRolled + 1;
+        unsigned int n = numberRolled + 1;
         while(n < 7){
             if(myNumbers[n]){
-                for(int i = 0; i < 5; ++i){
-                    for(int j = 0; j < 5; ++j){
+                for(unsigned int i = 0; i < 5; ++i){
+                    for(unsigned int j = 0; j < 5; ++j){
                         if(activeTeam == "yellow"){
                             if(board[i][j] == n){
-                                pair<int, int> stone = make_pair(i, j);
+                                pair<unsigned int, unsigned int> stone = make_pair(i, j);
                                 possibleStones.push_back(stone);
                             }
                         }
                         else{
                             if(board[i][j] - 10 == n){
-                                pair<int, int> stone = make_pair(i, j);
+                                pair<unsigned int, unsigned int> stone = make_pair(i, j);
                                 possibleStones.push_back(stone);
                             }
                         }
@@ -131,17 +130,17 @@ void setPossibleStones(){
         n = numberRolled - 1;
         while(n > 0){
             if(myNumbers[n]){
-                for(int i = 0; i < 5; ++i){
-                    for(int j = 0; j < 5; ++j){
+                for(unsigned int i = 0; i < 5; ++i){
+                    for(unsigned int j = 0; j < 5; ++j){
                         if(activeTeam == "yellow"){
                             if(board[i][j] == n){
-                                pair<int, int> stone = make_pair(i, j);
+                                pair<unsigned int, unsigned int> stone = make_pair(i, j);
                                 possibleStones.push_back(stone);
                             }
                         }
                         else{
                             if(board[i][j] - 10 == n){
-                                pair<int, int> stone = make_pair(i, j);
+                                pair<unsigned int, unsigned int> stone = make_pair(i, j);
                                 possibleStones.push_back(stone);
                             }
                         }
@@ -156,8 +155,7 @@ void setPossibleStones(){
 
 void writeN(int sender, string msg){
     char a[100];
-    int i;
-    for(i = 0; i < msg.size(); ++i){
+    for(unsigned int i = 0; i < msg.size() && i < 100; ++i){
         a[i] = msg[i];
     }
     if(write(sender, a, msg.size()) == -1){
@@ -166,22 +164,22 @@ void writeN(int sender, string msg){
 }
 
 void sendToAll(string message){
-    for(int i = 0; i < yellowTeam.size(); ++i){
+    for(unsigned int i = 0; i < yellowTeam.size(); ++i){
         writeN(yellowTeam[i], message);
     }
-    for(int j = 0; j < blueTeam.size(); ++j){
+    for(unsigned int j = 0; j < blueTeam.size(); ++j){
         writeN(blueTeam[j], message);
     }
 }
 
 void sendToActiveTeam(string message){
     if(activeTeam == "yellow"){
-        for(int i = 0; i < yellowTeam.size(); ++i){
+        for(unsigned int i = 0; i < yellowTeam.size(); ++i){
             writeN(yellowTeam[i], message);
         }
     }
     else if(activeTeam == "blue"){
-        for(int i = 0; i < blueTeam.size(); ++i){
+        for(unsigned int i = 0; i < blueTeam.size(); ++i){
             writeN(blueTeam[i], message);
         }
     }
@@ -189,13 +187,16 @@ void sendToActiveTeam(string message){
 
 void createBoard(){
     srand(time(0));
-    for(int i = 0; i < 5; ++i){
-        for(int j = 0; j < 5; ++j){
+    board.clear();
+    board.resize(5);
+    for(unsigned int i = 0; i < 5; ++i){
+        board[i].resize(5);
+        for(unsigned int j = 0; j < 5; ++j){
             board[i][j] = 0;
         }
     }
     {
-        int tab[6] = {1, 2, 3, 4, 5, 6};
+        unsigned int tab[6] = {1, 2, 3, 4, 5, 6};
         random_shuffle(tab, tab + 5);
         board[0][0] = tab[0];
         board[0][1] = tab[1];
@@ -205,7 +206,7 @@ void createBoard(){
         board[2][0] = tab[5];
     }
     {
-        int tab[6] = {11, 12, 13, 14, 15, 16};
+        unsigned int tab[6] = {11, 12, 13, 14, 15, 16};
         random_shuffle(tab, tab + 5);
         board[4][4] = tab[0];
         board[4][3] = tab[1];
@@ -217,8 +218,8 @@ void createBoard(){
 }
 
 void printBoard(){
-    for(int i = 0; i < 5; ++i){
-        for(int j = 0; j < 5; ++j){
+    for(unsigned int i = 0; i < 5; ++i){
+        for(unsigned int j = 0; j < 5; ++j){
             cout << board[i][j] << " ";
         }
         cout << endl;
@@ -265,8 +266,8 @@ void messageToStringArray(char message[]){
 
 string boardToString(){
     string b = "board";
-    for(int i = 0; i < 5; ++i){
-        for(int j = 0; j < 5; ++j){
+    for(unsigned int i = 0; i < 5; ++i){
+        for(unsigned int j = 0; j < 5; ++j){
             b += " ";
             b += intToString(board[i][j]);
         }
@@ -328,7 +329,7 @@ void sendStoneSelected(bool selected){
     sendToActiveTeam(message);
 }
 
-void sendMoveDone(pair<int, int> destination){
+void sendMoveDone(pair<unsigned int, unsigned int> destination){
     string message = "success stone ";
     message += intToString(selectedStone.first);
     message += " ";
@@ -356,29 +357,29 @@ void setPossibleMoves(){
     possibleMoves.clear();
     if(activeTeam == "yellow"){
         if(selectedStone.first < 4){
-            pair<int, int> p = make_pair(selectedStone.first + 1, selectedStone.second);
+            pair<unsigned int, unsigned int> p = make_pair(selectedStone.first + 1, selectedStone.second);
             possibleMoves.push_back(p);
         }
         if(selectedStone.second < 4){
-            pair<int, int> p = make_pair(selectedStone.first, selectedStone.second + 1);
+            pair<unsigned int, unsigned int> p = make_pair(selectedStone.first, selectedStone.second + 1);
             possibleMoves.push_back(p);
         }
         if(possibleMoves.size() == 2){
-            pair<int, int> p = make_pair(selectedStone.first + 1, selectedStone.second + 1);
+            pair<unsigned int, unsigned int> p = make_pair(selectedStone.first + 1, selectedStone.second + 1);
             possibleMoves.push_back(p);
         }
     }
     else{
         if(selectedStone.first > 0){
-            pair<int, int> p = make_pair(selectedStone.first - 1, selectedStone.second);
+            pair<unsigned int, unsigned int> p = make_pair(selectedStone.first - 1, selectedStone.second);
             possibleMoves.push_back(p);
         }
         if(selectedStone.second > 0){
-            pair<int, int> p = make_pair(selectedStone.first, selectedStone.second - 1);
+            pair<unsigned int, unsigned int> p = make_pair(selectedStone.first, selectedStone.second - 1);
             possibleMoves.push_back(p);
         }
         if(possibleMoves.size() == 2){
-            pair<int, int> p = make_pair(selectedStone.first - 1, selectedStone.second - 1);
+            pair<unsigned int, unsigned int> p = make_pair(selectedStone.first - 1, selectedStone.second - 1);
             possibleMoves.push_back(p);
         }
     }
@@ -411,8 +412,8 @@ bool checkIfEndGame(){
     }
     bool yellowStonesOnTheBoard = false;
     bool blueStonesOnTheBoard = false;
-    for(int i = 0; i < 5; ++i){
-        for(int j = 0; j < 5; ++j){
+    for(unsigned int i = 0; i < 5; ++i){
+        for(unsigned int j = 0; j < 5; ++j){
             if(board[i][j] > 0){
                 if(board[i][j] > 10){
                     blueStonesOnTheBoard = true;
@@ -443,8 +444,8 @@ void changeTurn(){
     }
 }
 
-void doMove(pair<int, int> destination){
-    int selectedStoneNumber = board[selectedStone.first][selectedStone.second];
+void doMove(pair<unsigned int, unsigned int> destination){
+    unsigned int selectedStoneNumber = board[selectedStone.first][selectedStone.second];
     board[selectedStone.first][selectedStone.second] = 0;
     board[destination.first][destination.second] = selectedStoneNumber;
     cout << "moved " << selectedStone.first << " " << selectedStone.second
@@ -459,7 +460,7 @@ void doMove(pair<int, int> destination){
 
 void sendErrorNoVote(){
     if(activeTeam == "yellow"){
-        for(int i = 0; i < yellowTeam.size(); ++i){
+        for(unsigned int i = 0; i < yellowTeam.size(); ++i){
             if(playerVotes.find(yellowTeam[i]) == playerVotes.end()){
                 if(voteMoveNeeded){
                     writeN(yellowTeam[i], "error vote move no_vote\n");
@@ -471,7 +472,7 @@ void sendErrorNoVote(){
         }
     }
     else{
-        for(int i = 0; i < blueTeam.size(); ++i){
+        for(unsigned int i = 0; i < blueTeam.size(); ++i){
             if(playerVotes.find(blueTeam[i]) == playerVotes.end()){
                 writeN(blueTeam[i], "error vote move no_vote\n");
             }
@@ -483,7 +484,7 @@ void sendErrorNoVote(){
 }
 
 void *delay(void*){
-    int currentVoteNumber = voteNumber;
+    unsigned int currentVoteNumber = voteNumber;
     sleep(voteTimeLimit);
     if(currentVoteNumber == voteNumber){
         cout << "time is up" << endl;
@@ -509,7 +510,7 @@ void delayAndCheckIfVoted(){
 }
 
 void startMoveVote(){
-    for(int i = 0; i < 3; ++i){
+    for(unsigned int i = 0; i < 3; ++i){
         votesForMove[i] = 0;
     }
     playerVotes.clear();
@@ -525,13 +526,13 @@ void startStoneVote(){
     cout << "vote stone needed" << endl;
     sendStoneVote(true);
     cout << "possible stones: " << endl;
-    for(int i = 0; i < possibleStones.size(); ++i){
+    for(unsigned int i = 0; i < possibleStones.size(); ++i){
         cout << possibleStones[i].first << " " << possibleStones[i].second << endl;
     }
     delayAndCheckIfVoted();
 }
 
-void selectStone(pair<int, int> stone){
+void selectStone(pair<unsigned int, unsigned int> stone){
     selectedStone.first = stone.first;
     selectedStone.second = stone.second;
     cout << "selected stone " << selectedStone.first << " " << selectedStone.second << endl;
@@ -540,7 +541,7 @@ void selectStone(pair<int, int> stone){
     voteMoveNeeded = false;
     setPossibleMoves();
     cout << "possible moves: " << endl;
-    for(int i = 0; i < possibleMoves.size(); ++i){
+    for(unsigned int i = 0; i < possibleMoves.size(); ++i){
         cout << possibleMoves[i].first << " " << possibleMoves[i].second << endl;
     }
     if(possibleMoves.size() > 1){
@@ -602,12 +603,12 @@ void startGame(){
 }
 
 bool alreadyJoined(int sender){
-    for(int i = 0; i < yellowTeam.size(); ++i){
+    for(unsigned int i = 0; i < yellowTeam.size(); ++i){
         if(sender == yellowTeam[i]){
             return true;
         }
     }
-    for(int i = 0; i < blueTeam.size(); ++i){
+    for(unsigned int i = 0; i < blueTeam.size(); ++i){
         if(sender == blueTeam[i]){
             return true;
         }
@@ -645,6 +646,7 @@ void joinIfPossible(int sender){
 }
 
 void initializeAll(){
+    board = vector<vector<unsigned int>>();
     createBoard();
     numberOfPlayers = 0;
     numberOfConnectedPlayers = 0;
@@ -654,8 +656,8 @@ void initializeAll(){
     blueTeam = vector<int>();
     activeTeam = "none";
     numberRolled = 0;
-    possibleStones = vector<pair<int, int>>();
-    possibleMoves = vector<pair<int, int>>();
+    possibleStones = vector<pair<unsigned int, unsigned int>>();
+    possibleMoves = vector<pair<unsigned int, unsigned int>>();
     voteStoneNeeded = false;
     voteMoveNeeded = false;
     gameEnded = false;
@@ -666,12 +668,13 @@ void initializeAll(){
 
 void createGame(int sender){
     initializeAll();
-    numberOfPlayers = stringToInt(strArray[1]);
-    if(numberOfPlayers < 1 || numberOfPlayers > maxNumberOfPlayers){
+    int proposedNumberOfPlayers = stringToInt(strArray[1]);
+    if(proposedNumberOfPlayers < 1 || proposedNumberOfPlayers > (int)maxNumberOfPlayers){
         cout << "invalid player count" << endl;
         writeN(sender, "error create invalid_count\n");
     }
     else{
+        numberOfPlayers = (unsigned int)proposedNumberOfPlayers;
         gameCreated = true;
         cout << "game created for " << numberOfPlayers << " players" << endl;
         writeN(sender, "success create\n");
@@ -681,14 +684,14 @@ void createGame(int sender){
 
 bool isHisTurn(int sender){
     if(activeTeam == "yellow"){
-        for(int i = 0; i < yellowTeam.size(); ++i){
+        for(unsigned int i = 0; i < yellowTeam.size(); ++i){
             if(sender == yellowTeam[i]){
                 return true;
             }
         }
     }
     else{
-        for(int i = 0; i < blueTeam.size(); ++i){
+        for(unsigned int i = 0; i < blueTeam.size(); ++i){
             if(sender == blueTeam[i]){
                 return true;
             }
@@ -750,7 +753,7 @@ void checkIfVoteForMoveCanEnd(){
     }
 }
 
-void voteForMove(int sender, pair<int, int> move){
+void voteForMove(int sender, pair<unsigned int, unsigned int> move){
     if(playerVotes.find(sender) == playerVotes.end()){
         string message = "success vote move ";
         message += intToString(move.first);
@@ -758,7 +761,7 @@ void voteForMove(int sender, pair<int, int> move){
         message += intToString(move.second);
         message += '\n';
         bool correctMove = false;
-        for(int j = 0; j < 3; ++j){
+        for(unsigned int j = 0; j < 3; ++j){
             if(possibleMoves[j].first == move.first && possibleMoves[j].second == move.second){
                 ++votesForMove[j];
                 setPlayerVote(sender);
@@ -773,7 +776,7 @@ void voteForMove(int sender, pair<int, int> move){
             writeN(sender, "error vote move invalid\n");
         }
         cout << "current votes: ";
-        for(int k = 0; k < 3; ++k){
+        for(unsigned int k = 0; k < 3; ++k){
             cout << votesForMove[k] << " ";
         }
         cout << endl;
@@ -831,7 +834,7 @@ void checkIfVoteForStoneCanEnd(){
     }
 }
 
-void voteForStone(int sender, pair<int, int> stone){
+void voteForStone(int sender, pair<unsigned int, unsigned int> stone){
     if(playerVotes.find(sender) == playerVotes.end()){
         string message = "success vote stone ";
         message += intToString(stone.first);
@@ -864,10 +867,8 @@ void voteForStone(int sender, pair<int, int> stone){
 }
 
 void handleMessage(char message[], int sender){
+    //TODO Conditional jump or move depends on uninitialised value(s)
     messageToStringArray(message);
-    if(gameEnded){
-        cout << "gameEnded" << endl;
-    }
     if(strArray[0] == "create"){
         if(!gameCreated){
             createGame(sender);
@@ -895,9 +896,9 @@ void handleMessage(char message[], int sender){
         else if(isHisTurn(sender)){
             if(strArray[1] == "stone"){
                 if(voteStoneNeeded){
-                    int x = stringToInt(strArray[2]);
-                    int y = stringToInt(strArray[3]);
-                    pair<int, int> stone = make_pair(x, y);
+                    unsigned int x = (unsigned int)stringToInt(strArray[2]);
+                    unsigned int y = (unsigned int)stringToInt(strArray[3]);
+                    pair<unsigned int, unsigned int> stone = make_pair(x, y);
                     voteForStone(sender, stone);
                 }
                 else{
@@ -907,9 +908,9 @@ void handleMessage(char message[], int sender){
             }
             else if(strArray[1] == "move"){
                 if(voteMoveNeeded){
-                    int x = stringToInt(strArray[2]);
-                    int y = stringToInt(strArray[3]);
-                    pair<int, int> move = make_pair(x, y);
+                    unsigned int x = (unsigned int)stringToInt(strArray[2]);
+                    unsigned int y = (unsigned int)stringToInt(strArray[3]);
+                    pair<unsigned int, unsigned int> move = make_pair(x, y);
                     voteForMove(sender, move);
                 }
                 else{
@@ -934,7 +935,7 @@ void handleMessage(char message[], int sender){
 }
 
 void removeFromTeamIfPossible(int sender){
-    for(int i = 0; i < yellowTeam.size(); ++i){
+    for(unsigned int i = 0; i < yellowTeam.size(); ++i){
         if(sender == yellowTeam[i]){
             yellowTeam.erase(yellowTeam.begin() + i);
             --numberOfConnectedPlayers;
@@ -942,7 +943,7 @@ void removeFromTeamIfPossible(int sender){
             break;
         }
     }
-    for(int i = 0; i < blueTeam.size(); ++i){
+    for(unsigned int i = 0; i < blueTeam.size(); ++i){
         if(sender == blueTeam[i]){
             blueTeam.erase(blueTeam.begin() + i);
             --numberOfConnectedPlayers;
