@@ -12,15 +12,11 @@
 #include <iostream>
 #include <vector>
 #include <set>
-#include <thread>
 #include <signal.h>
 
 #define MAXEVENTS 64
 
 using namespace std;
-
-//TODO includes?
-//TODO (performance) string arguments as reference
 
 int sfd, s;
 int efd;
@@ -65,9 +61,8 @@ unsigned int roll(){
 }
 
 void setPossibleStones(){
-    //TODO valgrind Conditional jump or move depends on uninitialised value(s)
-    bool myNumbers[6];
-    for(unsigned int i = 0; i < 6; ++i){
+    bool myNumbers[7];
+    for(unsigned int i = 0; i < 7; ++i){
         myNumbers[i] = 0;
     }
     for(unsigned int i = 0; i < 5; ++i){
@@ -233,7 +228,6 @@ string intToString(int i){
     ss >> s;
     if(ss.fail()){
         return "e";
-        //TODO e - error
     } else{
         return s;
     }
@@ -483,7 +477,7 @@ void sendErrorNoVote(){
     }
 }
 
-void *delay(void*){
+void *delay(void *){
     unsigned int currentVoteNumber = voteNumber;
     sleep(voteTimeLimit);
     if(currentVoteNumber == voteNumber){
@@ -498,7 +492,7 @@ void *delay(void*){
     }
     pthread_cancel(pthread_self());
     pthread_exit(0);
-    return (void*)0;
+    return (void *)0;
 }
 
 void delayAndCheckIfVoted(){
@@ -712,15 +706,15 @@ void endVoteForMove(){
     cout << "voting finished" << endl;
     if(votesForMove[0] > votesForMove[1] && votesForMove[0] > votesForMove[2]){
         doMove(possibleMoves[0]);
-        //TODO voteMoveNeeded = false;
+        //voteMoveNeeded = false;
     }
     else if(votesForMove[1] > votesForMove[0] && votesForMove[1] > votesForMove[2]){
         doMove(possibleMoves[1]);
-        //TODO voteMoveNeeded = false;
+        //voteMoveNeeded = false;
     }
     else if(votesForMove[2] > votesForMove[0] && votesForMove[2] > votesForMove[1]){
         doMove(possibleMoves[2]);
-        //TODO voteMoveNeeded = false;
+        //voteMoveNeeded = false;
     }
     else{
         if(votesForMove[0] + votesForMove[1] + votesForMove[2] == 0){
@@ -796,11 +790,11 @@ void endVoteForStone(){
     cout << "voting finished" << endl;
     if(votesForStone.first > votesForStone.second){
         selectStone(possibleStones[0]);
-        //TODO voteStoneNeeded = false;
+       //voteStoneNeeded = false;
     }
     else if(votesForStone.first < votesForStone.second){
         selectStone(possibleStones[1]);
-        //TODO voteStoneNeeded = false;
+        //voteStoneNeeded = false;
 
     }
     else{
@@ -867,7 +861,6 @@ void voteForStone(int sender, pair<unsigned int, unsigned int> stone){
 }
 
 void handleMessage(char message[], int sender){
-    //TODO Conditional jump or move depends on uninitialised value(s)
     messageToStringArray(message);
     if(strArray[0] == "create"){
         if(!gameCreated){
@@ -1026,10 +1019,9 @@ static int create_and_bind(char *port){
 
 void signal_callback_handler(int signum){
     if(signum == SIGINT){
-        cout << "clean all" << endl;
+        cout << endl << "cleaning all" << endl;
         free(events);
         close(sfd);
-        shutdown(sfd, SHUT_RDWR);
         exit(signum);
     }
 
@@ -1067,7 +1059,6 @@ int main(int argc, char *argv[]){
 
     event.data.fd = sfd;
     event.events = EPOLLIN | EPOLLET;
-    //TODO epoll_ctl valgrind error
     s = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
     if(s == -1){
         perror("epoll_ctl");
@@ -1135,7 +1126,6 @@ int main(int argc, char *argv[]){
 
                     event.data.fd = infd;
                     event.events = EPOLLIN | EPOLLET;
-                    //TODO epoll_ctl valgrind error
                     s = epoll_ctl(efd, EPOLL_CTL_ADD, infd, &event);
                     if(s == -1){
                         perror("epoll_ctl");
