@@ -9,57 +9,6 @@ import textwrap
 import signal
 import datetime
 
-sys.stderr = open('einstein_cli_{}.log'.format(datetime.datetime.now()), 'w')
-
-stdscr = curses.initscr()
-
-errorMessages = {'already_exists': 'Game already exists on server',
-                 'invalid_count': 'Wrong number of players',
-                 'full': 'All players are already in game',
-                 'not_started': 'Game has not started yet',
-                 'already_joined': 'You have already joined the game',
-                 'not_selectable': 'The stone You chose is not selecable',
-                 'not_your_turn': 'It’s not Your turn',
-                 'not_needed': 'Voting is not needed',
-                 'invalid': 'Stone cannot be moved there',
-                 'no_vote': 'You didn’t vote',
-                 'already_voted': 'You’ve already voted in this turn'}
-
-errorText = ''
-hintText = ''
-command = ''
-myTeam = ''
-server = ''
-roll = -1
-
-allowedVerbs = {}
-votes = {}
-gameEnded = False
-
-curses.noecho()
-curses.start_color()
-curses.use_default_colors()
-
-statusBox = curses.newwin(9, curses.COLS, 0, 0)
-boardBox = curses.newwin(15, 30, 10, 0)
-textBox = curses.newwin(1, curses.COLS, curses.LINES - 1, 0)
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-board = [[0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0]]
-
-curses.init_pair(1, 3, -1)
-curses.init_pair(3, 4, -1)
-curses.init_pair(5, 3, 15)
-curses.init_pair(7, 4, 15)
-curses.init_pair(9, 3, 10)
-curses.init_pair(11, 4, 10)
-curses.init_pair(8, -1, 10)
-
 
 def socketPrintLine(sock, message):
     sock.sendall(bytes(message + '\n', 'utf-8'))
@@ -69,14 +18,14 @@ def socketReadLine(sock):
     response = ''
     while True:
         try:
-            c = sock.recv(1).decode('utf-8')
+            character = sock.recv(1).decode('utf-8')
         except socket.timeout:
             pass
-        if not c:
+        if not character:
             raise IOError('disconnected')
-        print(c, file=sys.stderr, end='')
-        if c != '\n':
-            response += c
+        print(character, file=sys.stderr, end='')
+        if character != '\n':
+            response += character
         else:
             print('\n', file=sys.stderr)
             return response
@@ -100,7 +49,7 @@ def drawBoard():
     boardBox.addstr('  ╭───┬───┬───┬───┬───╮\n')
     i = 0
     for row in board:
-        boardBox.addstr(' '+str(i + 1))
+        boardBox.addstr(' ' + str(i + 1))
         for box in row:
             boardBox.addstr('│ ')
             digit = 1 if box % 10 > 0 else 0
@@ -111,8 +60,7 @@ def drawBoard():
             boardBox.addstr(' ')
         print('', file=sys.stderr)
         boardBox.addstr('│\n')
-        print
-        if(i < 4):
+        if i < 4:
             boardBox.addstr('  ├───┼───┼───┼───┼───┤\n')
         i += 1
     boardBox.addstr('  ╰───┴───┴───┴───┴───╯\n')
@@ -137,15 +85,14 @@ def safeRunGame():
     global errorText
     global hintText
     global statusText
+    global serverDisconnected
     try:
         waitForBoard()
         runGame()
     except (IOError, OSError):
         if not gameEnded:
             gameEnded = True
-            errorText = 'Server disconnected'
-            hintText = 'Type `connect {address} {port} to connect'
-            statusText = 'Not connected'
+            serverDisconnected = True
     print('runGame end', file=sys.stderr)
 
 
@@ -170,6 +117,8 @@ def runGame():
                 allowedVerbs = {'exit', 'select'}
                 hintText = 'Type `select {n}` to vote for Your stone with \
 number n'
+            elif response.split(' ')[1] == 'game':
+                won, errorText, allowedVerbs, hintText = onWin(response)
             votes = {}
             votingFinished = False
             while not votingFinished:
@@ -191,6 +140,9 @@ number n'
                     votes = {}
                 elif response[0] == 'error':
                     errorText = errorMessages[response[3]]
+                elif response[1] == 'game':
+                    won, errorText, allowedVerbs, hintText = onWin(
+                        ' '.join(response))
 
             response = socketReadLine(client)
             if response.split(' ')[3] == 'needed':
@@ -198,6 +150,8 @@ number n'
                 allowedVerbs = {'exit', 'move'}
                 hintText = 'Type `move {target}` (e.g. move A2) to move vote \
 for the move'
+            elif response.split(' ')[1] == 'game':
+                won, errorText, allowedVerbs, hintText = onWin(response)
             votes = {}
             votingFinished = False
             while not votingFinished:
@@ -219,6 +173,9 @@ for the move'
                     votingFinished = True
                     votes = {}
                     target = response[6] + ' ' + response[7]
+                elif response[1] == 'game':
+                    won, errorText, allowedVerbs, hintText = onWin(
+                        ' '.join(response))
             moveStone(selected, target)
         elif response.split(' ')[1] == 'active':
             errorText = 'Waiting for opponent’s move'
@@ -231,6 +188,8 @@ for the move'
         elif response.split(' ')[1] == 'game':
             won, errorText, allowedVerbs, hintText = onWin(response)
     curses.endwin()
+    if serverDisconnected:
+        print('Server disconnected')
 
 
 def onWin(response):
@@ -349,12 +308,15 @@ def do(command):
     if verb == 'exit':
         return True
     elif verb == 'connect':
+        address = ''
+        port = ''
         try:
             address = command.split(' ')[1]
             port = command.split(' ')[2]
         except IndexError:
-            errorText = 'Syntax error in {}'.format(command)
-            return
+            if not address:
+                address = defaults['server']
+            port = defaults['port']
         try:
             client.connect((address, int(port)))  # results
         except ValueError:
@@ -416,8 +378,8 @@ players'.format(response.split(' ')[2])
             return
         try:
             socketPrintLine(client, 'vote stone ' + findStonePosition(arg))
-        except ValueError as e:
-            errorText = str(e)
+        except ValueError as exception:
+            errorText = str(exception)
         except TypeError:
             errorText = 'No stone {} on the board'.format(arg)
 
@@ -429,8 +391,8 @@ players'.format(response.split(' ')[2])
             errorText = 'Syntax error in {}'.format(command)
         try:
             socketPrintLine(client, 'vote move ' + translateChessNotation(arg))
-        except ValueError as e:
-            errorText = str(e)
+        except ValueError as exception:
+            errorText = str(exception)
 
     else:
         errorText = 'No such command {}'.format(command)
@@ -473,35 +435,38 @@ def translateChessNotation(chessField):
 def inputFunction():
     global command
     global gameEnded
+    global serverDisconnected
     while not gameEnded:
         try:
-            c = stdscr.get_wch()
+            character = stdscr.get_wch()
         except curses.error:
             pass
         else:
-            print('input ' + c, file=sys.stderr)
-            if c == '\u001b':
+            print('input ' + character, file=sys.stderr)
+            if character == '\u001b':
                 stdscr.get_wch()
                 stdscr.get_wch()
-            if c == chr(10):
+            if character == chr(10):
                 textBox.clear()
                 try:
                     gameEnded = do(command)
                 except (IOError, OSError):
                     gameEnded = True
-                command = ''
-                textBox.move(0, 0)
-                textBox.refresh()
-            elif c == chr(127) or c == chr(8):
+                    serverDisconnected = True
+                finally:
+                    command = ''
+                    textBox.move(0, 0)
+                    textBox.refresh()
+            elif character == chr(127) or character == chr(8):
                 textBox.clear()
                 command = command[:-1]
                 textBox.move(0, 0)
                 textBox.addstr(command)
                 textBox.refresh()
-            elif 'z' >= c >= 'a' or 'Z' >= c >= 'A'\
-                    or '9' >= c >= '0' or c == ' ' or c == '.' or c == ':':
-                command += c
-                textBox.addstr(c)
+            elif 'z' >= character >= 'a' or 'Z' >= character >= 'A'\
+                    or '9' >= character >= '0' or character in{' ', '.', ':'}:
+                command += character
+                textBox.addstr(character)
                 textBox.refresh()
     try:
         client.shutdown(socket.SHUT_RDWR)
@@ -511,10 +476,11 @@ def inputFunction():
         client.close()
     print('input ended', file=sys.stderr)
     curses.endwin()
+    if serverDisconnected:
+        print('Server disconnected')
 
 
 def statusFunction():
-    global gameEnded
     while not gameEnded:
         statusBox.clear()
         statusBox.move(0, 0)
@@ -532,6 +498,8 @@ def statusFunction():
         time.sleep(.5)
     print('status ended', file=sys.stderr)
     curses.endwin()
+    if serverDisconnected:
+        print('Server disconnected')
 
 
 def onErrorExit(signal, frame):
@@ -545,14 +513,110 @@ def onErrorExit(signal, frame):
         client.close()
 
 
-allowedVerbs = {'connect', 'exit'}
-statusText = 'Not connected.'
-hintText = 'Type `connect {address} {port}` to connect'
+def initialise():
+    global errorMessages
+    global allowedVerbs
+    global errorText
+    global statusText
+    global hintText
+    global board
+    global votes
 
-stdscr.timeout(500)
+    global command
+    global myTeam
+    global server
+    global roll
+    global gameEnded
+
+    global statusBox
+    global boardBox
+    global textBox
+
+    global client
+    global stdscr
+    global serverDisconnected
+
+    global defaults
+
+    defaults = {}
+
+    try:
+        with open('defaults.conf') as defaultsFile:
+            for line in defaultsFile:
+                splitLine = line.split('=')
+                try:
+                    defaults[splitLine[0].strip(' \n\r')] =\
+                        splitLine[1].strip(' \n\r')
+                except IndexError:
+                    pass
+    except IOError:
+        with open('defaults.conf', 'w') as defaultFile:
+            defaultFile.write('server=localhost\nport=2500\n')
+            defaults['server'] = 'localhost'
+            defaults['port'] = '2500'
+
+    serverDisconnected = False
+
+    allowedVerbs = {'connect', 'exit'}
+    errorText = ''
+    statusText = 'Not connected.'
+    hintText = 'Type `connect {address} {port}` to connect'
+
+    command = ''
+    myTeam = ''
+    server = ''
+    roll = -1
+    votes = {}
+
+    gameEnded = False
+
+    stdscr = curses.initscr()
+    curses.noecho()
+    curses.start_color()
+    curses.use_default_colors()
+
+    statusBox = curses.newwin(9, curses.COLS, 0, 0)
+    boardBox = curses.newwin(15, 30, 10, 0)
+    textBox = curses.newwin(1, curses.COLS, curses.LINES - 1, 0)
+
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    board = [[0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0]]
+
+    curses.init_pair(1, 3, -1)
+    curses.init_pair(3, 4, -1)
+    curses.init_pair(5, 3, 15)
+    curses.init_pair(7, 4, 15)
+    curses.init_pair(9, 3, 10)
+    curses.init_pair(11, 4, 10)
+    curses.init_pair(8, -1, 10)
+
+    stdscr.timeout(500)
+    signal.signal(signal.SIGINT, onErrorExit)
+
+    sys.stderr = open('einstein_cli_{}.log'.format(datetime.datetime.now()),
+                      'w')
+
+    errorMessages = {'already_exists': 'Game already exists on server',
+                     'invalid_count': 'Wrong number of players',
+                     'full': 'All players are already in game',
+                     'not_started': 'Game has not started yet',
+                     'already_joined': 'You have already joined the game',
+                     'not_selectable': 'The stone You chose is not selectable',
+                     'not_your_turn': 'It’s not Your turn',
+                     'not_needed': 'Voting is not needed',
+                     'invalid': 'Stone cannot be moved there',
+                     'no_vote': 'You didn’t vote',
+                     'already_voted': 'You’ve already voted in this turn'}
+
+
+initialise()
+
 inputThread = threading.Thread(target=inputFunction)
 inputThread.start()
 statusThread = threading.Thread(target=statusFunction)
 statusThread.start()
-
-signal.signal(signal.SIGINT, onErrorExit)
