@@ -318,7 +318,9 @@ def do(command):
                 address = defaults['server']
             port = defaults['port']
         try:
+            client.settimeout(10)
             client.connect((address, int(port)))  # results
+            client.settimeout(None)
         except ValueError:
             errorText = 'Port must be a number'
         except Exception as e:
@@ -330,6 +332,9 @@ def do(command):
             elif str(e).split(' ')[1].strip(']') == '101':
                 errorText = 'Network unreachable. Are You connected to the \
 Internet?'
+            elif str(e) == 'timed out':
+                errorText = 'Timeout while connecting. Aren’t You behind a \
+firewall?'
             else:
                 errorText = str(e)
         else:
