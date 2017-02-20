@@ -869,7 +869,6 @@ void handleMessage(char message[], int sender){
         else{
             cout << "game already exists" << endl;
             writeN(sender, "error create already_exists\n");
-            joinIfPossible(sender);
         }
     }
     else if(strArray[0] == "join"){
