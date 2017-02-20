@@ -419,10 +419,10 @@ def translateChessNotation(chessField):
     chessField = chessField.upper()
     if len(chessField) < 2:
         raise ValueError('Wrong chess notation ' + chessField)
-    if chessField[0] >= 'A' and chessField[0] <= 'E':
+    if 'E' >= chessField[0] >= 'A' and '5' >= chessField[1] >= '1':
         column = chessField[0]
         row = chessField[1]
-    elif chessField[0] >= '1' and chessField[0] <= '5':
+    elif 'E' >= chessField[1] >= 'A' and '5' >= chessField[0] >= '1':
         column = chessField[1]
         row = chessField[0]
     else:
@@ -442,7 +442,7 @@ def inputFunction():
         except curses.error:
             pass
         else:
-            print('input ' + character, file=sys.stderr)
+            print('input ' + str(character), file=sys.stderr)
             if character == '\u001b':
                 stdscr.get_wch()
                 stdscr.get_wch()
