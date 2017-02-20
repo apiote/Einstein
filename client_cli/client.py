@@ -8,6 +8,7 @@ import sys
 import textwrap
 import signal
 import datetime
+import os
 
 
 def socketPrintLine(sock, message):
@@ -503,6 +504,7 @@ def statusFunction():
         time.sleep(.5)
     print('status ended', file=sys.stderr)
     curses.endwin()
+    os.environ['TERM'] = term
     if serverDisconnected:
         print('Server disconnected')
 
@@ -542,6 +544,7 @@ def initialise():
     global serverDisconnected
 
     global defaults
+    global term
 
     defaults = {}
 
@@ -573,9 +576,22 @@ def initialise():
     roll = -1
     votes = {}
 
+    term = os.environ['TERM']
+    os.environ['TERM'] = 'xterm-256color'
+
     gameEnded = False
 
-    stdscr = curses.initscr()
+    try:
+        stdscr = curses.initscr()
+    except curses.error as exception:
+        try:
+            os.environ['TERM'] = 'xterm-16color'
+        except:
+            if str(exception) == 'setupterm: could not find terminal':
+                print('You need a terminal that supports at least 16 colours')
+            else:
+                print(str(exception))
+            quit()
     curses.noecho()
     curses.start_color()
     curses.use_default_colors()
