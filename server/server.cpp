@@ -41,7 +41,7 @@ unsigned int votesForMove[3];
 bool voteStoneNeeded = false;
 bool voteMoveNeeded = false;
 bool gameEnded = false;
-unsigned int voteNumber = 0;
+volatile unsigned int voteNumber = 0;
 const unsigned int maxNumberOfPlayers = 10;
 set<int> playerVotes;
 unsigned int numberOfTies = 0;
@@ -56,7 +56,6 @@ void startTurn(string color);
 void initializeAll();
 
 unsigned int roll(){
-    srand(time(0));
     return rand() % 6 + 1;
 }
 
@@ -148,12 +147,8 @@ void setPossibleStones(){
     }
 }
 
-void writeN(int sender, string msg){
-    char a[100];
-    for(unsigned int i = 0; i < msg.size() && i < 100; ++i){
-        a[i] = msg[i];
-    }
-    if(write(sender, a, msg.size()) == -1){
+void writeN(int sendTo, string msg){
+    if(write(sendTo, msg.c_str(), msg.size()) == -1){
         perror("errorCode");
     }
 }
@@ -181,14 +176,10 @@ void sendToActiveTeam(string message){
 }
 
 void createBoard(){
-    srand(time(0));
     board.clear();
     board.resize(5);
     for(unsigned int i = 0; i < 5; ++i){
-        board[i].resize(5);
-        for(unsigned int j = 0; j < 5; ++j){
-            board[i][j] = 0;
-        }
+        board[i].resize(5, 0);
     }
     {
         unsigned int tab[6] = {1, 2, 3, 4, 5, 6};
@@ -218,18 +209,6 @@ void printBoard(){
             cout << board[i][j] << " ";
         }
         cout << endl;
-    }
-}
-
-string intToString(int i){
-    stringstream ss;
-    string s;
-    ss << i;
-    ss >> s;
-    if(ss.fail()){
-        return "e";
-    } else{
-        return s;
     }
 }
 
@@ -263,7 +242,7 @@ string boardToString(){
     for(unsigned int i = 0; i < 5; ++i){
         for(unsigned int j = 0; j < 5; ++j){
             b += " ";
-            b += intToString(board[i][j]);
+            b += to_string(board[i][j]);
         }
     }
     return b;
@@ -271,7 +250,7 @@ string boardToString(){
 
 void sendRolled(){
     string message = "success rolled ";
-    message += intToString(numberRolled);
+    message += to_string(numberRolled);
     message += '\n';
     sendToActiveTeam(message);
 }
@@ -312,9 +291,9 @@ void sendMoveVote(bool needed){
 void sendStoneSelected(bool selected){
     string message = "success stone ";
     if(selected){
-        message += intToString(selectedStone.first);
+        message += to_string(selectedStone.first);
         message += " ";
-        message += intToString(selectedStone.second);
+        message += to_string(selectedStone.second);
         message += " selected\n";
     }
     else{
@@ -325,13 +304,13 @@ void sendStoneSelected(bool selected){
 
 void sendMoveDone(pair<unsigned int, unsigned int> destination){
     string message = "success stone ";
-    message += intToString(selectedStone.first);
+    message += to_string(selectedStone.first);
     message += " ";
-    message += intToString(selectedStone.second);
+    message += to_string(selectedStone.second);
     message += " moved to ";
-    message += intToString(destination.first);
+    message += to_string(destination.first);
     message += " ";
-    message += intToString(destination.second);
+    message += to_string(destination.second);
     message += " by ";
     message += activeTeam;
     message += '\n';
@@ -340,9 +319,9 @@ void sendMoveDone(pair<unsigned int, unsigned int> destination){
 
 void sendMoveNotDone(){
     string message = "success stone ";
-    message += intToString(selectedStone.first);
+    message += to_string(selectedStone.first);
     message += " ";
-    message += intToString(selectedStone.second);
+    message += to_string(selectedStone.second);
     message += " not_moved\n";
     sendToActiveTeam(message);
 }
@@ -560,10 +539,12 @@ void startTurn(string color){
     cout << "rolled " << numberRolled << endl;
     sendRolled();
     setPossibleStones();
-    voteStoneNeeded = false;
     voteMoveNeeded = false;
     if(possibleStones.size() > 1){
         voteStoneNeeded = true;
+    }
+    else{
+        voteStoneNeeded = false;
     }
     if(voteStoneNeeded){
         startStoneVote();
@@ -750,9 +731,9 @@ void checkIfVoteForMoveCanEnd(){
 void voteForMove(int sender, pair<unsigned int, unsigned int> move){
     if(playerVotes.find(sender) == playerVotes.end()){
         string message = "success vote move ";
-        message += intToString(move.first);
+        message += to_string(move.first);
         message += " ";
-        message += intToString(move.second);
+        message += to_string(move.second);
         message += '\n';
         bool correctMove = false;
         for(unsigned int j = 0; j < 3; ++j){
@@ -790,7 +771,7 @@ void endVoteForStone(){
     cout << "voting finished" << endl;
     if(votesForStone.first > votesForStone.second){
         selectStone(possibleStones[0]);
-       //voteStoneNeeded = false;
+        //voteStoneNeeded = false;
     }
     else if(votesForStone.first < votesForStone.second){
         selectStone(possibleStones[1]);
@@ -831,9 +812,9 @@ void checkIfVoteForStoneCanEnd(){
 void voteForStone(int sender, pair<unsigned int, unsigned int> stone){
     if(playerVotes.find(sender) == playerVotes.end()){
         string message = "success vote stone ";
-        message += intToString(stone.first);
+        message += to_string(stone.first);
         message += " ";
-        message += intToString(stone.second);
+        message += to_string(stone.second);
         message += '\n';
         if(possibleStones[0].first == stone.first && possibleStones[0].second == stone.second){
             ++votesForStone.first;
@@ -953,7 +934,7 @@ void removeFromTeamIfPossible(int sender){
     }
 }
 
-static int make_socket_non_blocking(int sfd){
+int make_socket_non_blocking(int sfd){
     int flags, s;
 
     flags = fcntl(sfd, F_GETFL, 0);
@@ -972,7 +953,7 @@ static int make_socket_non_blocking(int sfd){
     return 0;
 }
 
-static int create_and_bind(char *port){
+int create_and_bind(char *port){
     struct addrinfo hints;
     struct addrinfo *result, *rp;
     int s, sfd;
@@ -1008,6 +989,7 @@ static int create_and_bind(char *port){
 
     if(rp == NULL){
         fprintf(stderr, "Could not bind\n");
+        freeaddrinfo(result);
         return -1;
     }
 
@@ -1018,7 +1000,7 @@ static int create_and_bind(char *port){
 
 void signal_callback_handler(int signum){
     if(signum == SIGINT){
-        cout << endl << "cleaning all" << endl;
+        cout << "cleaning all" << endl;
         free(events);
         close(sfd);
         exit(signum);
@@ -1027,6 +1009,7 @@ void signal_callback_handler(int signum){
 }
 
 int main(int argc, char *argv[]){
+    srand(time(0));
     cout << "start" << endl;
     // Register signal and signal handler
     signal(SIGINT, signal_callback_handler);
@@ -1148,7 +1131,7 @@ int main(int argc, char *argv[]){
                     if(count == -1){
                         /* If errno == EAGAIN, that means we have read all
                            data. So go back to the main loop. */
-                        if(errno != EAGAIN){
+                        if(errno != EAGAIN && errno != EWOULDBLOCK){
                             perror("read");
                             done = 1;
                         }
