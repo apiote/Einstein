@@ -470,7 +470,7 @@ def inputFunction():
                 textBox.addstr(command)
                 textBox.refresh()
             elif 'z' >= character >= 'a' or 'Z' >= character >= 'A'\
-                    or '9' >= character >= '0' or character in{' ', '.', ':'}:
+                    or '9' >= character >= '0' or character in{' ', '.', ':', '-'}:
                 command += character
                 textBox.addstr(character)
                 textBox.refresh()
