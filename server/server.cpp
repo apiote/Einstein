@@ -55,6 +55,12 @@ void startTurn(string color);
 
 void initializeAll();
 
+void handleMessage(int sender);
+
+int make_socket_non_blocking(int sfd);
+
+int make_socket_blocking(int sfd);
+
 unsigned int roll(){
     return rand() % 6 + 1;
 }
@@ -148,9 +154,15 @@ void setPossibleStones(){
 }
 
 void writeN(int sendTo, string msg){
+    s = make_socket_blocking(sfd);
+    if(s == -1)
+        abort();
     if(write(sendTo, msg.c_str(), msg.size()) == -1){
         perror("errorCode");
     }
+    s = make_socket_non_blocking(sfd);
+    if(s == -1)
+        abort();
 }
 
 void sendToAll(string message){
@@ -223,7 +235,7 @@ int stringToInt(string s){
     }
 }
 
-void messageToStringArray(char message[]){
+void messageToStrArray(string message, int sender){
     stringstream ss(message);
     int i = 0;
     string tmp;
@@ -234,6 +246,16 @@ void messageToStringArray(char message[]){
     while(i < 10){
         strArray[i].clear();
         ++i;
+    }
+    handleMessage(sender);
+}
+
+void parseAndHandleMessage(char message[], int sender){
+    stringstream ss(message);
+    string tmp;
+    while(getline(ss, tmp)){
+        cout << "message: __" << tmp << "__" << endl;
+        messageToStrArray(tmp, sender);
     }
 }
 
@@ -841,8 +863,7 @@ void voteForStone(int sender, pair<unsigned int, unsigned int> stone){
     }
 }
 
-void handleMessage(char message[], int sender){
-    messageToStringArray(message);
+void handleMessage(int sender){
     if(strArray[0] == "create"){
         if(!gameCreated){
             createGame(sender);
@@ -903,7 +924,6 @@ void handleMessage(char message[], int sender){
     }
     else{
         cout << "unknown request" << endl;
-        writeN(sender, "error request_unknown\n");
     }
 }
 
@@ -932,6 +952,25 @@ void removeFromTeamIfPossible(int sender){
             endGame("blue", "disconnection");
         }
     }
+}
+
+int make_socket_blocking(int sfd){
+    int flags, s;
+
+    flags = fcntl(sfd, F_GETFL, 0);
+    if(flags == -1){
+        perror("fcntl");
+        return -1;
+    }
+
+    flags &= ~O_NONBLOCK;
+    s = fcntl(sfd, F_SETFL, flags);
+    if(s == -1){
+        perror("fcntl");
+        return -1;
+    }
+
+    return 0;
 }
 
 int make_socket_non_blocking(int sfd){
@@ -1144,7 +1183,7 @@ int main(int argc, char *argv[]){
                     }
                     /* Write the buffer to standard output */
                     s = write(1, buf, count);
-                    handleMessage(buf, events[i].data.fd);
+                    parseAndHandleMessage(buf, events[i].data.fd);
                     if(s == -1){
                         perror("write");
                         abort();
