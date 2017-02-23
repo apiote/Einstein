@@ -1,4 +1,0 @@
-include ':mobile'
-include 'desktop'
-include 'game'
-
